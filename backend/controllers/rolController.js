@@ -5,33 +5,33 @@ const keys = require('../config/keys');
 
 module.exports = {
     register(req, res) {
-        const rol= req.body;
+        const rol = req.body;
 
         Rol.create(rol, (err, data) => {
-            if (err){
+            if (err) {
                 return res.status(501).json({
                     success: false,
                     message: 'Error al crear rol',
                     error: err
                 });
-            }else{
+            } else {
                 return res.status(201).json({
-                    success:true,
+                    success: true,
                     message: 'Rol creado Correctamente',
                     data: data
                 });
             }
         });
 
-    },  
-    
+    },
+
     getAllRoles(req, res) {
-        Rol.findAll((err, rol) =>{
+        Rol.findAll((err, rol) => {
             if (err) {
                 return res.status(501).json({
                     success: false,
                     message: 'Error al listar Usuarios',
-                    error:err
+                    error: err
                 });
             }
             return res.status(200).json({
@@ -59,9 +59,26 @@ module.exports = {
                 });
             }
             return res.status(200).json({
-                success:true,
-                message:'Rol encontrado',
+                success: true,
+                message: 'Rol encontrado',
                 data: rol
+            });
+        });
+    },
+
+    getRolDelete(req, res) {
+        const id = req.params.id;
+        Rol.delete(id, (err, data) => {
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Error al eliminar el rol',
+                    error: err
+                });
+            } return res.status(200).json({
+                success: true,
+                message: 'Rol eliminado correctamente',
+                data: data
             });
         });
     }

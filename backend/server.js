@@ -4,6 +4,7 @@ const cors = require('cors');
 const usersRoutes = require('./routes/userRoutes');
 const rolRoutes = require('./routes/rolRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
+const categoriaRoutes = require('./routes/categoriaRoutes');
 
 const app = express();
 
@@ -15,8 +16,9 @@ app.use(cors());
 
 // Rutas
 app.use('/api/users', usersRoutes);
-app.use('/api/rols',rolRoutes);
+app.use('/api/rol',rolRoutes);
 app.use('/api/usuarios',usuarioRoutes);
+app.use('/api/categorias',categoriaRoutes);
 
 // Endpoints de prueba
 app.get('/', (req, res) => {

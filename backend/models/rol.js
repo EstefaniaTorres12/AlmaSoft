@@ -50,4 +50,17 @@ Rol.create = async (rol, result) => {
     );
 };
 
+Rol.delete = (id, result) => {
+    const sql = `DELETE FROM ROL WHERE rol_id = ?`;
+    db.query(sql, [id], (err, res) => {
+        if (err){
+            console.log('Error al eliminar Rol: ', err);
+            result(err, null);
+        } else{
+            console.log('Rol eliminado correctamente: ', id);
+            result(null,res);
+        }
+    });
+}
+
 module.exports= Rol;
