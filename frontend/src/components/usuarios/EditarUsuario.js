@@ -1,83 +1,15 @@
 import React from "react";
 import { Container, Button, Form, Card } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-
-const usuarios = [
-    {
-        idUsuario: "1",
-        rolUsuario: "Cliente",
-        documento: "1025887459",
-        primerNombre: "Anderson",
-        segundoNombre: "Giovanny",
-        primerApellido: "Montoya",
-        segundoApellido: "Rojas",
-        email: "anderson@gmail.com",
-        direccion: "Calle 133",
-        telefono: "3115644111",
-        credencial: "anderson123"
-    },
-    {
-        idUsuario: "2",
-        rolUsuario: "Administrador",
-        documento: "1025887459",
-        primerNombre: "Esteban",
-        segundoNombre: "",
-        primerApellido: "Martinez",
-        segundoApellido: "Martinez",
-        email: "esteban@gmail.com",
-        direccion: "Calle 55",
-        telefono: "3115644111",
-        credencial: "esteban123"
-    },
-    {
-        idUsuario: "3",
-        rolUsuario: "Asesor",
-        documento: "1025887459",
-        primerNombre: "Sara",
-        segundoNombre: "Daniela",
-        primerApellido: "Mendoza",
-        segundoApellido: "Martinez",
-        email: "sara@gmail.com",
-        direccion: "carrera 55",
-        telefono: "3115644111",
-        credencial: "Sdaniela123"
-    },
-    {
-        idUsuario: "4",
-        rolUsuario: "Asesor",
-        documento: "1025887459",
-        primerNombre: "Katherine",
-        segundoNombre: "",
-        primerApellido: "Gonzales",
-        segundoApellido: "Lopez",
-        email: "K@gmail.com",
-        direccion: "Calle 89",
-        telefono: "3115644111",
-        credencial: "Katherine123"
-    },
-    {
-        idUsuario: "5",
-        rolUsuario: "Cliente",
-        documento: "1025887459",
-        primerNombre: "Liliana",
-        segundoNombre: "",
-        primerApellido: "Martinez",
-        segundoApellido: "",
-        email: "lili@gmail.com",
-        direccion: "Calle 74",
-        telefono: "3115644111",
-        credencial: "liliM123"
-    }
-];
-
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 const EditarUsuario = () => {
 
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [usuario, setUsuario] = useState({
-        rolUsuario: "",
+        rol_id: "",
         primerNombre: "",
         segundoNombre: "",
         primerApellido: "",
@@ -88,11 +20,34 @@ const EditarUsuario = () => {
         credencial: ""
     });
 
+
     useEffect(() => {
-        const usuarioEncontrado = usuarios.find(u => u.idUsuario === id);
-        if (usuarioEncontrado) {
-            setUsuario(usuarioEncontrado);
-        }
+        const fetchUsuario = async () => {
+            try {
+                const response = await fetch(`http://localhost:3001/api/usuarios/id/${id}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    setUsuario({
+                        rol_id: data.data.rol_id,
+                        primerNombre: data.data.usuario_primer_nombre || "",
+                        segundoNombre: data.data.usuario_segundo_nombre || "",
+                        primerApellido: data.data.usuario_primer_apellido || "",
+                        segundoApellido: data.data.usuario_segundo_apellido || "",
+                        direccion: data.data.usuario_direccion || "",
+                        telefono: data.data.usuario_telefono || "",
+                        email: data.data.usuario_correo || "",
+                        credencial: ""
+                    });
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                alert("Error al cargar el usuario");
+            }
+        };
+
+        fetchUsuario();
     }, [id]);
 
     const handleChange = (e) => {
@@ -102,9 +57,39 @@ const EditarUsuario = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Usuario actualizado:", usuario);
+
+        const usuarioActualizado = {
+            rol_id: usuario.rol_id,
+            usuario_primer_nombre: usuario.primerNombre,
+            usuario_segundo_nombre: usuario.segundoNombre,
+            usuario_primer_apellido: usuario.primerApellido,
+            usuario_segundo_apellido: usuario.segundoApellido,
+            usuario_direccion: usuario.direccion,
+            usuario_correo: usuario.email.toLowerCase(),
+            usuario_telefono: usuario.telefono,
+            usuario_credencial: usuario.credencial || undefined
+        };
+
+        try {
+            const response = await fetch(`http://localhost:3001/api/usuarios/update/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(usuarioActualizado)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Usuario actualizado correctamente");
+                navigate("/usuarios/UsuarioFront");
+            } else {
+                alert(data.message);
+            }
+        } catch (err) {
+            alert("Error al conectarse con el servidor");
+        }
     };
 
     return (
@@ -112,21 +97,10 @@ const EditarUsuario = () => {
             <Card>
                 <Card.Header>
                     <h3 className="text-center">Editar Usuario</h3>
-
                 </Card.Header>
+
                 <Card.Body>
                     <Form onSubmit={handleSubmit}>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Rol</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="rolUsuario"
-                                value={usuario.rolUsuario}
-                                onChange={handleChange}
-                                placeholder="Digite el primer nombre"
-                            />
-                        </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label>Primer Nombre</Form.Label>
@@ -135,7 +109,6 @@ const EditarUsuario = () => {
                                 name="primerNombre"
                                 value={usuario.primerNombre}
                                 onChange={handleChange}
-                                placeholder="Digite el primer nombre"
                             />
                         </Form.Group>
 
@@ -146,7 +119,6 @@ const EditarUsuario = () => {
                                 name="segundoNombre"
                                 value={usuario.segundoNombre}
                                 onChange={handleChange}
-                                placeholder="Digite el segundo nombre"
                             />
                         </Form.Group>
 
@@ -157,7 +129,6 @@ const EditarUsuario = () => {
                                 name="primerApellido"
                                 value={usuario.primerApellido}
                                 onChange={handleChange}
-                                placeholder="Digite el primer apellido"
                             />
                         </Form.Group>
 
@@ -168,7 +139,6 @@ const EditarUsuario = () => {
                                 name="segundoApellido"
                                 value={usuario.segundoApellido}
                                 onChange={handleChange}
-                                placeholder="Digite el segundo apellido"
                             />
                         </Form.Group>
 
@@ -179,7 +149,6 @@ const EditarUsuario = () => {
                                 name="telefono"
                                 value={usuario.telefono}
                                 onChange={handleChange}
-                                placeholder="Digite el teléfono"
                             />
                         </Form.Group>
 
@@ -190,7 +159,6 @@ const EditarUsuario = () => {
                                 name="direccion"
                                 value={usuario.direccion}
                                 onChange={handleChange}
-                                placeholder="Digite la dirección"
                             />
                         </Form.Group>
 
@@ -201,21 +169,23 @@ const EditarUsuario = () => {
                                 name="email"
                                 value={usuario.email}
                                 onChange={handleChange}
-                                placeholder="Digite el correo"
                             />
                         </Form.Group>
 
-                        <Button style={{ background: "#7856AE", border: "#7856AE" }} type="submit">
+                        <Button type="submit" style={{ background: "#7856AE", border: "#7856AE" }}>
                             Guardar
                         </Button>
-                        <Button style={{ background: "#7856AE", border: "#7856AE" }} className="mx-5" type="button">
-                            Cancelar
-                        </Button>
+
+                        <Link to="/usuarios/UsuarioFront">
+                            <Button className="mx-3" style={{ background: "#7856AE", border: "#7856AE" }}>
+                                Cancelar
+                            </Button>
+                        </Link>
                     </Form>
                 </Card.Body>
             </Card>
         </Container>
     );
-}
+};
 
 export default EditarUsuario;

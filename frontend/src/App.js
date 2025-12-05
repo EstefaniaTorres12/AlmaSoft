@@ -16,7 +16,7 @@ import Cliente from './components/clientes/Cliente';
 import AgregarCliente from './components/clientes/AgregarCliente';
 import EditarCliente from './components/clientes/EditarCliente';
 import DetallesCliente from './components/clientes/DetallesCliente';
-import Usuario from './components/usuarios/Usuario';
+import UsuarioFront from './components/usuarios/UsuarioFront';
 import EditarUsuario from './components/usuarios/EditarUsuario';
 import DetallesUsuario from './components/usuarios/DetallesUsuario';
 import AgregarUsuario from './components/usuarios/AgregarUsuario';
@@ -43,7 +43,7 @@ function App() {
 
 
           {/*rutas del usuario*/}
-          <Route path='/usuarios/Usuario' element={<Usuario/>}></Route>
+          <Route path='/usuarios/UsuarioFront' element={<UsuarioFront/>}></Route>
           <Route path='/usuarios/AgregarUsuario' element={<AgregarUsuario/>}></Route>
           <Route path='/usuarios/EditarUsuario/:id' element={<EditarUsuario/>}></Route>
           <Route path='/usuarios/detalles/:id' element={<DetallesUsuario/>}></Route>

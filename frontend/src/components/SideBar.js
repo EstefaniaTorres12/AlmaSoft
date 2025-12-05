@@ -24,7 +24,7 @@ const SideBar =()=>{
         <Button as={Link} to="/clientes/Cliente" className=" m-3" variant="light">
           Clientes
         </Button>
-        <Button as={Link} to="/usuarios/Usuario" className=" m-3" variant="light">
+        <Button as={Link} to="/usuarios/UsuarioFront" className=" m-3" variant="light">
           Usuarios
         </Button>
         <Button as={Link} to="/Categorias" className=" m-3" variant="light">
