@@ -11,5 +11,6 @@ router.get('/id/:id', verifyToken, authorizeRoles(['Administrador', 'Asesor']), 
 router.get('/documento/:documento', verifyToken, authorizeRoles(['Administrador', 'Asesor']), usuarioController.getUsuarioByDocument);
 router.put('/update/:id', verifyToken, authorizeRoles(['Administrador', 'Asesor','Clieente']), usuarioController.getUsuarioUpdate);
 router.delete('/deleteU/:id',verifyToken, authorizeRoles(['Administrador', 'Asesor']), usuarioController.getUsuarioDelete);
+router.get('/usuariosAll',usuarioController.getUsuarioAll);
 
 module.exports = router;

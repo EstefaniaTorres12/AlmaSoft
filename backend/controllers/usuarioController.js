@@ -47,6 +47,23 @@ module.exports = {
         });
     },
 
+    getUsuarioAll(req, res){
+        Usuario.findAll((err, usuario) =>{
+            if (err) {
+                return res.status(501).json({
+                    success: false,
+                    message: 'Error al consultar',
+                    error: err
+                });
+            }
+            return res.status(200).json({
+                success: true,
+                message: 'lista de usuarios',
+                data: usuario
+            });
+        });
+    },
+
     getUsuarioById(req, res) {
         const id = req.params.id;
         Usuario.findById(id, (err, user) => {

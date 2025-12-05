@@ -40,6 +40,28 @@ Usuario.create = async (user, result) => {
     });
 };
 
+Usuario.findAll = (result) => {
+    const sql = `SELECT usuario_id,
+                        usuario_primer_nombre,
+                        usuario_segundo_nombre,
+                        usuario_primer_apellido,
+                        usuario_segundo_apellido,
+                        usuario_documento,
+                        usuario_correo,
+                        usuario_direccion,
+                        usuario_credencial 
+                 FROM USUARIO`;
+    db.query(sql,(err, usuario)=>{
+        if (err) {
+            console.log('Error al consultar usuarios:', err);
+            result(err, null);
+        } else {
+            console.log('usuarios encontrados;', usuario.length);
+            result(null, usuario);
+        }
+    });
+};
+
 // Asignar rol al usuario
 function asignarRolUsuario(user, insertId, result) {
     let rolUsuario = {
