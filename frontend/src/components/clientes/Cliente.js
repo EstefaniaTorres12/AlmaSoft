@@ -1,39 +1,36 @@
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { Container, Table, Row, Col, Button, Form, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-const clientes = [
-    {
-        id: 1,
-        documento: "1025887459",
-        primerNombre: "Anderson",
-        segundoNombre: "Giovanny",
-        primerApellido: "Montoya",
-        segundoApellido: "Rojas",
-        email: "anderson@gmail.com",
-        direccion: "Calle 133",
-        telefono: "3115644111",
-        fechaNacimiento: "12-05-2005",
-        edad: 20
-    },
-    {
-        id: 2,
-        documento: "1025887458",
-        primerNombre: "Gisel",
-        segundoNombre: "Estefania",
-        primerApellido: "Torres",
-        segundoApellido: "Corredor",
-        email: "estefaniatorres1216@gmail.com",
-        direccion: "Tv 70 # 67b sur 80",
-        telefono: "3115644133",
-        fechaNacimiento: "12-05-2005",
-        edad: 20
-    }
-];
-
-
-
 const Cliente = () => {
+
+    const [clientes, setClientes] = useState([]);
+    const [busqueda, setBusqueda] = useState("");
+
+    useEffect(() => {
+        const fetchClientes = async () => {
+            try {
+                const response = await fetch(("http://localhost:3001/api/clientes/clientesAll"));
+                const data = await response.json();
+
+                if (response.ok){
+                    setClientes(data.data);
+                } else {
+                    alert ( data.message || "Error al obtener los Clientes");
+                }
+            } catch (err) {
+                console.log(err);
+                alert("Error al conectar con el backend");                
+            }
+        };
+
+        fetchClientes();
+    }, []);
+
+
+
     return (
         <Container className="my-5">
             <Row className="mb-4">
@@ -56,7 +53,7 @@ const Cliente = () => {
                     </Col>
                     <Col md={4} >
                         <Button type="submit" className="me-4" variant="outline-dark" >Buscar</Button>
-                        <Button type="button" variant="outline-dark">Mostrar Todos</Button>
+                        <Button type="button" variant="outline-dark" onClick={() => setBusqueda("")}>Mostrar Todos</Button>
                     </Col>
                 </Row>
             </Form>
@@ -81,14 +78,14 @@ const Cliente = () => {
                     {clientes.map((cliente) => (
                         <tr key={cliente.id}>
                             <td>{cliente.documento}</td>
-                            <td>{cliente.primerNombre}</td>
-                            <td>{cliente.segundoNombre}</td>
-                            <td>{cliente.primerApellido}</td>
-                            <td>{cliente.segundoApellido}</td>
-                            <td>{cliente.email}</td>
+                            <td>{cliente.primer_nombre}</td>
+                            <td>{cliente.segundo_nombre}</td>
+                            <td>{cliente.primer_apellido}</td>
+                            <td>{cliente.segundo_apellido}</td>
+                            <td>{cliente.correo}</td>
                             <td>{cliente.direccion}</td>
                             <td>{cliente.telefono}</td>
-                            <td>{cliente.fechaNacimiento}</td>
+                            <td>{cliente.fecha_nacimiento}</td>
                             <td>{cliente.edad}</td>
                             <td>
                                 <Dropdown>

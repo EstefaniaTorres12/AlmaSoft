@@ -103,7 +103,7 @@ const AgregarUsuario = () => {
                                 <option value="">Seleccione un rol</option>
                                 <option value="1">Administrador</option>
                                 <option value="2">Asesor</option>
-                                <option value="3">Cliente</option>
+                                <option value="4">Afiliado</option>
                             </Form.Select>
                         </Form.Group>
 
