@@ -1,0 +1,58 @@
+.inicio-container {
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #2a003f, #4a148c);
+  min-height: 100vh;
+  color: #f7f0f0;
+}
+
+.inicio-container h2 {
+  text-align: center;
+  color: #5e1a92;
+  text-shadow: 1px 1px 4px rgba(99, 26, 120, 0.652);
+  margin-bottom: 30px;
+}
+
+.acceso-card {
+  background-color: #3b1a5e;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  height: 100%;
+  border-width: 2px;
+}
+
+.acceso-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.icono-container {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  color: white;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  font-size: 2.5rem;
+  border: 3px solid #fff;
+  transition: box-shadow 0.3s, border 0.3s;
+}
+
+.acceso-card:hover .icono-container {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  border: 3px solid #e1baff;
+}
+.acceso-card .card-title {
+  color: #000000;
+  font-weight: bold;
+}
+
+.acceso-card .card-text {
+  color: #000000;
+}
+

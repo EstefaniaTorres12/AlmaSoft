@@ -20,12 +20,6 @@ const InisiarSesion = () => {
         });
     }
 
-    const enviarDatos = async (e) => {
-        e.preventDefault();
-        setMostrarAlerta(true);
-        console.log('Inicio Exitoso: ', formData);
-    }
-
 
     return (
         <div

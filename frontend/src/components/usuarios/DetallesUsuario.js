@@ -1,7 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { Card, Col, Container, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import usuario1 from '../../img/usuario.png'
 
 

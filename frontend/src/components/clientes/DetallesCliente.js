@@ -121,15 +121,15 @@ const DetallesCliente = () => {
             <Table className="my-5" striped bordered hover>
                 <thead className="table-secondary">
                     <tr >
-                        <td scope="col">Documento</td>
-                        <td scope="col">Primer Nombre</td>
-                        <td scope="col">Segundo Nombre</td>
-                        <td scope="col">Primer Apellido</td>
-                        <td scope="col">Segundo Apellido</td>
-                        <td scope="col">Email</td>
-                        <td scope="col">Direccion</td>
-                        <td scope="col">Telefono</td>
-                        <td scope="col">Acciones</td>
+                        <th scope="col">Documento</th>
+                        <th scope="col">Primer Nombre</th>
+                        <th scope="col">Segundo Nombre</th>
+                        <th scope="col">Primer Apellido</th>
+                        <th scope="col">Segundo Apellido</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Direccion</th>
+                        <th scope="col">Telefono</th>
+                        <th scope="col">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>

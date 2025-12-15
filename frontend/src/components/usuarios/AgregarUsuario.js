@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
 
 const AgregarUsuario = () => {
     const [formData, setData] = useState({

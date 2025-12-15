@@ -1,0 +1,157 @@
+.compras {
+  padding: 20px;
+  background: #f3f0f8; /* lila muy suave */
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Encabezado */
+.compras-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.compras-encabezado h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4b2e83; /* violeta oscuro */
+}
+
+.acciones .btn {
+  background: linear-gradient(135deg, #6f4bb0, #8b63f0); /* degradado violeta-medio */
+  color: #fff;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.acciones .btn:hover {
+  background: linear-gradient(135deg, #563d88, #7b52d1); /* tono medio más oscuro */
+}
+
+/* Formulario */
+.form-compras {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(111, 75, 176, 0.2);
+  margin-bottom: 25px;
+}
+
+.form-compras input,
+.form-compras select {
+  flex: 1;
+  min-width: 180px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.form-compras input:focus,
+.form-compras select:focus {
+  border-color: #7b52d1; /* tono medio violeta */
+  box-shadow: 0 0 4px rgba(123, 82, 209, 0.4);
+}
+
+.form-compras .btn {
+  background: linear-gradient(135deg, #6f4bb0, #8b63f0);
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.form-compras .btn:hover {
+  background: linear-gradient(135deg, #563d88, #7b52d1);
+}
+
+/* Tabla */
+.tabla-compras {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(111, 75, 176, 0.2);
+}
+
+.tabla-compras th {
+  background: linear-gradient(135deg, #6f4bb0, #8b63f0); /* degradado violeta-lila */
+  color: #fff;
+  padding: 12px;
+  text-align: left;
+}
+
+.tabla-compras tr:nth-child(even) {
+  background: #f0e8f8; /* tono lila medio */
+}
+
+.tabla-compras tr:nth-child(odd) {
+  background: #f7f4fa; /* tono lila más claro */
+}
+
+.tabla-compras td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Colores de estado */
+.rojo {
+  color: #fff;
+  background: linear-gradient(135deg, #a05dd8, #b47cf0); /* degradado lila intenso-medio */
+  padding: 5px 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.verde {
+  color: #fff;
+  background: linear-gradient(135deg, #8b63f0, #a17dfc); /* degradado violeta-lila medio */
+  padding: 5px 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* Opciones */
+.opcion {
+  cursor: pointer;
+  margin: 0 6px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.opcion:hover {
+  opacity: 0.85;
+}
+
+.opcion.azul {
+  color: #fff;
+  background: linear-gradient(135deg, #6f4bb0, #8b63f0);
+}
+
+.opcion.amarillo {
+  color: #fff;
+  background: linear-gradient(135deg, #9a7bd3, #b18efc);
+}
+
+.opcion.verde {
+  color: #fff;
+  background: linear-gradient(135deg, #8b63f0, #a17dfc);
+}
+
+.opcion.rojo {
+  color: #fff;
+  background: linear-gradient(135deg, #a05dd8, #b47cf0);
+}

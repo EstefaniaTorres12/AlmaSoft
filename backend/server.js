@@ -7,6 +7,9 @@ const usuarioRoutes = require('./routes/usuarioRoutes');
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const subcategoriaRoutes = require('./routes/subcategoriasRoutes');
 const productoRoutes = require('./routes/productoRoutes');
+const reportesRoutes = require('./routes/RouterReportes');
+const planRoutes = require('./routes/planRoutes');
+const dbMiddleware = require('./middlewares/authMiddleware');
 
 const app = express();
 
@@ -16,6 +19,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+// Middleware para verificar disponibilidad de BD en rutas /api
+console.log('dbMiddleware type', typeof dbMiddleware, dbMiddleware && Object.prototype.toString.call(dbMiddleware));
+console.log('dbMiddleware keys:', Object.keys(dbMiddleware || {}));
+app.use('/api', dbMiddleware);
+
 // Rutas
 app.use('/api/users', usersRoutes);
 app.use('/api/rol',rolRoutes);
@@ -23,6 +31,8 @@ app.use('/api/usuarios',usuarioRoutes);
 app.use('/api/categorias',categoriaRoutes);
 app.use('/api/subcategorias',subcategoriaRoutes);
 app.use('/api/productos', productoRoutes);
+app.use('/api/reportes', reportesRoutes);
+app.use('/api/planes', planRoutes);
 
 // Endpoints de prueba
 app.get('/', (req, res) => {

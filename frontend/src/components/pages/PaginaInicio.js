@@ -1,11 +1,9 @@
 import React from "react";
-import { Container, Card, Button, Row, Col,Image } from 'react-bootstrap';
+import { Container, Card, Button, Row, Col } from 'react-bootstrap';
 import Ataud1 from '../../img/Ataud1.jpg';
 import Urna1 from '../../img/Urna1.jpg';
 import Lapida2 from '../../img/Lapida2.png';
 import Arreglo3 from '../../img/Arreglo3.jpg';
-import Promocion from '../../img/Promocion.png';
-import { Link } from "react-router-dom";
 
 
 const PaginaInicio = () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Container, Nav } from "react-bootstrap";
+import { Button, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const SideBar =()=>{
@@ -27,22 +27,19 @@ const SideBar =()=>{
         <Button as={Link} to="/usuarios/Usuario" className=" m-3" variant="light">
           Usuarios
         </Button>
-        <Button as={Link} to="/Categorias" className=" m-3" variant="light">
+        <Button as={Link} to="/categorias" className=" m-3" variant="light">
           Categorias
         </Button>
-        <Button as={Link} to="/Sub Categorias" className=" m-3" variant="light">
-          Sub Categorias
+        <Button as={Link} to="/planes" className=" m-3" variant="light">
+          Planes
         </Button>
-        <Button as={Link} to="/Productos" className=" m-3" variant="light">
-          Productos
-        </Button>
-        <Button as={Link} to="/Compras" className=" m-3" variant="light">
+        <Button as={Link} to="/compras" className=" m-3" variant="light">
           Compras
         </Button>
-        <Button as={Link} to="/Tramites" className=" m-3" variant="light">
+        <Button as={Link} to="/tramites" className=" m-3" variant="light">
           Tramites
         </Button>
-        <Button as={Link} to="/Cronograma" className=" m-3" variant="light">
+        <Button as={Link} to="/cronograma" className=" m-3" variant="light">
           Cronograma
         </Button>
       </Nav>

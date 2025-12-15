@@ -1,7 +1,5 @@
 import React from "react";
-import { Container, Navbar, Form, Button } from "react-bootstrap"; 
-import { Link } from "react-router-dom";
-import logo from '../../img/3.png';
+import { Container, Navbar, Form, Button } from "react-bootstrap";
 
 const BarraCliente=()=>{
     return(

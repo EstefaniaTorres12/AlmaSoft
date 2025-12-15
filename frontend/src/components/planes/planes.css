@@ -1,0 +1,70 @@
+.planes-contenedor {
+  padding: 30px;
+  background: #f6f1eb;
+  min-height: 100vh;
+}
+
+.planes-titulo {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #4a3f35;
+}
+
+.planes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.plan-card {
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.plan-card:hover {
+  transform: translateY(-5px);
+}
+
+.plan-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: #3d2c2e;
+}
+
+.precio {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #7a3b69;
+  margin-bottom: 15px;
+}
+
+.plan-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.plan-card li {
+  margin: 8px 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.btn-plan {
+  background: #7a3b69;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-plan:hover {
+  background: #9d4a80;
+}

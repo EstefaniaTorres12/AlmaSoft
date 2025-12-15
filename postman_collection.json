@@ -1,0 +1,894 @@
+{
+  "info": {
+    "name": "AlmaSoft API Collection",
+    "description": "Colección de APIs del backend de AlmaSoft",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Crear Usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"password123\",\n  \"nombre\": \"Juan Pérez\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/create",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users", "create"]
+            }
+          }
+        },
+        {
+          "name": "Login Usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users", "login"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Todos los Usuarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Usuario por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/users/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Usuario",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nuevo@example.com\",\n  \"nombre\": \"Nuevo Nombre\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/users/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/users/delete/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "users", "delete", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Login Usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/usuarios/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "usuarios", "login"]
+            }
+          }
+        },
+        {
+          "name": "Crear Usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario_nombre\": \"Juan\",\n  \"usuario_apellido\": \"Pérez\",\n  \"usuario_email\": \"juan@example.com\",\n  \"usuario_documento\": \"123456789\",\n  \"usuario_contrasena\": \"password123\",\n  \"rol_id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/usuarios/usuarioCreate",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "usuarios", "usuarioCreate"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Usuario por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/usuarios/id/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "usuarios", "id", "1"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Usuario por Documento",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/usuarios/documento/123456789",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "usuarios", "documento", "123456789"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Usuario",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario_nombre\": \"Nuevo Nombre\",\n  \"usuario_email\": \"nuevo@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/usuarios/update/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "usuarios", "update", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/usuarios/deleteU/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "usuarios", "deleteU", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Crear Producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_nombre\": \"Ataúd de Roble\",\n  \"producto_descripcion\": \"Ataúd de madera de roble premium\",\n  \"producto_precio\": 5000,\n  \"producto_stock\": 10,\n  \"subcategoria_id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/productos/createProducto",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "productos", "createProducto"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Todos los Productos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/productos/productosAll",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "productos", "productosAll"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Producto por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/productos/producto/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "productos", "producto", "1"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Producto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_nombre\": \"Ataúd de Roble Premium\",\n  \"producto_precio\": 5500\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/productos/updateProducto/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "productos", "updateProducto", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Producto",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/productos/deleteProducto/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "productos", "deleteProducto", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorías",
+      "item": [
+        {
+          "name": "Crear Categoría",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoria_nombre\": \"Ataúdes\",\n  \"categoria_descripcion\": \"Ataúdes de diferentes materiales\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/categorias/crearCategoria",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "categorias", "crearCategoria"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Todas las Categorías",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/categorias/categorias",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "categorias", "categorias"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Categoría por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/categorias/categoria/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "categorias", "categoria", "1"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Categoría",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoria_nombre\": \"Ataúdes Premium\",\n  \"categoria_descripcion\": \"Ataúdes de lujo\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/categorias/categoriaUpdate/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "categorias", "categoriaUpdate", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Categoría",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:3000/api/categorias/categoriaDelete/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "categorias", "categoriaDelete", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subcategorías",
+      "item": [
+        {
+          "name": "Crear Subcategoría",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subcategoria_nombre\": \"Ataúdes de Roble\",\n  \"subcategoria_descripcion\": \"Ataúdes fabricados con roble\",\n  \"categoria_id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/subcategorias/createSubC",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "subcategorias", "createSubC"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Todas las Subcategorías",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/subcategorias/subCAll",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "subcategorias", "subCAll"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Subcategoría por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/subcategorias/subCId/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "subcategorias", "subCId", "1"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Subcategoría",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subcategoria_nombre\": \"Ataúdes de Roble Premium\",\n  \"subcategoria_descripcion\": \"Ataúdes premium de roble\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/subcategorias/updateSubC/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "subcategorias", "updateSubC", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Subcategoría",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:3000/api/subcategorias/deleteSubC/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "subcategorias", "deleteSubC", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Crear Rol",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rol_nombre\": \"Vendedor\",\n  \"rol_descripcion\": \"Rol para vendedores\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/rol/createRol",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "rol", "createRol"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Todos los Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/rol/Roles",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "rol", "Roles"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Rol por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/rol/rol/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "rol", "rol", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Rol",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/rol/delete/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "rol", "delete", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reportes",
+      "item": [
+        {
+          "name": "Reporte de Usuarios",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/reportes/usuarios",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reportes", "usuarios"]
+            }
+          }
+        },
+        {
+          "name": "Reporte de Contratos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/reportes/contratos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reportes", "contratos"]
+            }
+          }
+        },
+        {
+          "name": "Reporte de Productos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/reportes/productos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reportes", "productos"]
+            }
+          }
+        },
+        {
+          "name": "Reporte de Planes Fúnebres",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/reportes/planes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reportes", "planes"]
+            }
+          }
+        },
+        {
+          "name": "Reporte de Pagos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/reportes/pagos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reportes", "pagos"]
+            }
+          }
+        },
+        {
+          "name": "Estadísticas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/reportes/estadisticas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reportes", "estadisticas"]
+            }
+          }
+        },
+        {
+          "name": "Reporte de Ventas por Período",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/reportes/ventas-periodo?fecha_inicio=2024-01-01&fecha_fin=2024-12-31",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reportes", "ventas-periodo"],
+              "query": [
+                {
+                  "key": "fecha_inicio",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "fecha_fin",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reporte de Servicios Populares",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/reportes/servicios-populares",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reportes", "servicios-populares"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Planes",
+      "item": [
+        {
+          "name": "Crear Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plan_nombre\": \"Plan Básico\",\n  \"plan_precio\": 3000,\n  \"plan_descripcion\": \"Plan fúnebre básico con servicios esenciales\",\n  \"plan_estado\": \"Activo\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/planes/create",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "planes", "create"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Todos los Planes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/planes/all",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "planes", "all"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Plan por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/planes/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "planes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Plan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plan_nombre\": \"Plan Básico Plus\",\n  \"plan_precio\": 3500,\n  \"plan_descripcion\": \"Plan fúnebre mejorado\",\n  \"plan_estado\": \"Activo\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/planes/update/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "planes", "update", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Plan",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/planes/delete/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "planes", "delete", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": "tu_token_jwt_aqui",
+      "type": "string"
+    }
+  ]
+}

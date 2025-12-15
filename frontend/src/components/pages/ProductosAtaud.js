@@ -1,7 +1,6 @@
 import React from "react";
-import { Container, Button, Row, Col, Card, Spinner } from "react-bootstrap";
+import { Container, Button, Row, Col, Card } from "react-bootstrap";
 import Ataud1 from '../../img/Ataud1.jpg';
-import { Link } from "react-router-dom";
 
 const ProductosAtaud = () => {
     return (

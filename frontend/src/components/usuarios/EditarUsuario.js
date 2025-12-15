@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Button, Form, Card } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const usuarios = [
     {

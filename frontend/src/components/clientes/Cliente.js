@@ -63,17 +63,17 @@ const Cliente = () => {
             <Table striped bordered hover >
                 <thead className="table-secondary">
                     <tr >
-                        <td scope="col">Documento</td>
-                        <td scope="col">Primer Nombre</td>
-                        <td scope="col">Segundo Nombre</td>
-                        <td scope="col">Primer Apellido</td>
-                        <td scope="col">Segundo Apellido</td>
-                        <td scope="col">Email</td>
-                        <td scope="col">Direccion</td>
-                        <td scope="col">Telefono</td>
-                        <td scope="col">Fecha de Nacimiento</td>
-                        <td scope="col">Edad</td>
-                        <td scope="col">Acciones</td>
+                        <th scope="col">Documento</th>
+                        <th scope="col">Primer Nombre</th>
+                        <th scope="col">Segundo Nombre</th>
+                        <th scope="col">Primer Apellido</th>
+                        <th scope="col">Segundo Apellido</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Direccion</th>
+                        <th scope="col">Telefono</th>
+                        <th scope="col">Fecha de Nacimiento</th>
+                        <th scope="col">Edad</th>
+                        <th scope="col">Acciones</th>
                     </tr>
                 </thead>
 
@@ -102,7 +102,7 @@ const Cliente = () => {
                                         <Dropdown.Item as={Link} to={`/clientes/detalles/${cliente.id}`}>
                                             Detalles
                                         </Dropdown.Item>
-                                        <Dropdown.Item href="#/action-3">Habilitar</Dropdown.Item>
+                                        <Dropdown.Item>Habilitar</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </td>
@@ -114,15 +114,15 @@ const Cliente = () => {
             </Table>
 
             <nav aria-label="page navigation">
-                <ul class=" pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link">ATRAS</a>
+                <ul className="pagination justify-content-center">
+                    <li className="page-item disabled">
+                        <a href="#/" className="page-link">ATRAS</a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">SIGUIENTE</a>
+                    <li className="page-item"><a href="#/" className="page-link">1</a></li>
+                    <li className="page-item"><a href="#/" className="page-link">2</a></li>
+                    <li className="page-item"><a href="#/" className="page-link">3</a></li>
+                    <li className="page-item">
+                        <a href="#/" className="page-link">SIGUIENTE</a>
                     </li>
                 </ul>
             </nav>
