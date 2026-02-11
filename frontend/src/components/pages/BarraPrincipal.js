@@ -1,6 +1,5 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown, Form, Button} from 'react-bootstrap';
-import logo from '../../img/logoAS.png';
 import { Link } from "react-router-dom";
 
 
@@ -11,7 +10,7 @@ const BarraPrincipal = () => {
                 <Navbar.Brand href="#" className="d-flex align-items-center">
                     <img
                         alt="logo"
-                        src={logo}
+                        src="/img/logoAS.png"
                         width="40"
                         height="40"
                         className="d-inline-block align-top me-2"

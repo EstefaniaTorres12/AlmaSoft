@@ -41,17 +41,27 @@ Usuario.create = async (user, result) => {
 };
 
 Usuario.findAll = (result) => {
-    const sql = `SELECT usuario_id,
-                        usuario_primer_nombre,
-                        usuario_segundo_nombre,
-                        usuario_primer_apellido,
-                        usuario_segundo_apellido,
-                        usuario_documento,
-                        usuario_correo,
-                        usuario_direccion,
-                        usuario_credencial 
-                 FROM USUARIO`;
-    db.query(sql,(err, usuario)=>{
+    const sql = `
+        SELECT 
+            us.usuario_id,
+            r.rol_nombre,
+            us.usuario_documento,
+            us.usuario_primer_nombre,
+            us.usuario_segundo_nombre,
+            us.usuario_primer_apellido,
+            us.usuario_segundo_apellido,
+            us.usuario_correo,
+            us.usuario_direccion,
+            t.telefono
+        FROM usuario AS us
+        INNER JOIN rol_usuario AS ru 
+            ON us.usuario_id = ru.usuario_id
+        INNER JOIN rol AS r 
+            ON ru.rol_id = r.rol_id
+        LEFT JOIN telefono AS t 
+            ON us.usuario_id = t.usuario_id
+    `;
+    db.query(sql, (err, usuario) => {
         if (err) {
             console.log('Error al consultar usuarios:', err);
             result(err, null);

@@ -40,15 +40,20 @@ module.exports = {
                 nombre: user.usuario_primer_nombre,
                 correo: user.usuario_correo,
                 role: user.rol_nombre,
-                session_token: `Bearer ${token}` // JWT listo para usar
+                session_token: `Bearer ${token}` 
             };
 
-            return res.status(200).json({ success: true, message: 'Usuario autenticado', data });
+            res.status(200).json({
+                success: true,
+                message: "Login correcto",
+                token,
+                rol: user.rol_nombre 
+            });
         });
     },
 
-    getUsuarioAll(req, res){
-        Usuario.findAll((err, usuario) =>{
+    getUsuarioAll(req, res) {
+        Usuario.findAll((err, usuario) => {
             if (err) {
                 return res.status(501).json({
                     success: false,

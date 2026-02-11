@@ -5,23 +5,23 @@ const Producto = {};
 
 Producto.create = async (producto, result) => {
     const sql = `INSERT INTO PRODUCTO(
-    producto_id,
     producto_nombre,
     producto_descripcion,
     producto_precio,
     producto_stock,
     producto_estado,
-    subcategoria_id
-    )VALUES(?, ?, ?, ?, ?, ?, ?)`;
+    subcategoria_id,
+    producto_imagen
+    )VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
 
     db.query(sql, [
-        producto.producto_id,
         producto.producto_nombre,
         producto.producto_descripcion,
         producto.producto_precio,
         producto.producto_stock,
         producto.producto_estado,
-        producto.subcategoria_id
+        producto.subcategoria_id,
+        producto.producto_imagen
 
     ], (err, res) => {
         if (err) {
@@ -34,6 +34,32 @@ Producto.create = async (producto, result) => {
     });
 };
 
+Producto.findByName = (nombre, result) => {
+    const sql = `
+        SELECT 
+            producto_id,
+            producto_nombre,
+            producto_descripcion,
+            producto_precio,
+            producto_stock,
+            producto_estado,
+            subcategoria_id,
+            producto_imagen
+        FROM PRODUCTO
+        WHERE producto_nombre LIKE ?
+        COLLATE utf8_general_ci
+    `;
+
+    db.query(sql, [`%${nombre}%`], (err, productos) => {
+        if (err) {
+            console.log('Error al consultar:', err);
+            result(err, null);
+        } else {
+            result(null, productos);
+        }
+    });
+};
+
 Producto.findAll = (result) => {
     const sql = `SELECT  producto_id,
     producto_nombre,
@@ -41,7 +67,8 @@ Producto.findAll = (result) => {
     producto_precio,
     producto_stock,
     producto_estado,
-    subcategoria_id FROM PRODUCTO`;
+    subcategoria_id,
+    producto_imagen FROM PRODUCTO`;
     db.query(sql, (err, producto) => {
         if (err) {
             console.log('Error al consultar:', err);
@@ -60,7 +87,8 @@ Producto.findById = (producto_id, result) => {
     producto_precio,
     producto_stock,
     producto_estado,
-    subcategoria_id FROM PRODUCTO WHERE producto_id = ? `;
+    subcategoria_id,
+    producto_imagen FROM PRODUCTO WHERE producto_id = ? `;
 
     db.query(sql, [producto_id], (err, producto) => {
         if (err) {
@@ -106,6 +134,11 @@ Producto.update = async (producto, result) => {
     if (producto.subcategoria_id) {
         fields.push('subcategoria_id = ?');
         values.push(producto.subcategoria_id);
+    }
+
+    if (producto.producto_imagen) {
+        fields.push('producto_imagen = ?');
+        values.push(producto.producto_imagen);
     }
 
     const sql = `UPDATE PRODUCTO SET ${fields.join(', ')} WHERE producto_id = ?`;

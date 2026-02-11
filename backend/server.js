@@ -17,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+
 // Rutas
 app.use('/api/users', usersRoutes);
 app.use('/api/rol',rolRoutes);

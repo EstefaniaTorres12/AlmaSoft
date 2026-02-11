@@ -41,6 +41,25 @@ module.exports = {
         });
     },
 
+
+    filtrarPorNombre(req, res) {
+    const { nombre } = req.query;
+
+    Producto.findByName(nombre, (err, data) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                message: 'Error al filtrar productos'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data
+        });
+    });
+},
+
     getProductoById(req, res) {
         const id = req.params.id;
 

@@ -1,60 +1,167 @@
-import logo from './logo.svg';
 import './App.css';
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+
+/* PÚBLICO */
 import PaginaInicio from './components/pages/PaginaInicio';
-import BarraNavegacion from './components/pages/BarraNavegacion';
-import Carrusel from './components/pages/Carrusel';
-import BarraPrincipal from './components/pages/BarraPrincipal';
-import ContactenosFooter from './components/pages/ContactenosFooter';
-import InisiarSesion from './components/pages/IniciarSesion';
-import Registrarse from './components/pages/Registrarse';
-import ProductosAtaud from './components/pages/ProductosAtaud';
+import ProductosAtaud from './components/productos/ProductosAtaud';
 import AcercaDeNosotros from './components/pages/AcercaDeNosotros';
+import IniciarSesion from './components/pages/IniciarSesion';
+import Registrarse from './components/pages/Registrarse';
+import BarraPrincipal from './components/pages/BarraPrincipal';
+import BarraNavegacion from './components/pages/BarraNavegacion';
+import Urna from './components/productos/Urna';
+import Ataud from './components/productos/Ataud';
+
+/* ADMIN */
 import SideBar from './components/SideBar';
-import BarraCliente from './components/clientes/BarraCliente';
 import Cliente from './components/clientes/Cliente';
+import UsuarioFront from './components/usuarios/UsuarioFront';
+import RutaProtegida from './components/pages/RutaProtegida';
 import AgregarCliente from './components/clientes/AgregarCliente';
+import AgregarUsuario from './components/usuarios/AgregarUsuario';
+import DetallesUsuario from './components/usuarios/DetallesUsuario';
+import EditarUsuario from './components/usuarios/EditarUsuario';
 import EditarCliente from './components/clientes/EditarCliente';
 import DetallesCliente from './components/clientes/DetallesCliente';
-import UsuarioFront from './components/usuarios/UsuarioFront';
-import EditarUsuario from './components/usuarios/EditarUsuario';
-import DetallesUsuario from './components/usuarios/DetallesUsuario';
-import AgregarUsuario from './components/usuarios/AgregarUsuario';
 
 function App() {
+  const location = useLocation();
+  const isLogin = location.pathname === "/pages/IniciarSesion";
+  const isRegister = location.pathname === "/pages/Registrarse";
+
+  const isAuthPage =
+    location.pathname === "/pages/IniciarSesion" ||
+    location.pathname === "/pages/Registrarse";
+
+  const isAdminPage =
+    location.pathname.startsWith("/clientes") ||
+    location.pathname.startsWith("/usuarios");
+
   return (
-  <>
-   <Router>
-    
-    <SideBar />
-    
-    <div style={{ marginLeft: "200px", background:"#D8CFE8",  height: "150vh" }}>
-      <BarraCliente/>
-      
-        <Routes>
-          {/* Rutas de cliente */}
-          <Route path='/clientes/Cliente' element={<Cliente/>}></Route>
-          <Route path='/clientes/AgregarCliente' element={<AgregarCliente/>}></Route>
-          <Route path='/clientes/editar/:id' element={<EditarCliente/>}></Route>
-          <Route path='/clientes/detalles/:id' element={<DetallesCliente/>}></Route>
-          
-          {/* rutas del afiliado*/}
+    <>
+      {/* BARRAS SOLO SI NO ES LOGIN / REGISTER */}
+      {!isAuthPage && !isAdminPage && (
+        <>
+          <BarraPrincipal />
+          <BarraNavegacion />
+        </>
+      )}
+
+      <Routes>
+        {/* PÚBLICAS */}
+        <Route path="/" element={<PaginaInicio />} />
+        <Route path="/productos/Ataud" element={<Ataud />} />
+        <Route path="/productos/Urna" element={<Urna />} />
+        <Route path="/productos/ProductosAtaud" element={<ProductosAtaud />} />
+        <Route path="/pages/AcercaDeNosotros" element={<AcercaDeNosotros />} />
+        <Route path="/pages/IniciarSesion" element={<IniciarSesion />} />
+        <Route path="/pages/Registrarse" element={<Registrarse />} />
+
+        {/* ADMIN */}
+        <Route
+          path="/clientes/Cliente"
+          element={
+            <RutaProtegida>
+              <SideBar />
+              <div style={{ marginLeft: "200px", background: "#D8CFE8", height: "150vh" }}>
+                <Cliente />
+              </div>
+            </RutaProtegida>
+          }
+        />
+
+        <Route
+          path='/clientes/AgregarCliente'
+          element={
+            <RutaProtegida>
+              <SideBar />
+              <div style={{ marginLeft: "200px", background: "#D8CFE8", height: "150vh" }}>
+                <AgregarCliente />
+              </div>
+            </RutaProtegida>
+          }
+        />
+
+        <Route
+          path='/clientes/EditarCliente/:id'
+          element={
+            <RutaProtegida>
+              <SideBar />
+              <div style={{ marginLeft: "200px", background: "#D8CFE8", height: "150vh" }}>
+                <EditarCliente />
+              </div>
+            </RutaProtegida>
+          }
+        />
+
+        <Route
+          path="/usuarios/DetallesCliente/:id"
+          element={
+            <RutaProtegida>
+              <SideBar />
+              <div style={{ marginLeft: "200px", background: "#D8CFE8", height: "150vh" }}>
+                <DetallesCliente />
+              </div>
+            </RutaProtegida>
+          }
+        />
+
+        <Route
+          path="/usuarios"
+          element={
+            <RutaProtegida>
+              <SideBar />
+              <div style={{ marginLeft: "200px", background: "#D8CFE8", height: "150vh" }}>
+                <UsuarioFront />
+              </div>
+            </RutaProtegida>
+          }
+        />
+
+        <Route
+          path="/usuarios/AgregarUsuario"
+          element={
+            <RutaProtegida>
+              <SideBar />
+              <div style={{ marginLeft: "200px", background: "#D8CFE8", height: "150vh" }}>
+                <AgregarUsuario />
+              </div>
+            </RutaProtegida>
+          }
+        />
+
+        <Route
+          path="/usuarios/EditarUsuario/:id"
+          element={
+            <RutaProtegida>
+              <SideBar />
+              <div style={{ marginLeft: "200px", background: "#D8CFE8", height: "150vh" }}>
+                <EditarUsuario />
+              </div>
+            </RutaProtegida>
+          }
+        />
+
+        <Route
+          path="/usuarios/DetallesUsuario/:id"
+          element={
+            <RutaProtegida>
+              <SideBar />
+              <div style={{ marginLeft: "200px", background: "#D8CFE8", height: "150vh" }}>
+                <DetallesUsuario />
+              </div>
+            </RutaProtegida>
+          }
+        />
 
 
 
-          {/*rutas del usuario*/}
-          <Route path='/usuarios/UsuarioFront' element={<UsuarioFront/>}></Route>
-          <Route path='/usuarios/AgregarUsuario' element={<AgregarUsuario/>}></Route>
-          <Route path='/usuarios/EditarUsuario/:id' element={<EditarUsuario/>}></Route>
-          <Route path='/usuarios/detalles/:id' element={<DetallesUsuario/>}></Route>
 
 
 
-          
-        </Routes>
-      </div>
-   </Router>
-   </>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </>
   );
 }
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, Col, Container, Row } from "react-bootstrap";
-import usuario1 from '../../img/usuario.png';
 
 const DetallesUsuario = () => {
 
@@ -62,7 +61,7 @@ const DetallesUsuario = () => {
                         <Card.Header>
                             <h3 className="text-center">{usuario.rol_nombre}</h3>
                         </Card.Header>
-                        <Card.Img variant="top" src={usuario1} />
+                        <Card.Img variant="top" src="/img/usuario.png" />
                         <Card.Body>
                             <Card.Text>
                                 Información adicional del usuario

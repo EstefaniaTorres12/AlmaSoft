@@ -93,7 +93,7 @@ const Cliente = () => {
                                         Acciones
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                        <Dropdown.Item as={Link} to={`/clientes/editar/${cliente.id}`}>
+                                        <Dropdown.Item as={Link} to={`/clientes/EditarCliente/${cliente.id}`}>
                                             Editar
                                         </Dropdown.Item>
                                         <Dropdown.Item as={Link} to={`/clientes/detalles/${cliente.id}`}>
