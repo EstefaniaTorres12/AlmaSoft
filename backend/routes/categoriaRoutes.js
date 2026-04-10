@@ -3,11 +3,11 @@ const router = express.Router();
 const { verifyToken, authorizeRoles } = require('../middlewares/authMiddleware');
 const categoriaController = require('../controllers/categoriaController');
 
-router.post('/crearCategoria', categoriaController.register);
-router.get('/categorias', categoriaController.getAllCategorias);
-router.get('/categoria/:id', categoriaController.getCategoriaById);
-router.put('/categoriaUpdate/:id', categoriaController.getCategoriaUpdate);
-router.delete('/categoriaDelete/:id', categoriaController.getCategoriaDelete);
+router.post('/crear', verifyToken, authorizeRoles(['Administrador', 'Asesor']),categoriaController.register);
+router.get('/',verifyToken, authorizeRoles(['Administrador', 'Asesor']), categoriaController.getAllCategorias);
+router.get('/:id',verifyToken, authorizeRoles(['Administrador', 'Asesor']), categoriaController.getCategoriaById);
+router.put('/update/:id',verifyToken, authorizeRoles(['Administrador', 'Asesor']), categoriaController.getCategoriaUpdate);
+router.delete('/delete/:id',verifyToken, authorizeRoles(['Administrador', 'Asesor']), categoriaController.getCategoriaDelete);
 
 
 module.exports = router;

@@ -8,6 +8,8 @@ const categoriaRoutes = require('./routes/categoriaRoutes');
 const subcategoriaRoutes = require('./routes/subcategoriasRoutes');
 const productoRoutes = require('./routes/productoRoutes');
 const clienteRoutes = require('./routes/clienteRoutes');
+const planFunebreRoutes = require('./routes/planFunebreRoutes');
+
 
 const app = express();
 
@@ -26,6 +28,7 @@ app.use('/api/clientes',clienteRoutes);
 app.use('/api/categorias',categoriaRoutes);
 app.use('/api/subcategorias',subcategoriaRoutes);
 app.use('/api/productos', productoRoutes);
+app.use('/api/planes', planFunebreRoutes);
 
 // Endpoints de prueba
 app.get('/', (req, res) => {

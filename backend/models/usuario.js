@@ -42,24 +42,22 @@ Usuario.create = async (user, result) => {
 
 Usuario.findAll = (result) => {
     const sql = `
-        SELECT 
-            us.usuario_id,
-            r.rol_nombre,
-            us.usuario_documento,
-            us.usuario_primer_nombre,
-            us.usuario_segundo_nombre,
-            us.usuario_primer_apellido,
-            us.usuario_segundo_apellido,
-            us.usuario_correo,
-            us.usuario_direccion,
-            t.telefono
-        FROM usuario AS us
-        INNER JOIN rol_usuario AS ru 
-            ON us.usuario_id = ru.usuario_id
-        INNER JOIN rol AS r 
-            ON ru.rol_id = r.rol_id
-        LEFT JOIN telefono AS t 
-            ON us.usuario_id = t.usuario_id
+       SELECT 
+    us.usuario_id,
+    r.rol_nombre,
+    us.usuario_documento,
+    us.usuario_primer_nombre,
+    us.usuario_segundo_nombre,
+    us.usuario_primer_apellido,
+    us.usuario_segundo_apellido,
+    us.usuario_correo,
+    us.usuario_direccion,
+    GROUP_CONCAT(t.telefono) AS telefonos
+FROM usuario us
+INNER JOIN rol_usuario ru ON us.usuario_id = ru.usuario_id
+INNER JOIN rol r ON ru.rol_id = r.rol_id
+LEFT JOIN telefono t ON us.usuario_id = t.usuario_id
+GROUP BY us.usuario_id;
     `;
     db.query(sql, (err, usuario) => {
         if (err) {
@@ -161,7 +159,7 @@ Usuario.findByDocument = (documento, result) => {
 };
 
 // Actualizar usuario
-Usuario.update = async (usuario, result) => {
+Usuario.update = async (id, usuario, result) => {
     let fields = [];
     let values = [];
 
@@ -170,43 +168,53 @@ Usuario.update = async (usuario, result) => {
         fields.push('usuario_credencial = ?');
         values.push(hash);
     }
+
     if (usuario.usuario_correo) {
         fields.push('usuario_correo = ?');
         values.push(usuario.usuario_correo);
     }
+
     if (usuario.usuario_primer_nombre) {
         fields.push('usuario_primer_nombre = ?');
         values.push(usuario.usuario_primer_nombre);
     }
+
     if (usuario.usuario_segundo_nombre) {
         fields.push('usuario_segundo_nombre = ?');
         values.push(usuario.usuario_segundo_nombre);
     }
+
     if (usuario.usuario_primer_apellido) {
         fields.push('usuario_primer_apellido = ?');
         values.push(usuario.usuario_primer_apellido);
     }
+
     if (usuario.usuario_segundo_apellido) {
         fields.push('usuario_segundo_apellido = ?');
         values.push(usuario.usuario_segundo_apellido);
     }
+
     if (usuario.usuario_direccion) {
         fields.push('usuario_direccion = ?');
         values.push(usuario.usuario_direccion);
     }
 
+    if (fields.length === 0) {
+        return result({ message: "No hay datos para actualizar" }, null);
+    }
+
     const sql = `UPDATE usuario SET ${fields.join(", ")} WHERE usuario_id = ?`;
-    values.push(usuario.usuario_id);
+    values.push(id);
 
     db.query(sql, values, (err, res) => {
         if (err) {
             console.log('Error al actualizar usuario: ', err);
             result(err, null);
         } else {
-            result(null, { usuario_id: usuario.usuario_id, ...usuario });
+            result(null, { usuario_id: id, ...usuario });
         }
     });
-}
+};
 
 // Eliminar usuario
 Usuario.delete = (id, result) => {

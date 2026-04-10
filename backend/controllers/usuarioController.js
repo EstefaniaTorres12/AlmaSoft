@@ -88,12 +88,26 @@ module.exports = {
     },
 
     getUsuarioUpdate(req, res) {
-        const usuario = req.body;
-        Usuario.update(usuario, (err, data) => {
-            if (err) return res.status(501).json({ success: false, message: 'Error al actualizar usuario', error: err });
-            return res.status(200).json({ success: true, message: 'Usuario actualizado', data });
+    const id = req.params.id;
+    const usuario = req.body;
+
+    Usuario.update(id, usuario, (err, data) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                message: 'Error al actualizar usuario',
+                error: err
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Usuario actualizado',
+            data
         });
-    },
+    });
+},
+
 
     getUsuarioDelete(req, res) {
         const id = req.params.id;
@@ -103,4 +117,4 @@ module.exports = {
         });
     }
 
-};
+}
