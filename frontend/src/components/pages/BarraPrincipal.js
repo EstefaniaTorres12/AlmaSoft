@@ -31,7 +31,7 @@ const BarraPrincipal = () => {
                         />
                         <Button variant="dark">Search</Button>
                     </Form>
-                    <Button as={Link} to="/pages/IniciarSesion" className="ms-auto me-2" variant="dark">Iniciar Secion</Button>
+                    <Button as={Link} to="/pages/IniciarSesion" className="ms-auto me-2" variant="dark">Iniciar Sesion</Button>
                     <Button as={Link} to="/pages/Registrarse" variant="dark">Registrarse</Button>
                 </Navbar.Collapse>
 

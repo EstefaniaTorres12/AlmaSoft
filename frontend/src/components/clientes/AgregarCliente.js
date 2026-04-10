@@ -1,169 +1,222 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AgregarCliente = () => {
+
+    const navigate = useNavigate();
+
     const [formData, setData] = useState({
-        DocumentoCliente :'',
-        PrimerNombreCliente:'',
-        SegundoNombreCliente:'',
-        PrimerApellidoCliente:'',
-        SegundoApellidoCliente:'',
-        DireccionCliente:'',
-        TelefonoCliente:'',
-        CorreoCliente:'',
-        FechaNacimiento:'',
-        EdadCliente:''
+        DocumentoCliente: '',
+        PrimerNombreCliente: '',
+        SegundoNombreCliente: '',
+        PrimerApellidoCliente: '',
+        SegundoApellidoCliente: '',
+        DireccionCliente: '',
+        TelefonoCliente: '',
+        CorreoCliente: '',
+        FechaNacimiento: '',
+        EdadCliente: '',
+        CredencialCliente: ''
     });
 
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
-    const handleChange = (e) =>{
+
+    const handleChange = (e) => {
         setData({
             ...formData,
             [e.target.name]: e.target.value
         });
-    }
+    };
 
-
-
-    const enviarDatos= async (e) => {
+    const enviarDatos = async (e) => {
         e.preventDefault();
-        setMostrarAlerta(true);
-        console.log('datos enviados: ',formData);
-    }
 
-    return(
-      <Container className="mt-5" style={{maxWidth: "600px"}}>
-        <Card>
-               <Card.Header>
-                 <h3 className="text-center">Agregar Nuevo Cliente</h3>
-                 {mostrarAlerta &&(
-                    <Alert variant="success" onClose={()=>setMostrarAlerta(false)}dismissible>
-                        Datos enviados  correctamente!!!!......
-                    </Alert>
-                 )}
-               </Card.Header>
-               <Card.Body>
-                <Form onSubmit={enviarDatos}>
-                    <Form.Group className="mb-3" controlId="DocumentoCliente">
-                        <Form.Label>DOCUMENTO</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="DocumentoCliente"
-                            value={formData.DocumentoCliente}
-                            onChange={handleChange}
-                            placeholder="digite el documento del cliente"
-                        />
-                    </Form.Group>
+        try {
+            const response = await fetch("http://localhost:3001/api/clientes", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    documento: formData.DocumentoCliente,
+                    primer_nombre: formData.PrimerNombreCliente,
+                    segundo_nombre: formData.SegundoNombreCliente,
+                    primer_apellido: formData.PrimerApellidoCliente,
+                    segundo_apellido: formData.SegundoApellidoCliente,
+                    direccion: formData.DireccionCliente,
+                    telefono: formData.TelefonoCliente,
+                    correo: formData.CorreoCliente,
+                    fecha_nacimiento: formData.FechaNacimiento,
+                    edad: formData.EdadCliente,
+                    credencial: formData.CredencialCliente
+                })
+            });
 
-                     <Form.Group className="mb-3" controlId="PrimerNombreCliente">
-                        <Form.Label>PRIMER NOMBRE</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="PrimerNombreCliente"
-                            value={formData.PrimerNombreCliente}
-                            onChange={handleChange}
-                            placeholder="digite el nombre del cliente"
-                        />
-                    </Form.Group>
+            const data = await response.json();
 
-                    <Form.Group className="mb-3" controlId="SegundoNombreCliente">
-                        <Form.Label>SEGUNDO NOMBRE</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="SegundoNombreCliente"
-                            value={formData.SegundoNombreCliente}
-                            onChange={handleChange}
-                            placeholder="digite el nombre del cliente"
-                        />
-                    </Form.Group>
+            if (data.success) {
+                setMostrarAlerta(true);
 
-                    <Form.Group className="mb-3" controlId="PrimerApellidoCliente">
-                        <Form.Label>APELLIDO</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="PrimerApellidoCliente"
-                            value={formData.PrimerApellidoCliente}
-                            onChange={handleChange}
-                            placeholder="digite el apellido del cliente"
-                        />
-                    </Form.Group>
+                setTimeout(() => {
+                    navigate("/clientes");
+                }, 1500);
+            } else {
+                alert(data.message);
+            }
 
-                    <Form.Group className="mb-3" controlId="SegundoApellidoCliente">
-                        <Form.Label>APELLIDO</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="SegundoApellidoCliente"
-                            value={formData.SegundoApellidoCliente}
-                            onChange={handleChange}
-                            placeholder="digite el apellido del cliente"
-                        />
-                    </Form.Group>
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error al crear cliente");
+        }
+    };
 
-                    <Form.Group className="mb-3" controlId="DireccionCliente">
-                        <Form.Label>DIRECCION</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="DireccionCliente"
-                            value={formData.DireccionCliente}
-                            onChange={handleChange}
-                            placeholder="digite la direccion del cliente del cliente"
-                        />
-                    </Form.Group>
+    return (
+        <Container className="mt-5" style={{ maxWidth: "600px" }}>
+            <Card>
+                <Card.Header>
+                    <h3 className="text-center">Agregar Nuevo Cliente</h3>
 
-                    <Form.Group className="mb-3" controlId="TelefonoCliente">
-                        <Form.Label>TELEFONO</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="TelefonoCliente"
-                            value={formData.TelefonoCliente}
-                            onChange={handleChange}
-                            placeholder="digite el telefono del cliente del cliente"
-                        />
-                    </Form.Group>
+                    {mostrarAlerta && (
+                        <Alert variant="success" onClose={() => setMostrarAlerta(false)} dismissible>
+                            Datos enviados correctamente
+                        </Alert>
+                    )}
 
-                    <Form.Group className="mb-3" controlId="CorreoCliente">
-                        <Form.Label>CORREO</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="CorreoCliente"
-                            value={formData.CorreoCliente}
-                            onChange={handleChange}
-                            placeholder="digite el Correo del cliente del cliente"
-                        />
-                    </Form.Group>
+                </Card.Header>
 
-                    <Form.Group className="mb-3" controlId="FechaNacimiento">
-                        <Form.Label>FECHA DE NACIMIENTO</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="FechaNacimiento"
-                            value={formData.FechaNacimiento}
-                            onChange={handleChange}
-                            placeholder="Digite la fecha de nacimiento del cliente del cliente"
-                        />
-                    </Form.Group>
+                <Card.Body>
+                    <Form onSubmit={enviarDatos}>
 
-                    <Form.Group className="mb-3" controlId="EdadCliente">
-                        <Form.Label>EDAD</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="EdadCliente"
-                            value={formData.EdadCliente}
-                            onChange={handleChange}
-                            placeholder="Digite la edad del cliente del cliente"
-                        />
-                    </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>DOCUMENTO</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="DocumentoCliente"
+                                value={formData.DocumentoCliente}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
 
-                    <Button style={{background:"#7856AE" ,border:"#7856AE"}}  type="submit">Guardar</Button>
-                    <Button style={{background:"#7856AE" ,border:"#7856AE"}} className="mx-5" type="button">Cancelar</Button>
+                        <Form.Group className="mb-3">
+                            <Form.Label>PRIMER NOMBRE</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="PrimerNombreCliente"
+                                value={formData.PrimerNombreCliente}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
 
-                </Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>SEGUNDO NOMBRE</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="SegundoNombreCliente"
+                                value={formData.SegundoNombreCliente}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>PRIMER APELLIDO</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="PrimerApellidoCliente"
+                                value={formData.PrimerApellidoCliente}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>SEGUNDO APELLIDO</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="SegundoApellidoCliente"
+                                value={formData.SegundoApellidoCliente}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>DIRECCION</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="DireccionCliente"
+                                value={formData.DireccionCliente}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>TELEFONO</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="TelefonoCliente"
+                                value={formData.TelefonoCliente}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>CORREO</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="CorreoCliente"
+                                value={formData.CorreoCliente}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>FECHA DE NACIMIENTO</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="FechaNacimiento"
+                                value={formData.FechaNacimiento}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>EDAD</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="EdadCliente"
+                                value={formData.EdadCliente}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>CONTRASEÑA</Form.Label>
+                            <Form.Control
+                                type="password"
+                                name="CredencialCliente"
+                                value={formData.CredencialCliente}
+                                onChange={handleChange}
+                                placeholder="Digite la contraseña"
+                            />
+                        </Form.Group>
+
+                        <Button type="submit" style={{ background: "#7856AE", border: "#7856AE" }}>
+                            Guardar
+                        </Button>
+
+                        <Button
+                            style={{ background: "#7856AE", border: "#7856AE" }}
+                            className="mx-5"
+                            as={Link}
+                            to="/clientes"
+                        >
+                            Cancelar
+                        </Button>
+
+                    </Form>
                 </Card.Body>
-        </Card>
-      </Container>
-    )
-
-}
+            </Card>
+        </Container>
+    );
+};
 
 export default AgregarCliente;

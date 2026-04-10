@@ -1,87 +1,40 @@
-import React from "react";
-import { Card, Col, Container, Row, Table, Dropdown } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
-
-
-const clientes = [
-    {
-        id: "1",
-        documento: "1025887459",
-        nombres: "Anderson Giovanny",
-        apellidos: "Montoya Rojas",
-        email: "anderson@gmail.com",
-        direccion: "Calle 133",
-        telefono: "3115644111",
-        nacimiento: "12-05-2005",
-        edad: 20,
-        contrato: "C-002",
-        plan: "Plan Clasic",
-        tiempo: "3 años",
-    },
-    {
-        id: "2",
-        documento: "1025887458",
-        nombres: "Gisel Estefania",
-        apellidos: "Torres Corredor",
-        email: "estefaniatorres1216@gamail.com",
-        direccion: "Tv 70 # 67b sur 80",
-        telefono: "3115644133",
-        nacimiento: "12-05-2005",
-        edad: 20,
-        contrato: "C-001",
-        plan: "Plan Premium",
-        tiempo: "2 años",
-    }
-];
-
-
-const afiliados = [
-    {
-        id: "3",
-        documento:"1214558968",
-        primerNombre: "Michael",
-        segundoNombre: "Ferney",
-        primerApellido: "Fonseca",
-        segundoApellido: "Mendoza",
-        email: "maicol@gmail.com",
-        direccion: "Calle 44",
-        telefono: "3115877499"
-    },
-    {
-        id: "4",
-        documento: "1214558968",
-        primerNombre: "Daniel",
-        segundoNombre: "",
-        primerApellido: "Ramirez",
-        segundoApellido: "",
-        email: "Daniel12@gmail.com",
-        direccion: "Calle 55",
-        telefono: "3558896647"
-    },
-    {
-        id: "5",
-        documento: "1214558968",
-        primerNombre: "Maria",
-        segundoNombre: "Daniela",
-        primerApellido: "Blanco",
-        segundoApellido: "Lopez",
-        email: "Maria55@gmail.com",
-        direccion: "Calle 1 sur",
-        telefono: "3333333333"
-    }
-];
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Card, Col, Container, Row } from "react-bootstrap";
 
 const DetallesCliente = () => {
 
     const { id } = useParams();
+    const [cliente, setCliente] = useState(null);
 
+    useEffect(() => {
+        const fetchCliente = async () => {
+            try {
+                const response = await fetch(`http://localhost:3001/api/clientes/id/${id}`, {
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token") 
+                    }
+                });
 
-    const cliente = clientes.find(c => c.id === id);
+                const data = await response.json();
+
+                if (response.ok) {
+                    setCliente(data.data);
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error("Error cargando cliente", error);
+                alert("Error cargando datos del cliente");
+            }
+        };
+
+        fetchCliente();
+    }, [id]);
 
     if (!cliente) {
-        return <h2 className="text-center mt-5">Cliente no encontrado</h2>;
+        return <h2 className="text-center mt-5">Cargando cliente...</h2>;
     }
-
 
     return (
         <Container className="my-5">
@@ -89,80 +42,36 @@ const DetallesCliente = () => {
                 <Col>
                     <Card>
                         <Card.Header>
-                            <h3 className="text-center">Detalles del cliente:</h3>
+                            <h3 className="text-center">Detalles del Cliente</h3>
                         </Card.Header>
                         <Card.Body>
-                            <h6>Documento: {cliente.documento}</h6>
-                            <h6>Nombres: {cliente.nombres}</h6>
-                            <h6>Apellidos: {cliente.apellidos}</h6>
-                            <h6>Teléfono: {cliente.telefono}</h6>
-                            <h6>Dirección: {cliente.direccion}</h6>
-                            <h6>Email: {cliente.email}</h6>
-                            <h6>Fecha de Nacimiento: {cliente.nacimiento}</h6>
-                            <h6>Edad: {cliente.edad}</h6>
+                            <h4>ID: {cliente.id}</h4>
+                            <h4>Documento: {cliente.documento}</h4>
+                            <h4>Nombres: {cliente.primer_nombre} {cliente.segundo_nombre}</h4>
+                            <h4>Apellidos: {cliente.primer_apellido} {cliente.segundo_apellido}</h4>
+                            <h4>Email: {cliente.correo}</h4>
+                            <h4>Dirección: {cliente.direccion}</h4>
+                            <h4>Teléfono: {cliente.telefono}</h4>
+                            <h4>Fecha Nacimiento: {cliente.fecha_nacimiento}</h4>
+                            <h4>Edad: {cliente.edad}</h4>
                         </Card.Body>
                     </Card>
                 </Col>
 
                 <Col>
-                    <Card>
+                    <Card style={{ width: '30rem' }}>
                         <Card.Header>
-                            <h3 className="text-center">Contrato</h3>
+                            <h3 className="text-center">Cliente</h3>
                         </Card.Header>
+                        <Card.Img variant="top" src="/img/usuario.png" />
                         <Card.Body>
-                            <h6>Contrato: {cliente.contrato}</h6>
-                            <h6>Tipo de Plan: {cliente.plan}</h6>
-                            <h6>Tiempo de Afiliación: {cliente.tiempo}</h6>
+                            <Card.Text>
+                                Información detallada del cliente
+                            </Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
-
-            <Table className="my-5" striped bordered hover>
-                <thead className="table-secondary">
-                    <tr >
-                        <td scope="col">Documento</td>
-                        <td scope="col">Primer Nombre</td>
-                        <td scope="col">Segundo Nombre</td>
-                        <td scope="col">Primer Apellido</td>
-                        <td scope="col">Segundo Apellido</td>
-                        <td scope="col">Email</td>
-                        <td scope="col">Direccion</td>
-                        <td scope="col">Telefono</td>
-                        <td scope="col">Acciones</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {afiliados.map((afiliado) => (
-                        <tr key={afiliado.id}>
-                            <td>{afiliado.documento}</td>
-                            <td>{afiliado.primerNombre}</td>
-                            <td>{afiliado.segundoNombre}</td>
-                            <td>{afiliado.primerApellido}</td>
-                            <td>{afiliado.segundoApellido}</td>
-                            <td>{afiliado.email}</td>
-                            <td>{afiliado.direccion}</td>
-                            <td>{afiliado.telefono}</td>
-                            <td>
-                                <Dropdown>
-                                    <Dropdown.Toggle variant="outline-dark" id="dropdown-basic">
-                                        Acciones
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item as={Link} to={`/clientes/editar/${cliente.id}`}>
-                                            Editar
-                                        </Dropdown.Item>
-                                        <Dropdown.Item as={Link} to={`/clientes/detalles/${cliente.id}`}>
-                                            Detalles
-                                        </Dropdown.Item>
-                                        <Dropdown.Item href="#/action-3">Habilitar</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
         </Container>
     );
 }

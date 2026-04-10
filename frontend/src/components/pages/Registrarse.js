@@ -58,7 +58,7 @@ const Registrarse = () => {
 
             const data = await response.json();
 
-            if (response.ok) {
+            if (data.success) {
                 setMostrarAlerta(true);
                 console.log("Usuario creado:", data);
 

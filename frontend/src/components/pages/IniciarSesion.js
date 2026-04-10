@@ -32,7 +32,7 @@ const InisiarSesion = () => {
       });
 
       const data = await response.json();
-      console.log("RESPUESTA BACKEND 👉", data);
+      console.log("RESPUESTA BACKEND ", data);
 
       if (!data.success) {
         setMensajeError(data.message || "Credenciales incorrectas");
