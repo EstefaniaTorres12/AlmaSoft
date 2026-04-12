@@ -2,8 +2,9 @@ const db = require('../config/config');
 const bcrypt = require('bcryptjs');
 const Usuario = {};
 const RolUsuario = require('./rolUsuario');
-const Cliente = require('./cliente');
 const dayjs = require('dayjs');
+console.log("🔥 MODELO USUARIO CARGADO");
+
 
 // Crear usuario
 Usuario.create = async (user, result) => {
@@ -83,10 +84,9 @@ function asignarRolUsuario(user, insertId, result) {
             return result(error, null);
         }
 
-        if (user.rol_id === 3) {
+        if (user.rol_id === 1) {
             datosCliente(user, insertId, result);
         } else {
-            // Si NO es cliente, terminar aquí
             result(null, { usuario_id: insertId, ...user });
         }
     });
@@ -94,21 +94,55 @@ function asignarRolUsuario(user, insertId, result) {
 
 // Crear datos de cliente
 function datosCliente(user, insertId, result) {
-    let hoy = new Date();
-    let años = dayjs(hoy).diff(user.cliente_fecha_nacimiento, "year");
 
-    let cliente = {
-        cliente_id: insertId,
-        cliente_fecha_nacimiento: user.cliente_fecha_nacimiento,
-        cliente_edad: años
-    };
+   let hoy = new Date();
 
-    Cliente.create(cliente, (error, datos) => {
-        if (error) {
-            result(error, null);
-        } else {
-            result(null, { usuario_id: insertId, ...user });
+let años = 0;
+
+if (user.cliente_fecha_nacimiento) {
+    años = dayjs(hoy).diff(user.cliente_fecha_nacimiento, "year");
+}
+
+    // 🔹 INSERT CLIENTE
+    const sqlCliente = `
+        INSERT INTO CLIENTE(
+            cliente_id,
+            cliente_fecha_nacimiento,
+            cliente_edad
+        ) VALUES (?,?,?)
+    `;
+
+    db.query(sqlCliente, [
+        insertId,
+        user.cliente_fecha_nacimiento,
+        años
+    ], (err) => {
+
+        if (err) {
+            console.log("Error creando cliente:", err);
+            return result(err, null);
         }
+
+        // 🔹 INSERT TELEFONO (CORREGIDO ORDEN)
+        const sqlTelefono = `
+            INSERT INTO TELEFONO(
+                telefono,
+                usuario_id
+            ) VALUES (?,?)
+        `;
+
+        db.query(sqlTelefono, [
+            user.usuario_telefono, // 👈 este sí existe
+            insertId
+        ], (err2) => {
+
+            if (err2) {
+                console.log("Error insertando telefono:", err2);
+                return result(err2, null);
+            }
+
+            result(null, { usuario_id: insertId, ...user });
+        });
     });
 }
 
@@ -259,5 +293,9 @@ Usuario.findByEmailWithRole = (email, result) => {
         return result(null, res[0]);
     });
 };
+
+
+// 🔥 DEBUG
+console.log("METODOS DE USUARIO:", Object.keys(Usuario));
 
 module.exports = Usuario;
