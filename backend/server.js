@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
@@ -14,6 +15,20 @@ const planRoutes = require("./routes/planRoutes");
 const servicioPlanRoutes = require("./routes/servicioPlanRoutes");
 const contratoPlanRoutes = require("./routes/contratoPlanRoutes");
 const servicioRoutes = require("./routes/servicioRoutes");
+=======
+const express = require('express');
+const logger = require('morgan');
+const cors = require('cors');
+const usersRoutes = require('./routes/userRoutes');
+const rolRoutes = require('./routes/rolRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
+const categoriaRoutes = require('./routes/categoriaRoutes');
+const subcategoriaRoutes = require('./routes/subcategoriasRoutes');
+const productoRoutes = require('./routes/productoRoutes');
+const clienteRoutes = require('./routes/clienteRoutes');
+const planFunebreRoutes = require('./routes/planFunebreRoutes');
+
+>>>>>>> main
 
 const app = express();
 
@@ -23,7 +38,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+
 // Rutas
+<<<<<<< HEAD
 
 app.use("/api/rol", rolRoutes);
 app.use("/api/usuarios", usuarioRoutes);
@@ -37,6 +54,16 @@ app.use("/api/planes", planRoutes);
 app.use("/api/servicio_plan", servicioPlanRoutes);
 app.use("/api/contrato_plan", contratoPlanRoutes);
 app.use("/api/servicios", servicioRoutes);
+=======
+app.use('/api/users', usersRoutes);
+app.use('/api/rol',rolRoutes);
+app.use('/api/usuarios',usuarioRoutes);
+app.use('/api/clientes',clienteRoutes);
+app.use('/api/categorias',categoriaRoutes);
+app.use('/api/subcategorias',subcategoriaRoutes);
+app.use('/api/productos', productoRoutes);
+app.use('/api/planes', planFunebreRoutes);
+>>>>>>> main
 
 // Endpoints de prueba
 app.get("/", (req, res) => {

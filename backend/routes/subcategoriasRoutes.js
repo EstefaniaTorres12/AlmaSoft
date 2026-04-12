@@ -3,9 +3,9 @@ const router = express.Router();
 const subcategoriaController = require('../controllers/subcategoriaController');
 const { verifyToken, authorizeRoles } = require('../middlewares/authMiddleware');
 
-router.post('/createSubC',subcategoriaController.crearSubcategoria);
-router.put('/updateSubC/:id', subcategoriaController.getSubcategoriaUpdate);
-router.delete('/deleteSubC/:id', subcategoriaController.getSubcategoriaDelete);
+router.post('/createSubC',verifyToken, authorizeRoles(['Administrador', 'Asesor']),subcategoriaController.crearSubcategoria);
+router.put('/updateSubC/:id',verifyToken, authorizeRoles(['Administrador', 'Asesor']), subcategoriaController.getSubcategoriaUpdate);
+router.delete('/deleteSubC/:id',verifyToken, authorizeRoles(['Administrador', 'Asesor']), subcategoriaController.getSubcategoriaDelete);
 
 
 //rutas puplicasssss

@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Carousel } from "react-bootstrap";
-import img1 from '../../img/1.png';
-import Promocion from '../../img/Promocion.png';
+
 
 const Carrusel = () => {
     return (
@@ -10,7 +9,7 @@ const Carrusel = () => {
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
-                        src={img1}
+                        src="/img/1.png"
                         alt="First slide"
                         style={{ height: "400px", objectFit: "cover" }}
                     />
@@ -22,7 +21,7 @@ const Carrusel = () => {
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
-                        src={img1}
+                        src="/img/1.png"
                         alt="First slide"
                         style={{ height: "400px", objectFit: "cover" }}
                     />
@@ -34,7 +33,7 @@ const Carrusel = () => {
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
-                        src={img1}
+                        src="/img/1.png"
                         alt="First slide"
                         style={{ height: "400px", objectFit: "cover" }}
                     />

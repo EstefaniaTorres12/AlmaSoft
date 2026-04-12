@@ -1,56 +1,54 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { Container, Card, Form, Button, Alert } from "react-bootstrap";
-import { useParams } from "react-router-dom";
-
-const clientes = [
-    {
-        id: "1",
-        documento: "1025887459",
-        primerNombre: "Anderson",
-        segundoNombre: "Giovanny",
-        primerApellido: "Montoya",
-        segundoApellido: "Rojas",
-        correo: "anderson@gmail.com",
-        direccion: "Calle 133",
-        telefono: "3115644111",
-        fechaNacimiento: "12-05-2005",
-        edad: 20
-    },
-    {
-        id: "2",
-        documento: "1025887458",
-        primerNombre: "Gisel",
-        segundoNombre: "Estefania",
-        primerApellido: "Torres",
-        segundoApellido: "Corredor",
-        correo: "estefaniatorres1216@gmail.com",
-        direccion: "Tv 70 # 67b sur 80",
-        telefono: "3115644133",
-        fechaNacimiento: "12-05-2005",
-        edad: 20
-    }
-];
+import React, { useState, useEffect } from "react";
+import { Container, Card, Form, Button, Spinner } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
 
 const EditarCliente = () => {
 
     const { id } = useParams();
+    const navigate = useNavigate();
+
     const [cliente, setCliente] = useState({
-        primerNombre: "",
-        segundoNombre: "",
-        primerApellido: "",
-        segundoApellido: "",
-        email: "",
+        primer_nombre: "",
+        segundo_nombre: "",
+        primer_apellido: "",
+        segundo_apellido: "",
+        correo: "",
         direccion: "",
         telefono: ""
     });
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
-        const clienteEncontrado = clientes.find(c => c.id === id);
-        if (clienteEncontrado) {
-            setCliente(clienteEncontrado);
-        }
+
+        const fetchCliente = async () => {
+            try {
+                const response = await fetch(`http://localhost:3001/api/clientes/id/${id}`, {
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data?.data) {
+                    setCliente(data.data);
+                } else {
+                    alert(data.message || "Error al obtener el cliente");
+                }
+
+            } catch (err) {
+                console.log(err);
+                alert("Error al conectar con el backend");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (id) fetchCliente();
+
     }, [id]);
+
 
     const handleChange = (e) => {
         setCliente({
@@ -59,28 +57,66 @@ const EditarCliente = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Cliente actualizado:", cliente);
+
+        try {
+            const response = await fetch(`http://localhost:3001/api/clientes/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify(cliente)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Cliente actualizado correctamente");
+
+                setTimeout(() => {
+                    navigate("/clientes", { replace: true });
+                }, 200);
+
+            } else {
+                alert(data.message || "Error al actualizar cliente");
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert("Error al actualizar cliente");
+        }
     };
+
+
+    if (loading) {
+        return (
+            <div className="text-center mt-5">
+                <Spinner animation="border" />
+                <p>Cargando cliente...</p>
+            </div>
+        );
+    }
 
     return (
         <Container className="mt-5" style={{ maxWidth: "600px" }}>
-            <Card>
+            <Card className="shadow">
                 <Card.Header>
                     <h3 className="text-center">Editar Cliente</h3>
-                    
                 </Card.Header>
+
                 <Card.Body>
                     <Form onSubmit={handleSubmit}>
+
                         <Form.Group className="mb-3">
                             <Form.Label>Primer Nombre</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="primerNombre"
-                                value={cliente.primerNombre}
+                                name="primer_nombre"
+                                value={cliente.primer_nombre || ""}
                                 onChange={handleChange}
-                                placeholder="Digite el primer nombre"
                             />
                         </Form.Group>
 
@@ -88,10 +124,9 @@ const EditarCliente = () => {
                             <Form.Label>Segundo Nombre</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="segundoNombre"
-                                value={cliente.segundoNombre}
+                                name="segundo_nombre"
+                                value={cliente.segundo_nombre || ""}
                                 onChange={handleChange}
-                                placeholder="Digite el segundo nombre"
                             />
                         </Form.Group>
 
@@ -99,10 +134,9 @@ const EditarCliente = () => {
                             <Form.Label>Primer Apellido</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="primerApellido"
-                                value={cliente.primerApellido}
+                                name="primer_apellido"
+                                value={cliente.primer_apellido || ""}
                                 onChange={handleChange}
-                                placeholder="Digite el primer apellido"
                             />
                         </Form.Group>
 
@@ -110,10 +144,9 @@ const EditarCliente = () => {
                             <Form.Label>Segundo Apellido</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="segundoApellido"
-                                value={cliente.segundoApellido}
+                                name="segundo_apellido"
+                                value={cliente.segundo_apellido || ""}
                                 onChange={handleChange}
-                                placeholder="Digite el segundo apellido"
                             />
                         </Form.Group>
 
@@ -122,9 +155,8 @@ const EditarCliente = () => {
                             <Form.Control
                                 type="text"
                                 name="telefono"
-                                value={cliente.telefono}
+                                value={cliente.telefono || ""}
                                 onChange={handleChange}
-                                placeholder="Digite el teléfono"
                             />
                         </Form.Group>
 
@@ -133,9 +165,8 @@ const EditarCliente = () => {
                             <Form.Control
                                 type="text"
                                 name="direccion"
-                                value={cliente.direccion}
+                                value={cliente.direccion || ""}
                                 onChange={handleChange}
-                                placeholder="Digite la dirección"
                             />
                         </Form.Group>
 
@@ -144,23 +175,32 @@ const EditarCliente = () => {
                             <Form.Control
                                 type="email"
                                 name="correo"
-                                value={cliente.correo}
+                                value={cliente.correo || ""}
                                 onChange={handleChange}
-                                placeholder="Digite el correo"
                             />
                         </Form.Group>
 
-                        <Button style={{ background: "#7856AE", border: "#7856AE" }} type="submit">
-                            Guardar
-                        </Button>
-                        <Button style={{ background: "#7856AE", border: "#7856AE" }} className="mx-5" type="button">
-                            Cancelar
-                        </Button>
+                        <div className="d-flex justify-content-between">
+                            <Button
+                                style={{ background: "#7856AE", border: "#7856AE" }}
+                                type="submit"
+                            >
+                                Guardar
+                            </Button>
+
+                            <Button
+                                variant="secondary"
+                                onClick={() => navigate("/clientes")}
+                            >
+                                Cancelar
+                            </Button>
+                        </div>
+
                     </Form>
                 </Card.Body>
             </Card>
         </Container>
     );
-}
+};
 
 export default EditarCliente;

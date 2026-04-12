@@ -2,8 +2,9 @@ const db = require('../config/config');
 const bcrypt = require('bcryptjs');
 const Usuario = {};
 const RolUsuario = require('./rolUsuario');
-const Cliente = require('./cliente');
 const dayjs = require('dayjs');
+console.log("🔥 MODELO USUARIO CARGADO");
+
 
 // Crear usuario
 Usuario.create = async (user, result) => {
@@ -41,17 +42,25 @@ Usuario.create = async (user, result) => {
 };
 
 Usuario.findAll = (result) => {
-    const sql = `SELECT usuario_id,
-                        usuario_primer_nombre,
-                        usuario_segundo_nombre,
-                        usuario_primer_apellido,
-                        usuario_segundo_apellido,
-                        usuario_documento,
-                        usuario_correo,
-                        usuario_direccion,
-                        usuario_credencial 
-                 FROM USUARIO`;
-    db.query(sql,(err, usuario)=>{
+    const sql = `
+       SELECT 
+    us.usuario_id,
+    r.rol_nombre,
+    us.usuario_documento,
+    us.usuario_primer_nombre,
+    us.usuario_segundo_nombre,
+    us.usuario_primer_apellido,
+    us.usuario_segundo_apellido,
+    us.usuario_correo,
+    us.usuario_direccion,
+    GROUP_CONCAT(t.telefono) AS telefonos
+FROM usuario us
+INNER JOIN rol_usuario ru ON us.usuario_id = ru.usuario_id
+INNER JOIN rol r ON ru.rol_id = r.rol_id
+LEFT JOIN telefono t ON us.usuario_id = t.usuario_id
+GROUP BY us.usuario_id;
+    `;
+    db.query(sql, (err, usuario) => {
         if (err) {
             console.log('Error al consultar usuarios:', err);
             result(err, null);
@@ -75,10 +84,9 @@ function asignarRolUsuario(user, insertId, result) {
             return result(error, null);
         }
 
-        if (user.rol_id === 3) {
+        if (user.rol_id === 1) {
             datosCliente(user, insertId, result);
         } else {
-            // Si NO es cliente, terminar aquí
             result(null, { usuario_id: insertId, ...user });
         }
     });
@@ -86,21 +94,55 @@ function asignarRolUsuario(user, insertId, result) {
 
 // Crear datos de cliente
 function datosCliente(user, insertId, result) {
-    let hoy = new Date();
-    let años = dayjs(hoy).diff(user.cliente_fecha_nacimiento, "year");
 
-    let cliente = {
-        cliente_id: insertId,
-        cliente_fecha_nacimiento: user.cliente_fecha_nacimiento,
-        cliente_edad: años
-    };
+   let hoy = new Date();
 
-    Cliente.create(cliente, (error, datos) => {
-        if (error) {
-            result(error, null);
-        } else {
-            result(null, { usuario_id: insertId, ...user });
+let años = 0;
+
+if (user.cliente_fecha_nacimiento) {
+    años = dayjs(hoy).diff(user.cliente_fecha_nacimiento, "year");
+}
+
+    // 🔹 INSERT CLIENTE
+    const sqlCliente = `
+        INSERT INTO CLIENTE(
+            cliente_id,
+            cliente_fecha_nacimiento,
+            cliente_edad
+        ) VALUES (?,?,?)
+    `;
+
+    db.query(sqlCliente, [
+        insertId,
+        user.cliente_fecha_nacimiento,
+        años
+    ], (err) => {
+
+        if (err) {
+            console.log("Error creando cliente:", err);
+            return result(err, null);
         }
+
+        // 🔹 INSERT TELEFONO (CORREGIDO ORDEN)
+        const sqlTelefono = `
+            INSERT INTO TELEFONO(
+                telefono,
+                usuario_id
+            ) VALUES (?,?)
+        `;
+
+        db.query(sqlTelefono, [
+            user.usuario_telefono, // 👈 este sí existe
+            insertId
+        ], (err2) => {
+
+            if (err2) {
+                console.log("Error insertando telefono:", err2);
+                return result(err2, null);
+            }
+
+            result(null, { usuario_id: insertId, ...user });
+        });
     });
 }
 
@@ -151,7 +193,7 @@ Usuario.findByDocument = (documento, result) => {
 };
 
 // Actualizar usuario
-Usuario.update = async (usuario, result) => {
+Usuario.update = async (id, usuario, result) => {
     let fields = [];
     let values = [];
 
@@ -160,43 +202,53 @@ Usuario.update = async (usuario, result) => {
         fields.push('usuario_credencial = ?');
         values.push(hash);
     }
+
     if (usuario.usuario_correo) {
         fields.push('usuario_correo = ?');
         values.push(usuario.usuario_correo);
     }
+
     if (usuario.usuario_primer_nombre) {
         fields.push('usuario_primer_nombre = ?');
         values.push(usuario.usuario_primer_nombre);
     }
+
     if (usuario.usuario_segundo_nombre) {
         fields.push('usuario_segundo_nombre = ?');
         values.push(usuario.usuario_segundo_nombre);
     }
+
     if (usuario.usuario_primer_apellido) {
         fields.push('usuario_primer_apellido = ?');
         values.push(usuario.usuario_primer_apellido);
     }
+
     if (usuario.usuario_segundo_apellido) {
         fields.push('usuario_segundo_apellido = ?');
         values.push(usuario.usuario_segundo_apellido);
     }
+
     if (usuario.usuario_direccion) {
         fields.push('usuario_direccion = ?');
         values.push(usuario.usuario_direccion);
     }
 
+    if (fields.length === 0) {
+        return result({ message: "No hay datos para actualizar" }, null);
+    }
+
     const sql = `UPDATE usuario SET ${fields.join(", ")} WHERE usuario_id = ?`;
-    values.push(usuario.usuario_id);
+    values.push(id);
 
     db.query(sql, values, (err, res) => {
         if (err) {
             console.log('Error al actualizar usuario: ', err);
             result(err, null);
         } else {
-            result(null, { usuario_id: usuario.usuario_id, ...usuario });
+            result(null, { usuario_id: id, ...usuario });
         }
     });
-}
+};
 
 // Eliminar usuario
 Usuario.delete = (id, result) => {
@@ -241,5 +293,9 @@ Usuario.findByEmailWithRole = (email, result) => {
         return result(null, res[0]);
     });
 };
+
+
+// 🔥 DEBUG
+console.log("METODOS DE USUARIO:", Object.keys(Usuario));
 
 module.exports = Usuario;

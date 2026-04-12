@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Button, Form, Card } from "react-bootstrap";
-import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { authFetch } from "../../utils/authFetch";
 
 const EditarUsuario = () => {
-
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -20,11 +19,12 @@ const EditarUsuario = () => {
         credencial: ""
     });
 
-
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/usuarios/id/${id}`);
+                const response = await authFetch(
+                    `http://localhost:3001/api/usuarios/id/${id}`
+                );
                 const data = await response.json();
 
                 if (response.ok) {
@@ -73,17 +73,19 @@ const EditarUsuario = () => {
         };
 
         try {
-            const response = await fetch(`http://localhost:3001/api/usuarios/update/${id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(usuarioActualizado)
-            });
+            const response = await authFetch(
+                `http://localhost:3001/api/usuarios/update/${id}`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify(usuarioActualizado)
+                }
+            );
 
             const data = await response.json();
 
             if (response.ok) {
                 alert("Usuario actualizado correctamente");
-                navigate("/usuarios/UsuarioFront");
+                navigate("/usuarios");
             } else {
                 alert(data.message);
             }
@@ -101,11 +103,9 @@ const EditarUsuario = () => {
 
                 <Card.Body>
                     <Form onSubmit={handleSubmit}>
-
                         <Form.Group className="mb-3">
                             <Form.Label>Primer Nombre</Form.Label>
                             <Form.Control
-                                type="text"
                                 name="primerNombre"
                                 value={usuario.primerNombre}
                                 onChange={handleChange}
@@ -115,7 +115,6 @@ const EditarUsuario = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>Segundo Nombre</Form.Label>
                             <Form.Control
-                                type="text"
                                 name="segundoNombre"
                                 value={usuario.segundoNombre}
                                 onChange={handleChange}
@@ -125,7 +124,6 @@ const EditarUsuario = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>Primer Apellido</Form.Label>
                             <Form.Control
-                                type="text"
                                 name="primerApellido"
                                 value={usuario.primerApellido}
                                 onChange={handleChange}
@@ -135,7 +133,6 @@ const EditarUsuario = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>Segundo Apellido</Form.Label>
                             <Form.Control
-                                type="text"
                                 name="segundoApellido"
                                 value={usuario.segundoApellido}
                                 onChange={handleChange}
@@ -145,7 +142,6 @@ const EditarUsuario = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>Teléfono</Form.Label>
                             <Form.Control
-                                type="text"
                                 name="telefono"
                                 value={usuario.telefono}
                                 onChange={handleChange}
@@ -155,7 +151,6 @@ const EditarUsuario = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>Dirección</Form.Label>
                             <Form.Control
-                                type="text"
                                 name="direccion"
                                 value={usuario.direccion}
                                 onChange={handleChange}
@@ -176,7 +171,7 @@ const EditarUsuario = () => {
                             Guardar
                         </Button>
 
-                        <Link to="/usuarios/UsuarioFront">
+                        <Link to="/usuarios">
                             <Button className="mx-3" style={{ background: "#7856AE", border: "#7856AE" }}>
                                 Cancelar
                             </Button>
@@ -187,5 +182,4 @@ const EditarUsuario = () => {
         </Container>
     );
 };
-
 export default EditarUsuario;

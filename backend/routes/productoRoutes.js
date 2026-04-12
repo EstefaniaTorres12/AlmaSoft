@@ -11,5 +11,6 @@ router.delete('/deleteProducto/:id',verifyToken,authorizeRoles(['Administrador']
 //rutas publicas
 router.get('/productosAll', productoController.getAllProductos);
 router.get('/producto/:id',productoController.getProductoById);
+router.get('/filtrar', productoController.filtrarPorNombre);
 
 module.exports = router;

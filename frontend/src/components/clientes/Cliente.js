@@ -1,137 +1,182 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Table, Row, Col, Button, Form, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-const clientes = [
-    {
-        id: 1,
-        documento: "1025887459",
-        primerNombre: "Anderson",
-        segundoNombre: "Giovanny",
-        primerApellido: "Montoya",
-        segundoApellido: "Rojas",
-        email: "anderson@gmail.com",
-        direccion: "Calle 133",
-        telefono: "3115644111",
-        fechaNacimiento: "12-05-2005",
-        edad: 20
-    },
-    {
-        id: 2,
-        documento: "1025887458",
-        primerNombre: "Gisel",
-        segundoNombre: "Estefania",
-        primerApellido: "Torres",
-        segundoApellido: "Corredor",
-        email: "estefaniatorres1216@gmail.com",
-        direccion: "Tv 70 # 67b sur 80",
-        telefono: "3115644133",
-        fechaNacimiento: "12-05-2005",
-        edad: 20
-    }
-];
-
-
-
 const Cliente = () => {
+
+    const [clientes, setClientes] = useState([]);
+    const [busqueda, setBusqueda] = useState("");
+
+    useEffect(() => {
+        const fetchClientes = async () => {
+            try {
+                const response = await fetch("http://localhost:3001/api/clientes/clientesAll", {
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    setClientes(data?.data || []);
+                } else {
+                    alert(data.message || "Error al obtener los clientes");
+                }
+            } catch (err) {
+                console.log(err);
+                alert("Error al conectar con el backend");
+            }
+        };
+
+        fetchClientes();
+    }, []);
+
+
+    const clientesFiltrados = clientes.filter(c =>
+        String(c.documento || "").includes(busqueda) ||
+        (c.primer_nombre || "").toLowerCase().includes(busqueda.toLowerCase()) ||
+        (c.primer_apellido || "").toLowerCase().includes(busqueda.toLowerCase())
+    );
+
     return (
         <Container className="my-5">
+
+            {/* HEADER */}
             <Row className="mb-4">
                 <Col>
                     <h2>Lista de clientes</h2>
                 </Col>
-                <Col className="text-end" >
-                    <Button as={Link} to="/clientes/AgregarCliente" style={{ background: "#7856AE", border: "#7856AE" }}>
+                <Col className="text-end">
+                    <Button
+                        as={Link}
+                        to="/clientes/AgregarCliente"
+                        style={{ background: "#7856AE", border: "#7856AE" }}
+                    >
                         Agregar Cliente
                     </Button>
                 </Col>
             </Row>
-            <Form className="mb-3">
+
+            {/* BUSCADOR */}
+            <Form className="mb-3" onSubmit={(e) => e.preventDefault()}>
                 <Row>
                     <Col md={8}>
                         <Form.Control
                             type="text"
-                            placeholder="Buscar por documento de indentidad......"
+                            placeholder="Buscar por documento..."
+                            value={busqueda}
+                            onChange={(e) => setBusqueda(e.target.value)}
                         />
                     </Col>
-                    <Col md={4} >
-                        <Button type="submit" className="me-4" variant="outline-dark" >Buscar</Button>
-                        <Button type="button" variant="outline-dark">Mostrar Todos</Button>
+                    <Col md={4}>
+                        <Button className="me-2" variant="outline-dark">
+                            Buscar
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline-dark"
+                            onClick={() => setBusqueda("")}
+                        >
+                            Mostrar Todos
+                        </Button>
                     </Col>
                 </Row>
             </Form>
-            <Table striped bordered hover >
-                <thead className="table-secondary">
-                    <tr >
-                        <td scope="col">Documento</td>
-                        <td scope="col">Primer Nombre</td>
-                        <td scope="col">Segundo Nombre</td>
-                        <td scope="col">Primer Apellido</td>
-                        <td scope="col">Segundo Apellido</td>
-                        <td scope="col">Email</td>
-                        <td scope="col">Direccion</td>
-                        <td scope="col">Telefono</td>
-                        <td scope="col">Fecha de Nacimiento</td>
-                        <td scope="col">Edad</td>
-                        <td scope="col">Acciones</td>
-                    </tr>
-                </thead>
 
-                <tbody>
-                    {clientes.map((cliente) => (
-                        <tr key={cliente.id}>
-                            <td>{cliente.documento}</td>
-                            <td>{cliente.primerNombre}</td>
-                            <td>{cliente.segundoNombre}</td>
-                            <td>{cliente.primerApellido}</td>
-                            <td>{cliente.segundoApellido}</td>
-                            <td>{cliente.email}</td>
-                            <td>{cliente.direccion}</td>
-                            <td>{cliente.telefono}</td>
-                            <td>{cliente.fechaNacimiento}</td>
-                            <td>{cliente.edad}</td>
-                            <td>
-                                <Dropdown>
-                                    <Dropdown.Toggle variant="outline-dark" id="dropdown-basic">
-                                        Acciones
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item as={Link} to={`/clientes/editar/${cliente.id}`}>
-                                            Editar
-                                        </Dropdown.Item>
-                                        <Dropdown.Item as={Link} to={`/clientes/detalles/${cliente.id}`}>
-                                            Detalles
-                                        </Dropdown.Item>
-                                        <Dropdown.Item href="#/action-3">Habilitar</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </td>
+            {/* TABLA */}
+            <div className="table-responsive">
+                <Table striped bordered hover>
+                    <thead className="table-secondary text-center">
+                        <tr>
+                            <th>Documento</th>
+                            <th>Primer Nombre</th>
+                            <th>Segundo Nombre</th>
+                            <th>Primer Apellido</th>
+                            <th>Segundo Apellido</th>
+                            <th>Email</th>
+                            <th>Dirección</th>
+                            <th>Teléfono</th>
+                            <th>Fecha Nacimiento</th>
+                            <th>Edad</th>
+                            <th>Acciones</th>
                         </tr>
-                    ))}
-                </tbody>
+                    </thead>
 
+                    <tbody>
+                        {clientesFiltrados.length === 0 ? (
+                            <tr>
+                                <td colSpan="11" className="text-center">
+                                    No hay clientes
+                                </td>
+                            </tr>
+                        ) : (
+                            clientesFiltrados.map((cliente) => (
+                                <tr key={cliente.id}>
+                                    <td>{cliente.documento}</td>
+                                    <td>{cliente.primer_nombre}</td>
+                                    <td>{cliente.segundo_nombre || "-"}</td>
+                                    <td>{cliente.primer_apellido}</td>
+                                    <td>{cliente.segundo_apellido || "-"}</td>
+                                    <td>{cliente.correo}</td>
+                                    <td>{cliente.direccion}</td>
+                                    <td>{cliente.telefono}</td>
+                                    <td>{cliente.fecha_nacimiento || "-"}</td>
+                                    <td>{cliente.edad || "-"}</td>
 
-            </Table>
+                                    <td className="text-center">
+                                        <Dropdown>
+                                            <Dropdown.Toggle variant="outline-dark">
+                                                Acciones
+                                            </Dropdown.Toggle>
 
-            <nav aria-label="page navigation">
-                <ul class=" pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link">ATRAS</a>
+                                            <Dropdown.Menu>
+
+                                                <Dropdown.Item
+                                                    as={Link}
+                                                    to={`/clientes/EditarCliente/${cliente.id}`}
+                                                >
+                                                    Editar
+                                                </Dropdown.Item>
+
+                                                <Dropdown.Item
+                                                    as={Link}
+                                                    to={`/usuarios/DetallesCliente/${cliente.id}`}
+                                                >
+                                                    Detalles
+                                                </Dropdown.Item>
+
+                                                <Dropdown.Item>
+                                                    Habilitar
+                                                </Dropdown.Item>
+
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </Table>
+            </div>
+
+            {/* PAGINACIÓN (corregido className) */}
+            <nav>
+                <ul className="pagination justify-content-center">
+                    <li className="page-item disabled">
+                        <span className="page-link">ATRÁS</span>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">SIGUIENTE</a>
+                    <li className="page-item"><span className="page-link">1</span></li>
+                    <li className="page-item"><span className="page-link">2</span></li>
+                    <li className="page-item"><span className="page-link">3</span></li>
+                    <li className="page-item">
+                        <span className="page-link">SIGUIENTE</span>
                     </li>
                 </ul>
             </nav>
 
-
-
         </Container>
     );
-
-}
+};
 
 export default Cliente;

@@ -1,18 +1,21 @@
 import React from "react";
 import { Container, Form, Card, Button, Alert, } from "react-bootstrap";
 import { useState } from "react";
-import Fondo from '../../img/3302177.jpg';
-
 
 const Registrarse = () => {
 
     const [formData, setData] = useState({
         DocumentoCliente: '',
-        NombreCliente: '',
-        ApellidoCliente: '',
+        PrimerNombreCliente: '',
+        SegundoNombreCliente: '',
+        PrimerApellidoCliente: '',
+        SegundoApellidoCliente: '',
         DireccionCliente: '',
         TelefonoCliente: '',
-        CorreoCliente: ''
+        CorreoCliente: '',
+        Credencial: '',
+        FechaNacimiento: '',
+        EdadCliente: ''
     });
 
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
@@ -23,25 +26,76 @@ const Registrarse = () => {
         });
     }
 
-
-
     const enviarDatos = async (e) => {
         e.preventDefault();
-        setMostrarAlerta(true);
-        console.log('datos enviados: ', formData);
-    }
+
+        const usuario = {
+            rol_id: 3, // cliente
+            usuario_documento: formData.DocumentoCliente,
+            usuario_primer_nombre: formData.PrimerNombreCliente,
+            usuario_segundo_nombre: formData.SegundoNombreCliente,
+            usuario_primer_apellido: formData.PrimerApellidoCliente,
+            usuario_segundo_apellido: formData.SegundoApellidoCliente,
+            usuario_direccion: formData.DireccionCliente,
+            usuario_telefono: formData.TelefonoCliente,
+            usuario_correo: formData.CorreoCliente.toLowerCase(),
+            usuario_credencial: formData.Credencial,
+            cliente_fecha_nacimiento: formData.FechaNacimiento || null,
+            cliente_edad: formData.EdadCliente
+        };
+
+        try {
+            const response = await fetch(
+                "http://localhost:3001/api/usuarios/usuarioCreate",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(usuario)
+                }
+            );
+
+            const data = await response.json();
+
+            if (data.success) {
+                setMostrarAlerta(true);
+                console.log("Usuario creado:", data);
+
+                setData({
+                    DocumentoCliente: '',
+                    PrimerNombreCliente: '',
+                    SegundoNombreCliente: '',
+                    PrimerApellidoCliente: '',
+                    SegundoApellidoCliente: '',
+                    DireccionCliente: '',
+                    TelefonoCliente: '',
+                    CorreoCliente: '',
+                    Credencial: '',
+                    FechaNacimiento: '',
+                    EdadCliente: ''
+                });
+            } else {
+                alert("Error: " + data.message);
+            }
+
+        } catch (error) {
+            console.error(" Error de conexión:", error);
+            alert("Error de conexión con el servidor");
+        }
+    };
 
     return (
         <div
             style={{
                 minHeight: "100vh",
-                backgroundImage: `url(${Fondo})`,
+                backgroundImage: `url(/img/3302177.jpg)`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
-                display: "flex",              
-                justifyContent: "center",     
-                alignItems: "center"          
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
             }}
         >
             <Container className=" align-items-center" style={{ maxWidth: "600px" }}>
@@ -63,29 +117,51 @@ const Registrarse = () => {
                                     name="DocumentoCliente"
                                     value={formData.DocumentoCliente}
                                     onChange={handleChange}
-                                    placeholder="digite el documento"
+                                    placeholder="digite el documento del cliente"
                                 />
                             </Form.Group>
 
-                            <Form.Group className="mb-3" controlId="NombreCliente">
-                                <Form.Label>NOMBRE</Form.Label>
+                            <Form.Group className="mb-3" controlId="PrimerNombreCliente">
+                                <Form.Label>PRIMER NOMBRE</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="NombreCliente"
-                                    value={formData.NombreCliente}
+                                    name="PrimerNombreCliente"
+                                    value={formData.PrimerNombreCliente}
                                     onChange={handleChange}
-                                    placeholder="digite el nombre "
+                                    placeholder="digite el nombre del cliente"
                                 />
                             </Form.Group>
 
-                            <Form.Group className="mb-3" controlId="ApellidoCliente">
-                                <Form.Label>APELLIDO</Form.Label>
+                            <Form.Group className="mb-3" controlId="SegundoNombreCliente">
+                                <Form.Label>SEGUNDO NOMBRE</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="ApellidoCliente"
-                                    value={formData.ApellidoCliente}
+                                    name="SegundoNombreCliente"
+                                    value={formData.SegundoNombreCliente}
                                     onChange={handleChange}
-                                    placeholder="digite el apellido "
+                                    placeholder="digite el nombre del cliente"
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3" controlId="PrimerApellidoCliente">
+                                <Form.Label>PRIMER APELLIDO</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="PrimerApellidoCliente"
+                                    value={formData.PrimerApellidoCliente}
+                                    onChange={handleChange}
+                                    placeholder="digite el apellido del cliente"
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3" controlId="SegundoApellidoCliente">
+                                <Form.Label>SEGUNDO APELLIDO</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="SegundoApellidoCliente"
+                                    value={formData.SegundoApellidoCliente}
+                                    onChange={handleChange}
+                                    placeholder="digite el apellido del cliente"
                                 />
                             </Form.Group>
 
@@ -96,7 +172,7 @@ const Registrarse = () => {
                                     name="DireccionCliente"
                                     value={formData.DireccionCliente}
                                     onChange={handleChange}
-                                    placeholder="digite la direccion  "
+                                    placeholder="digite la direccion del cliente del cliente"
                                 />
                             </Form.Group>
 
@@ -107,7 +183,7 @@ const Registrarse = () => {
                                     name="TelefonoCliente"
                                     value={formData.TelefonoCliente}
                                     onChange={handleChange}
-                                    placeholder="digite el telefono  "
+                                    placeholder="digite el telefono del cliente del cliente"
                                 />
                             </Form.Group>
 
@@ -118,12 +194,45 @@ const Registrarse = () => {
                                     name="CorreoCliente"
                                     value={formData.CorreoCliente}
                                     onChange={handleChange}
-                                    placeholder="digite el Correo  "
+                                    placeholder="digite el Correo del cliente del cliente"
                                 />
                             </Form.Group>
 
-                            <Button style={{background:"#7856AE"}} type="submit">Guardar</Button>
-                            <Button style={{background:"#7856AE"}} type="button">Cancelar</Button>
+                            <Form.Group className="mb-3" controlId="Credencial">
+                                <Form.Label>CONTRASEÑA</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="Credencial"
+                                    value={formData.Credencial}
+                                    onChange={handleChange}
+                                    placeholder="digite el Correo del cliente del cliente"
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3" controlId="FechaNacimiento">
+                                <Form.Label>FECHA DE NACIMIENTO</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="FechaNacimiento"
+                                    value={formData.FechaNacimiento}
+                                    onChange={handleChange}
+                                    placeholder="Digite la fecha de nacimiento del cliente del cliente"
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3" controlId="EdadCliente">
+                                <Form.Label>EDAD</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="EdadCliente"
+                                    value={formData.EdadCliente}
+                                    onChange={handleChange}
+                                    placeholder="Digite la edad del cliente del cliente"
+                                />
+                            </Form.Group>
+
+                            <Button style={{ background: "#7856AE", border: "#7856AE" }} type="submit">Guardar</Button>
+                            <Button style={{ background: "#7856AE", border: "#7856AE" }} className="mx-5" type="button">Cancelar</Button>
 
                         </Form>
                     </Card.Body>

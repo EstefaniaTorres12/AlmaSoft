@@ -24,17 +24,20 @@ const SideBar =()=>{
         <Button as={Link} to="/clientes/Cliente" className=" m-3" variant="light">
           Clientes
         </Button>
-        <Button as={Link} to="/usuarios/UsuarioFront" className=" m-3" variant="light">
+        <Button as={Link} to="/usuarios" className=" m-3" variant="light">
           Usuarios
         </Button>
-        <Button as={Link} to="/Categorias" className=" m-3" variant="light">
+        <Button as={Link} to="/admin/CategoriaFront" className=" m-3" variant="light">
           Categorias
         </Button>
-        <Button as={Link} to="/Sub Categorias" className=" m-3" variant="light">
+        <Button as={Link} to="/admin/SubCategoriaFront" className=" m-3" variant="light">
           Sub Categorias
         </Button>
-        <Button as={Link} to="/Productos" className=" m-3" variant="light">
+        <Button as={Link} to="/admin/ProductoFront" className=" m-3" variant="light">
           Productos
+        </Button>
+        <Button as={Link} to="/admin/Planes" className=" m-3" variant="light">
+          Planes Funebres
         </Button>
         <Button as={Link} to="/Compras" className=" m-3" variant="light">
           Compras
