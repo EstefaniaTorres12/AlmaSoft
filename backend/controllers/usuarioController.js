@@ -1,4 +1,6 @@
-const Usuario = require('../models/usuario');
+const Usuario = require('../models/usuario.js');
+console.log("🔥 CONTROLADOR USUARIO CARGADO");
+console.log("METODOS DISPONIBLES:", Object.keys(Usuario));
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
@@ -30,40 +32,89 @@ module.exports = {
     });
 },
 
-    async login(req, res) {
+ async login(req, res) {
+    try {
+
+        console.log("BODY LOGIN:", req.body);
+
+        if (!req.body || !req.body.usuario_correo || !req.body.usuario_credencial) {
+            return res.status(400).json({
+                success: false,
+                message: "Correo y contraseña son obligatorios"
+            });
+        }
+
         const email = req.body.usuario_correo.toLowerCase();
         const password = req.body.usuario_credencial;
 
         Usuario.findByEmailWithRole(email, async (err, user) => {
-            if (err) return res.status(501).json({ success: false, message: 'Error al consultar usuario', error: err });
-            if (!user) return res.status(401).json({ success: false, message: 'El correo no existe' });
 
-            const isPasswordValid = await bcrypt.compare(password, user.usuario_credencial);
-            if (!isPasswordValid) return res.status(401).json({ success: false, message: 'Contraseña incorrecta' });
+            if (err) {
+                console.log("ERROR LOGIN DB:", err);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error al consultar usuario'
+                });
+            }
 
-            // generar JWT
+            console.log("USER ENCONTRADO:", user);
+
+            if (!user) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'El correo no existe'
+                });
+            }
+
+            if (!user.usuario_credencial) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Usuario sin contraseña"
+                });
+            }
+
+            let isPasswordValid = false;
+
+            if (user.usuario_credencial.startsWith("$2b$")) {
+                isPasswordValid = await bcrypt.compare(password, user.usuario_credencial);
+            } else {
+                isPasswordValid = password === user.usuario_credencial;
+            }
+
+            if (!isPasswordValid) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Contraseña incorrecta'
+                });
+            }
+
             const token = jwt.sign(
-                { id: user.usuario_id, email: user.usuario_correo, role: user.rol_nombre },
+                {
+                    id: user.usuario_id,
+                    email: user.usuario_correo,
+                    role: user.rol_nombre
+                },
                 keys.secretOrKey,
                 { expiresIn: '1h' }
             );
 
-            const data = {
-                id: user.usuario_id,
-                nombre: user.usuario_primer_nombre,
-                correo: user.usuario_correo,
-                role: user.rol_nombre,
-                session_token: `Bearer ${token}` 
-            };
-
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Login correcto",
                 token,
-                rol: user.rol_nombre 
+                rol: user.rol_nombre
             });
+
         });
-    },
+
+    } catch (error) {
+        console.log("ERROR GENERAL LOGIN:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Error interno del servidor"
+        });
+    }
+},
 
     getUsuarioAll(req, res) {
         Usuario.findAll((err, usuario) => {

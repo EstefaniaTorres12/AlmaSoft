@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Alert, Button } from "react-bootstrap";
 
-const InisiarSesion = () => {
+const IniciarSesion = () => {
 
   const [formData, setFormData] = useState({
     usuario_correo: "",
@@ -50,9 +50,7 @@ const InisiarSesion = () => {
         if (data.rol === "Administrador") {
           window.location.href = "/usuarios";
         } else if (data.rol === "Cliente") {
-          window.location.href = "/cliente";
-        }else if (data.rol === "Asesor") {
-          window.location.href = "/usuarios";
+          window.location.href = "/client";
         } else {
           window.location.href = "/";
         }
@@ -142,4 +140,4 @@ const InisiarSesion = () => {
   );
 };
 
-export default InisiarSesion;
+export default IniciarSesion;
