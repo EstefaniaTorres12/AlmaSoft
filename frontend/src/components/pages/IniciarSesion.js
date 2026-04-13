@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Alert, Button } from "react-bootstrap";
 
-const InisiarSesion = () => {
+const IniciarSesion = () => {
 
   const [formData, setFormData] = useState({
     usuario_correo: "",
@@ -47,13 +47,13 @@ const InisiarSesion = () => {
 
       // redirigir según rol (con delay para que se vea el alert)
       setTimeout(() => {
-        if (data.rol === "Administrador") {
-          window.location.href = "/usuarios";
-        } else if (data.rol === "Cliente") {
-          window.location.href = "/cliente";
-        } else {
-          window.location.href = "/";
-        }
+     if (data.rol === "Administrador") {
+  window.location.href = "/usuarios";
+} else if (data.rol === "Cliente") {
+  window.location.href = "/client";
+} else {
+  window.location.href = "/";
+}
       }, 1000);
 
     } catch (error) {
@@ -140,4 +140,4 @@ const InisiarSesion = () => {
   );
 };
 
-export default InisiarSesion;
+export default IniciarSesion;

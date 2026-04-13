@@ -1,0 +1,22 @@
+.client-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 250px;
+  background: #2E1A47;
+  color: white;
+  min-height: 100vh;
+  padding: 20px;
+  flex-shrink: 0;
+}
+
+/* CONTENIDO */
+.client-content {
+  flex: 1;
+  padding: 30px;
+  background: #f4f5fb;
+  margin-left: 250px;
+}
