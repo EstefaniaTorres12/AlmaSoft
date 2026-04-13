@@ -5,10 +5,17 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 
+function normalizeRoleName(role) {
+    return role === 'Clieente' ? 'Cliente' : role;
+}
+
 module.exports = {
 
     async register(req, res) {
-    const usuario = req.body;
+    const usuario = {
+        ...req.body,
+        rol_id: Number(req.body.rol_id)
+    };
 
     console.log("ROL RECIBIDO:", usuario.rol_id);
 
@@ -19,10 +26,24 @@ module.exports = {
         });
     }
 
-    usuario.usuario_correo = usuario.usuario_correo.toLowerCase();
+    if (!usuario.usuario_correo) {
+        return res.status(400).json({
+            success: false,
+            message: "usuario_correo es obligatorio"
+        });
+    }
+
+    usuario.usuario_correo = usuario.usuario_correo.toLowerCase().trim();
 
     Usuario.create(usuario, (err, data) => {
-        if (err) return res.status(501).json({ success: false, message: 'Error al crear usuario', error: err });
+        if (err) {
+            const status = err.message === "El documento ya existe" ? 409 : 400;
+            return res.status(status).json({
+                success: false,
+                message: err.message || 'Error al crear usuario',
+                error: err
+            });
+        }
 
         return res.status(201).json({
             success: true,
@@ -88,11 +109,13 @@ module.exports = {
                 });
             }
 
+            const normalizedRole = normalizeRoleName(user.rol_nombre);
+
             const token = jwt.sign(
                 {
                     id: user.usuario_id,
                     email: user.usuario_correo,
-                    role: user.rol_nombre
+                    role: normalizedRole
                 },
                 keys.secretOrKey,
                 { expiresIn: '1h' }
@@ -102,7 +125,7 @@ module.exports = {
                 success: true,
                 message: "Login correcto",
                 token,
-                rol: user.rol_nombre
+                rol: normalizedRole
             });
 
         });

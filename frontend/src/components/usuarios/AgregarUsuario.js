@@ -37,9 +37,10 @@ const AgregarUsuario = () => {
             usuario_primer_apellido: formData.PrimerApellido,
             usuario_segundo_apellido: formData.SegundoApellido,
             usuario_direccion: formData.Direccion,
+            usuario_telefono: formData.Telefono,
             usuario_correo: formData.Correo.toLowerCase(),
             usuario_credencial: formData.Credencial,
-            cliente_fecha_nacimiento: formData.FechaNacimiento || null // solo si rol_id = 3
+            cliente_fecha_nacimiento: formData.FechaNacimiento || null // solo si rol_id = 1 (Cliente)
         };
 
         try {
@@ -101,10 +102,9 @@ const AgregarUsuario = () => {
                                 onChange={handleChange}
                             >
                                 <option value="">Seleccione un rol</option>
-                                <option value="1">Administrador</option>
+                                <option value="3">Administrador</option>
                                 <option value="2">Asesor</option>
-                                <option value="3">Cliente</option>
-                                <option value="4">Afiliado</option>
+                                <option value="1">Cliente</option>
                             </Form.Select>
                         </Form.Group>
 

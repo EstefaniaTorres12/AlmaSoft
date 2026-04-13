@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import ClientLayout from "../layout/ClientLayout";
+import PlanModal from "../components/PlanModal";
 
 export default function HomeClient() {
 
   const [planes, setPlanes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // 🔥 estado del modal
+  const [planSeleccionado, setPlanSeleccionado] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:3001/api/client/plans")
@@ -19,8 +23,6 @@ export default function HomeClient() {
         return data;
       })
       .then((data) => {
-
-        // 🔥 AQUÍ ESTÁ LA CLAVE
         setPlanes(data.data || []);
         setError("");
       })
@@ -52,7 +54,11 @@ export default function HomeClient() {
           <p>No hay planes registrados.</p>
         ) : (
           planes.map((plan) => (
-            <div key={plan.plan_id} style={cardStyle}>
+            <div
+              key={plan.plan_id}
+              style={cardStyle}
+              onClick={() => setPlanSeleccionado(plan)} // 🔥 abrir modal
+            >
               <h4>{plan.plan_nombre}</h4>
               <p>${plan.plan_precio} al mes</p>
               <small>{plan.plan_descripcion}</small>
@@ -61,6 +67,14 @@ export default function HomeClient() {
         )}
 
       </div>
+
+      {/* 🔥 MODAL */}
+      {planSeleccionado && (
+        <PlanModal
+          plan={planSeleccionado}
+          onClose={() => setPlanSeleccionado(null)}
+        />
+      )}
 
     </ClientLayout>
   );
@@ -71,7 +85,8 @@ const cardStyle = {
   padding: "20px",
   borderRadius: "10px",
   boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-  width: "250px"
+  width: "250px",
+  cursor: "pointer" // 🔥 para que se note clickeable
 };
 
 const plansContainerStyle = {
