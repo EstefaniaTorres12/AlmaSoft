@@ -7,36 +7,40 @@ const dayjs = require('dayjs');
 
 // Crear usuario
 Usuario.create = async (user, result) => {
-    const hash = await bcrypt.hash(user.usuario_credencial, 10);
 
-    const sql = `INSERT INTO USUARIO(
-                    usuario_primer_nombre,
-                    usuario_segundo_nombre,
-                    usuario_primer_apellido,
-                    usuario_segundo_apellido,
-                    usuario_documento,
-                    usuario_correo,
-                    usuario_direccion,
-                    usuario_credencial
-                    ) VALUES (?,?,?,?,?,?,?,?)`;
+    Usuario.findByDocument(user.usuario_documento, async (err, exists) => {
 
-    db.query(sql, [
-        user.usuario_primer_nombre,
-        user.usuario_segundo_nombre,
-        user.usuario_primer_apellido,
-        user.usuario_segundo_apellido,
-        user.usuario_documento,
-        user.usuario_correo,
-        user.usuario_direccion,
-        hash
-    ], (err, res) => {
-        if (err) {
-            console.log('Error al crear al Usuario: ', err);
-            result(err, null);
-        } else {
-            console.log('Usuario creado: ', { usuario_id: res.insertId, ...user });
-            asignarRolUsuario(user, res.insertId, result);
+        if (exists) {
+            return result({ message: "El documento ya existe" }, null);
         }
+
+        const hash = await bcrypt.hash(user.usuario_credencial, 10);
+
+        const sql = `INSERT INTO USUARIO(
+            usuario_primer_nombre,
+            usuario_segundo_nombre,
+            usuario_primer_apellido,
+            usuario_segundo_apellido,
+            usuario_documento,
+            usuario_correo,
+            usuario_direccion,
+            usuario_credencial
+        ) VALUES (?,?,?,?,?,?,?,?)`;
+
+        db.query(sql, [
+            user.usuario_primer_nombre,
+            user.usuario_segundo_nombre,
+            user.usuario_primer_apellido,
+            user.usuario_segundo_apellido,
+            user.usuario_documento,
+            user.usuario_correo,
+            user.usuario_direccion,
+            hash
+        ], (err, res) => {
+            if (err) return result(err, null);
+
+            asignarRolUsuario(user, res.insertId, result);
+        });
     });
 };
 

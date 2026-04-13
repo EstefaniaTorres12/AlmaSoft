@@ -6,26 +6,25 @@ const Cliente = {};
 Cliente.create = async (cliente, result) => {
     try {
 
-        // Normalizar correo (igual que usuario)
-        const correo = cliente.correo.toLowerCase();
+        const correo = cliente.usuario_correo
+            ? cliente.usuario_correo.toLowerCase()
+            : null;
 
-        // Encriptar contraseña (igual que login espera)
-        const hash = await bcrypt.hash(cliente.credencial, 10);
+        const hash = await bcrypt.hash(cliente.usuario_credencial, 10);
 
-        // Verificar documento duplicado
+        if (!cliente.usuario_documento) {
+            return result({ message: "Documento es obligatorio" }, null);
+        }
+
         const checkSql = "SELECT * FROM USUARIO WHERE usuario_documento = ?";
-        db.query(checkSql, [cliente.documento], (err, rows) => {
+        db.query(checkSql, [cliente.usuario_documento], (err, rows) => {
 
-            if (err) {
-                console.log(err);
-                return result(err, null);
-            }
+            if (err) return result(err, null);
 
             if (rows.length > 0) {
                 return result({ message: "El documento ya existe" }, null);
             }
 
-            // 1. INSERT USUARIO
             const sqlUsuario = `
                 INSERT INTO USUARIO(
                     usuario_documento,
@@ -40,24 +39,30 @@ Cliente.create = async (cliente, result) => {
             `;
 
             db.query(sqlUsuario, [
-                cliente.documento,
-                cliente.primer_nombre,
-                cliente.segundo_nombre,
-                cliente.primer_apellido,
-                cliente.segundo_apellido,
+                cliente.usuario_documento,
+                cliente.usuario_primer_nombre,
+                cliente.usuario_segundo_nombre,
+                cliente.usuario_primer_apellido,
+                cliente.usuario_segundo_apellido,
                 correo,
-                cliente.direccion,
+                cliente.usuario_direccion,
                 hash
             ], (err2, resUsuario) => {
 
-                if (err2) {
-                    console.log(err2);
-                    return result(err2, null);
-                }
+                if (err2) return result(err2, null);
 
                 const usuario_id = resUsuario.insertId;
 
-                // 2. INSERT CLIENTE
+                // VALIDACIÓN CLAVE (evita 501)
+                if (!cliente.cliente_fecha_nacimiento) {
+                    return result({ message: "Fecha de nacimiento es obligatoria" }, null);
+                }
+
+                const fecha = cliente.cliente_fecha_nacimiento;
+                const edad = cliente.cliente_edad
+                    ? cliente.cliente_edad
+                    : require('dayjs')().diff(fecha, "year");
+
                 const sqlCliente = `
                     INSERT INTO CLIENTE(
                         cliente_id,
@@ -68,16 +73,12 @@ Cliente.create = async (cliente, result) => {
 
                 db.query(sqlCliente, [
                     usuario_id,
-                    dayjs(cliente.fecha_nacimiento, "DD/MM/YYYY").toDate(),
-                    cliente.edad
+                    fecha,
+                    edad
                 ], (err3) => {
 
-                    if (err3) {
-                        console.log(err3);
-                        return result(err3, null);
-                    }
+                    if (err3) return result(err3, null);
 
-                    // 3. INSERT TELEFONO
                     const sqlTelefono = `
                         INSERT INTO TELEFONO(
                             usuario_id,
@@ -87,23 +88,19 @@ Cliente.create = async (cliente, result) => {
 
                     db.query(sqlTelefono, [
                         usuario_id,
-                        cliente.telefono
+                        cliente.usuario_telefono || null
                     ], (err4) => {
 
-                        if (err4) {
-                            console.log(err4);
-                            return result(err4, null);
-                        }
+                        if (err4) return result(err4, null);
 
-                        result(null, { id: usuario_id });
+                        return result(null, { id: usuario_id });
                     });
                 });
             });
         });
 
     } catch (error) {
-        console.log(error);
-        result(error, null);
+        return result(error, null);
     }
 };
 

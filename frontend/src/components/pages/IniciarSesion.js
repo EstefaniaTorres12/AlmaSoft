@@ -51,6 +51,8 @@ const InisiarSesion = () => {
           window.location.href = "/usuarios";
         } else if (data.rol === "Cliente") {
           window.location.href = "/cliente";
+        }else if (data.rol === "Asesor") {
+          window.location.href = "/usuarios";
         } else {
           window.location.href = "/";
         }

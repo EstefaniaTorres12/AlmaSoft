@@ -6,16 +6,29 @@ const keys = require('../config/keys');
 module.exports = {
 
     async register(req, res) {
-        const usuario = req.body;
+    const usuario = req.body;
 
-        // normalizar correo a minúsculas
-        usuario.usuario_correo = usuario.usuario_correo.toLowerCase();
+    console.log("ROL RECIBIDO:", usuario.rol_id);
 
-        Usuario.create(usuario, (err, data) => {
-            if (err) return res.status(501).json({ success: false, message: 'Error al crear usuario', error: err });
-            return res.status(201).json({ success: true, message: 'Usuario creado correctamente', data });
+    if (!usuario.rol_id) {
+        return res.status(400).json({
+            success: false,
+            message: "rol_id es obligatorio"
         });
-    },
+    }
+
+    usuario.usuario_correo = usuario.usuario_correo.toLowerCase();
+
+    Usuario.create(usuario, (err, data) => {
+        if (err) return res.status(501).json({ success: false, message: 'Error al crear usuario', error: err });
+
+        return res.status(201).json({
+            success: true,
+            message: 'Usuario creado correctamente',
+            data
+        });
+    });
+},
 
     async login(req, res) {
         const email = req.body.usuario_correo.toLowerCase();
