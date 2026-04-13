@@ -29,7 +29,7 @@ const Registrarse = () => {
         e.preventDefault();
 
         const usuario = {
-            rol_id: 3,
+            rol_id: 1,
             usuario_documento: formData.DocumentoCliente,
             usuario_primer_nombre: formData.PrimerNombreCliente,
             usuario_segundo_nombre: formData.SegundoNombreCliente,
@@ -56,7 +56,7 @@ const Registrarse = () => {
 
             const data = await response.json();
 
-            if (data.success) {
+            if (response.ok && data.success) {
                 setMostrarAlerta(true);
 
                 setData({
@@ -72,7 +72,8 @@ const Registrarse = () => {
                     FechaNacimiento: ''
                 });
             } else {
-                alert("Error: " + data.message);
+                const backendError = data?.error?.sqlMessage || data?.error?.message;
+                alert("Error: " + (data.message || backendError || "No fue posible registrar el usuario"));
             }
 
         } catch (error) {
