@@ -39,15 +39,6 @@ const SideBar =()=>{
         <Button as={Link} to="/admin/Planes" className=" m-3" variant="light">
           Planes Funebres
         </Button>
-        <Button as={Link} to="/Compras" className=" m-3" variant="light">
-          Compras
-        </Button>
-        <Button as={Link} to="/Tramites" className=" m-3" variant="light">
-          Tramites
-        </Button>
-        <Button as={Link} to="/Cronograma" className=" m-3" variant="light">
-          Cronograma
-        </Button>
       </Nav>
     </div>
   );
