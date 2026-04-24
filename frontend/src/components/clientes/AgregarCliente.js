@@ -40,17 +40,17 @@ const AgregarCliente = () => {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({
-                    documento: formData.DocumentoCliente,
-                    primer_nombre: formData.PrimerNombreCliente,
-                    segundo_nombre: formData.SegundoNombreCliente,
-                    primer_apellido: formData.PrimerApellidoCliente,
-                    segundo_apellido: formData.SegundoApellidoCliente,
-                    direccion: formData.DireccionCliente,
-                    telefono: formData.TelefonoCliente,
-                    correo: formData.CorreoCliente,
-                    fecha_nacimiento: formData.FechaNacimiento,
-                    edad: formData.EdadCliente,
-                    credencial: formData.CredencialCliente
+                    usuario_documento: formData.DocumentoCliente,
+                    usuario_primer_nombre: formData.PrimerNombreCliente,
+                    usuario_segundo_nombre: formData.SegundoNombreCliente,
+                    usuario_primer_apellido: formData.PrimerApellidoCliente,
+                    usuario_segundo_apellido: formData.SegundoApellidoCliente,
+                    usuario_direccion: formData.DireccionCliente,
+                    usuario_telefono: formData.TelefonoCliente,
+                    usuario_correo: formData.CorreoCliente,
+                    cliente_fecha_nacimiento: formData.FechaNacimiento,
+                    cliente_edad: formData.EdadCliente,
+                    usuario_credencial: formData.CredencialCliente
                 })
             });
 
@@ -172,7 +172,7 @@ const AgregarCliente = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>FECHA DE NACIMIENTO</Form.Label>
                             <Form.Control
-                                type="text"
+                                type="date"
                                 name="FechaNacimiento"
                                 value={formData.FechaNacimiento}
                                 onChange={handleChange}

@@ -10,11 +10,21 @@ Cliente.create = async (cliente, result) => {
             ? cliente.usuario_correo.toLowerCase()
             : null;
 
-        const hash = await bcrypt.hash(cliente.usuario_credencial, 10);
-
+        // ✅ VALIDACIONES ANTES DE USAR LOS DATOS
         if (!cliente.usuario_documento) {
             return result({ message: "Documento es obligatorio" }, null);
         }
+
+        if (!cliente.usuario_credencial) {
+            return result({ message: "La contraseña es obligatoria" }, null);
+        }
+
+        if (!cliente.cliente_fecha_nacimiento) {
+            return result({ message: "Fecha de nacimiento es obligatoria" }, null);
+        }
+
+        // ✅ HASH DESPUÉS DE VALIDAR
+        const hash = await bcrypt.hash(cliente.usuario_credencial, 10);
 
         const checkSql = "SELECT * FROM USUARIO WHERE usuario_documento = ?";
         db.query(checkSql, [cliente.usuario_documento], (err, rows) => {
@@ -53,15 +63,11 @@ Cliente.create = async (cliente, result) => {
 
                 const usuario_id = resUsuario.insertId;
 
-                // VALIDACIÓN CLAVE (evita 501)
-                if (!cliente.cliente_fecha_nacimiento) {
-                    return result({ message: "Fecha de nacimiento es obligatoria" }, null);
-                }
-
                 const fecha = cliente.cliente_fecha_nacimiento;
+
                 const edad = cliente.cliente_edad
                     ? cliente.cliente_edad
-                    : require('dayjs')().diff(fecha, "year");
+                    : dayjs().diff(fecha, "year");
 
                 const sqlCliente = `
                     INSERT INTO CLIENTE(
@@ -103,7 +109,6 @@ Cliente.create = async (cliente, result) => {
         return result(error, null);
     }
 };
-
 
 Cliente.findAll = (result) => {
     const sql = `SELECT 
@@ -184,7 +189,6 @@ Cliente.update = (id, cliente, result) => {
         WHERE cliente_id = ?
     `;
 
-    // primero actualiza usuario
     db.query(sqlUsuario, [
         cliente.primer_nombre,
         cliente.segundo_nombre,
@@ -200,7 +204,6 @@ Cliente.update = (id, cliente, result) => {
             return result(err, null);
         }
 
-        // luego cliente
         db.query(sqlCliente, [
             dayjs(cliente.fecha_nacimiento, "DD/MM/YYYY").toDate(),
             cliente.edad,
