@@ -197,6 +197,41 @@ Usuario.findByDocument = (documento, result) => {
 Usuario.update = async (id, usuario, result) => {
   const fields = [];
   const values = [];
+  const documento = usuario.usuario_documento;
+  const correo = usuario.usuario_correo ? usuario.usuario_correo.toLowerCase() : null;
+
+  if (documento) {
+    const existingByDocument = await new Promise((resolve, reject) => {
+      db.query(
+        'SELECT usuario_id FROM USUARIO WHERE usuario_documento = ? AND usuario_id <> ? LIMIT 1',
+        [documento, id],
+        (err, rows) => (err ? reject(err) : resolve(rows))
+      );
+    }).catch((err) => result(err, null));
+
+    if (!existingByDocument) return;
+    if (existingByDocument.length > 0) {
+      return result({ message: 'El documento ya existe' }, null);
+    }
+
+    fields.push('usuario_documento = ?');
+    values.push(documento);
+  }
+
+  if (correo) {
+    const existingByEmail = await new Promise((resolve, reject) => {
+      db.query(
+        'SELECT usuario_id FROM USUARIO WHERE usuario_correo = ? AND usuario_id <> ? LIMIT 1',
+        [correo, id],
+        (err, rows) => (err ? reject(err) : resolve(rows))
+      );
+    }).catch((err) => result(err, null));
+
+    if (!existingByEmail) return;
+    if (existingByEmail.length > 0) {
+      return result({ message: 'El correo ya existe' }, null);
+    }
+  }
 
   if (usuario.usuario_credencial) {
     const hash = await bcrypt.hash(usuario.usuario_credencial, 10);
@@ -204,9 +239,9 @@ Usuario.update = async (id, usuario, result) => {
     values.push(hash);
   }
 
-  if (usuario.usuario_correo) {
+  if (correo) {
     fields.push('usuario_correo = ?');
-    values.push(usuario.usuario_correo);
+    values.push(correo);
   }
 
   if (usuario.usuario_primer_nombre) {

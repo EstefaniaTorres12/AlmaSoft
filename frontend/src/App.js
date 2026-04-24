@@ -41,9 +41,14 @@ import EditarPlan from './components/admin/EditarPlan';
 
 /* CLIENTE */
 import HomeClient from './components/client/pages/HomeClient';
+import TuPlan from './components/client/pages/TuPlan';
+import Afiliados from './components/client/pages/Afiliados';
+import Contrato from './components/client/pages/Contrato';
 import Servicios from './components/client/pages/Servicios';
 import Tienda from './components/client/pages/Tienda';
 import Pagos from './components/client/pages/Pagos';
+import Sedes from './components/client/pages/Sedes';
+import Perfil from './components/client/pages/Perfil';
 
 function App() {
   useEffect(() => {
@@ -335,15 +340,15 @@ function App() {
         />
 
         {/* CLIENTE */}
-       <Route path='/client' element={<HomeClient />} />
-<Route path='/client/plan' element={<div>Plan</div>} />
-<Route path='/client/afiliados' element={<div>Afiliados</div>} />
-<Route path='/client/contrato' element={<div>Contrato</div>} />
-<Route path='/client/pagos' element={<Pagos />} />
-<Route path='/client/sedes' element={<div>Sedes</div>} />
-<Route path='/client/contacto' element={<div>Contacto</div>} />
-<Route path='/client/tienda' element={<Tienda />} />
-<Route path='/client/perfil' element={<div>Perfil</div>} />
+        <Route path='/client' element={<HomeClient />} />
+        <Route path='/client/plan' element={<TuPlan />} />
+        <Route path='/client/afiliados' element={<Afiliados />} />
+        <Route path='/client/contrato' element={<Contrato />} />
+        <Route path='/client/pagos' element={<Pagos />} />
+        <Route path='/client/sedes' element={<Sedes />} />
+        <Route path='/client/contacto' element={<Servicios />} />
+        <Route path='/client/tienda' element={<Tienda />} />
+        <Route path='/client/perfil' element={<Perfil />} />
 
         <Route path='*' element={<Navigate to='/' />} />
       </Routes>

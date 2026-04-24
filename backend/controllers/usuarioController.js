@@ -1,57 +1,21 @@
 const Usuario = require('../models/usuario.js');
-console.log("🔥 CONTROLADOR USUARIO CARGADO");
-console.log("METODOS DISPONIBLES:", Object.keys(Usuario));
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 
-function normalizeRoleName(role) {
-    return role === 'Clieente' ? 'Cliente' : role;
-}
-
 module.exports = {
 
     async register(req, res) {
-    const usuario = {
-        ...req.body,
-        rol_id: Number(req.body.rol_id)
-    };
+        const usuario = req.body;
 
-    console.log("ROL RECIBIDO:", usuario.rol_id);
+        // normalizar correo a minúsculas
+        usuario.usuario_correo = usuario.usuario_correo.toLowerCase();
 
-    if (!usuario.rol_id) {
-        return res.status(400).json({
-            success: false,
-            message: "rol_id es obligatorio"
+        Usuario.create(usuario, (err, data) => {
+            if (err) return res.status(501).json({ success: false, message: 'Error al crear usuario', error: err });
+            return res.status(201).json({ success: true, message: 'Usuario creado correctamente', data });
         });
-    }
-
-    if (!usuario.usuario_correo) {
-        return res.status(400).json({
-            success: false,
-            message: "usuario_correo es obligatorio"
-        });
-    }
-
-    usuario.usuario_correo = usuario.usuario_correo.toLowerCase().trim();
-
-    Usuario.create(usuario, (err, data) => {
-        if (err) {
-            const status = err.message === "El documento ya existe" ? 409 : 400;
-            return res.status(status).json({
-                success: false,
-                message: err.message || 'Error al crear usuario',
-                error: err
-            });
-        }
-
-        return res.status(201).json({
-            success: true,
-            message: 'Usuario creado correctamente',
-            data
-        });
-    });
-},
+    },
 
  async login(req, res) {
     try {
@@ -109,13 +73,11 @@ module.exports = {
                 });
             }
 
-            const normalizedRole = normalizeRoleName(user.rol_nombre);
-
             const token = jwt.sign(
                 {
                     id: user.usuario_id,
                     email: user.usuario_correo,
-                    role: normalizedRole
+                    role: user.rol_nombre
                 },
                 keys.secretOrKey,
                 { expiresIn: '1h' }
@@ -125,7 +87,15 @@ module.exports = {
                 success: true,
                 message: "Login correcto",
                 token,
-                rol: normalizedRole
+                rol: user.rol_nombre,
+                usuario:{
+                    usuario_id: user.usuario_id,
+                    usuario_correo: user.usuario_correo,
+                    usuario_primer_nombre: user.usuario_primer_nombre,
+                    usuario_segundo_nombre: user.usuario_segundo_nombre,
+                    usuario_primer_apellido: user.usuario_primer_apellido,
+                    usuario_segundo_apellido: user.usuario_segundo_apellido,
+                }
             });
 
         });
@@ -158,6 +128,16 @@ module.exports = {
 
     getUsuarioById(req, res) {
         const id = req.params.id;
+        const userId = req.user?.usuario_id || req.user?.id;
+        const userRole = req.user?.role;
+
+        if (userRole === 'Cliente' && Number(id) !== Number(userId)) {
+            return res.status(403).json({
+                success: false,
+                message: 'No tienes permiso para consultar este usuario'
+            });
+        }
+
         Usuario.findById(id, (err, user) => {
             if (err) return res.status(501).json({ success: false, message: 'Error al consultar el usuario', error: err });
             if (!user) return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
@@ -177,6 +157,15 @@ module.exports = {
     getUsuarioUpdate(req, res) {
     const id = req.params.id;
     const usuario = req.body;
+    const userId = req.user?.usuario_id || req.user?.id;
+    const userRole = req.user?.role;
+
+    if (userRole === 'Cliente' && Number(id) !== Number(userId)) {
+        return res.status(403).json({
+            success: false,
+            message: 'No tienes permiso para actualizar este usuario'
+        });
+    }
 
     Usuario.update(id, usuario, (err, data) => {
         if (err) {

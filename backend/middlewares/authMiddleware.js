@@ -26,7 +26,10 @@ function verifyToken(req, res, next) {
                 error: err
             });
         }
-        req.user = decoded;
+        req.user = {
+            ...decoded,
+            usuario_id: decoded.usuario_id || decoded.id
+        };
         next();
     });
 }

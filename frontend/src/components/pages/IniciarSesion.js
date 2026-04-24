@@ -32,6 +32,7 @@ const IniciarSesion = () => {
       });
 
       const data = await response.json();
+      
       console.log("RESPUESTA BACKEND ", data);
 
       if (!data.success) {
@@ -42,10 +43,10 @@ const IniciarSesion = () => {
       // guardar token y rol
       localStorage.setItem("token", data.token);
       localStorage.setItem("rol", data.rol);
+      localStorage.setItem("usuario_id", data.usuario.usuario_id);
+      localStorage.setItem("usuario", JSON.stringify(data.usuario));
 
-      setMostrarAlerta(true);
-
-      // redirigir según rol (con delay para que se vea el alert)
+  
       setTimeout(() => {
         if (data.rol === "Administrador") {
           window.location.href = "/usuarios";
