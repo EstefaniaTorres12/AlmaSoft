@@ -119,9 +119,9 @@ const ProductoFront = () => {
               {/* IMAGEN */}
               <td>
                 <img
-                  src={`http://localhost:3001${p.producto_imagen}`}
+                  src={`/${p.producto_imagen}`}
                   alt="producto"
-                  width="60"
+                  width="150"
                 />
               </td>
 

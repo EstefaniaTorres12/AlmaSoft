@@ -33,7 +33,7 @@ const Lapida = () => {
                         <Col md={4} sm={6} xs={12} key={p.producto_id}>
                             <Card className="my-4 shadow" style={{ width: '18rem' }}>
                                 <Card.Img
-                                    src={`http://localhost:3001/${p.producto_imagen}`}
+                                   src={`/${p.producto_imagen}`}
                                     alt={p.producto_nombre}
                                     style={{ height: "250px", objectFit: "cover" }}
                                 />
