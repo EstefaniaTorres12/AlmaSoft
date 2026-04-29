@@ -36,6 +36,20 @@ function formatDate(value) {
   return new Date(value).toLocaleString("es-CO");
 }
 
+function formatPaymentLabel(payment) {
+  if (!payment) return "Sin informacion";
+
+  if (payment.pago_tipo_tarjeta && payment.pago_entidad) {
+    return `${payment.pago_tipo_tarjeta === "credito" ? "Tarjeta credito" : "Tarjeta debito"} - ${payment.pago_entidad}`;
+  }
+
+  if (payment.pago_entidad) {
+    return `${payment.pago_metodo} - ${payment.pago_entidad}`;
+  }
+
+  return payment.pago_metodo;
+}
+
 export default function TuPlan() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -153,7 +167,14 @@ export default function TuPlan() {
                 <div className="plan-payments-list">
                   {planData.pagos.map((pago) => (
                     <article className="plan-payment-item" key={pago.pago_id}>
-                      <strong>{pago.pago_metodo}</strong>
+                      <div className="plan-payment-copy">
+                        <strong>{formatPaymentLabel(pago)}</strong>
+                        <span>Referencia: {pago.pago_referencia || "No disponible"}</span>
+                        <span>Estado: {pago.pago_estado || "Registrado"}</span>
+                        {pago.pago_fecha_limite ? (
+                          <span>Fecha limite: {formatDate(pago.pago_fecha_limite)}</span>
+                        ) : null}
+                      </div>
                       <span>{formatDate(pago.pago_fecha)}</span>
                     </article>
                   ))}

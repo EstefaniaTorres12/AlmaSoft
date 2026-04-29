@@ -99,12 +99,27 @@
 }
 
 .plan-payment-item strong {
+  display: block;
   color: #3b2a6a;
 }
 
 .plan-payment-item span {
+  display: block;
   color: #6f6789;
   font-size: 0.95rem;
+}
+
+.plan-payment-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.payment-item-stacked {
+  align-items: flex-start;
+}
+
+.payments-shell {
+  margin-top: 20px;
 }
 
 .profile-shell {
@@ -235,6 +250,29 @@
   outline: none;
 }
 
+.profile-field select,
+.profile-field textarea {
+  min-height: 46px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid #d9cdf4;
+  background: #fff;
+  color: #34235b;
+  outline: none;
+}
+
+.profile-field textarea {
+  padding: 14px;
+  min-height: 110px;
+  resize: vertical;
+}
+
+.profile-field select:focus,
+.profile-field textarea:focus {
+  border-color: #8d6def;
+  box-shadow: 0 0 0 4px rgba(141, 109, 239, 0.12);
+}
+
 .profile-field input:focus {
   border-color: #8d6def;
   box-shadow: 0 0 0 4px rgba(141, 109, 239, 0.12);
@@ -292,6 +330,227 @@
   margin-top: 22px;
 }
 
+.affiliates-shell {
+  display: grid;
+  gap: 22px;
+}
+
+.affiliate-hero-card {
+  display: grid;
+  gap: 18px;
+  padding: 28px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 225, 185, 0.9), transparent 34%),
+    linear-gradient(135deg, #fffdf7 0%, #f2ebff 100%);
+  border: 1px solid rgba(180, 145, 229, 0.18);
+}
+
+.affiliate-hero-card h2 {
+  margin: 8px 0 10px;
+  color: #2f1d57;
+}
+
+.affiliate-hero-card p {
+  margin: 0;
+  color: #64597f;
+  line-height: 1.7;
+}
+
+.affiliate-benefits-inline,
+.affiliate-benefits-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.affiliate-benefits-inline {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.affiliate-benefit-chip,
+.affiliate-benefit-card {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(182, 162, 232, 0.16);
+  color: #4f4268;
+  line-height: 1.65;
+}
+
+.affiliate-benefit-card h3 {
+  margin: 0 0 10px;
+  color: #38275d;
+}
+
+.affiliate-benefit-card p {
+  margin: 0;
+}
+
+.affiliate-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.affiliate-stat-card {
+  padding: 22px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #fffefd 0%, #f3eeff 100%);
+  border: 1px solid rgba(123, 92, 198, 0.12);
+}
+
+.affiliate-stat-card span {
+  display: block;
+  color: #7a669d;
+  font-size: 0.84rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.affiliate-stat-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 2rem;
+  color: #342157;
+}
+
+.affiliate-stat-card p {
+  margin: 10px 0 0;
+  color: #6e6488;
+  line-height: 1.6;
+}
+
+.affiliate-stat-card.spotlight {
+  background:
+    linear-gradient(135deg, rgba(121, 83, 199, 0.16), transparent 55%),
+    linear-gradient(180deg, #fffcf7 0%, #f5f0ff 100%);
+}
+
+.affiliate-management-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.8fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.affiliate-request-card {
+  padding: 24px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #fffefb 0%, #f6efff 100%);
+  border: 1px solid rgba(123, 92, 198, 0.14);
+  box-shadow: 0 18px 30px rgba(74, 47, 139, 0.06);
+}
+
+.affiliate-status-column {
+  display: grid;
+  gap: 18px;
+}
+
+.affiliate-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.affiliate-section-header.compact {
+  margin-bottom: 16px;
+}
+
+.affiliate-section-header h2 {
+  margin: 6px 0 0;
+  color: #301f57;
+}
+
+.affiliate-section-header p:last-child {
+  max-width: 48ch;
+  margin: 0;
+  color: #6f6789;
+  line-height: 1.7;
+}
+
+.affiliate-candidate-list,
+.affiliate-stack-list,
+.affiliate-notification-list {
+  display: grid;
+  gap: 12px;
+}
+
+.affiliate-candidate-card,
+.affiliate-mini-card,
+.affiliate-notification-card {
+  text-align: left;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid rgba(123, 92, 198, 0.12);
+}
+
+.affiliate-candidate-card {
+  cursor: pointer;
+}
+
+.affiliate-candidate-card strong,
+.affiliate-mini-card strong,
+.affiliate-notification-card strong {
+  display: block;
+  color: #38275d;
+}
+
+.affiliate-candidate-card span,
+.affiliate-candidate-card small,
+.affiliate-mini-card span,
+.affiliate-mini-card small,
+.affiliate-notification-card p,
+.affiliate-notification-card small {
+  display: block;
+  margin-top: 6px;
+  color: #6d6386;
+}
+
+.affiliate-candidate-card.is-selected {
+  border-color: #8f72ea;
+  box-shadow: 0 0 0 4px rgba(143, 114, 234, 0.12);
+}
+
+.affiliate-mini-card.pending {
+  background: #fff8ed;
+  border-color: #ead9bc;
+}
+
+.affiliate-selected-card {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f0e8ff 0%, #fbf8ff 100%);
+  border: 1px solid rgba(123, 92, 198, 0.14);
+}
+
+.affiliate-selected-card span,
+.affiliate-selected-card small {
+  display: block;
+  color: #6e628b;
+}
+
+.affiliate-selected-card strong {
+  display: block;
+  margin-top: 8px;
+  color: #38275d;
+}
+
+.affiliate-muted {
+  color: #786c94;
+}
+
+.affiliate-notification-card {
+  background: linear-gradient(180deg, #fffefb 0%, #f6efff 100%);
+}
+
+.affiliate-notification-card.is-read {
+  opacity: 0.8;
+}
+
 @media (max-width: 980px) {
   .profile-header,
   .profile-layout {
@@ -303,6 +562,12 @@
   .plan-detail-grid,
   .plan-detail-metrics {
     grid-template-columns: 1fr;
+  }
+
+  .affiliate-management-grid,
+  .affiliate-section-header {
+    grid-template-columns: 1fr;
+    display: grid;
   }
 
   .profile-highlight-card {
@@ -317,5 +582,10 @@
 
   .profile-actions {
     flex-direction: column;
+  }
+
+  .affiliate-benefits-inline,
+  .affiliate-overview-grid {
+    grid-template-columns: 1fr;
   }
 }

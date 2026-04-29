@@ -50,8 +50,12 @@ const IniciarSesion = () => {
       setTimeout(() => {
         if (data.rol === "Administrador") {
           window.location.href = "/usuarios";
+        } else if (data.rol === "Asesor") {
+          window.location.href = "/admin/afiliaciones";
         } else if (data.rol === "Cliente") {
           window.location.href = "/client";
+        } else if (data.rol === "Afiliado") {
+          window.location.href = "/client/afiliados";
         } else {
           window.location.href = "/";
         }

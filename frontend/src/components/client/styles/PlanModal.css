@@ -73,6 +73,11 @@
   margin-bottom: 8px;
 }
 
+.plan-section p {
+  color: #6f5649;
+  line-height: 1.6;
+}
+
 .plan-select {
   width: 100%;
   margin-top: 8px;
@@ -163,6 +168,66 @@
   cursor: wait;
 }
 
+.plan-secondary-button {
+  border: 1px solid #ccb29f;
+  border-radius: 12px;
+  padding: 12px 18px;
+  background: #fff8f2;
+  color: #5f3926;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.plan-secondary-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.plan-modal-button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.plan-feedback {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  line-height: 1.6;
+}
+
+.plan-feedback.error {
+  background: #ffe6e8;
+  color: #973447;
+}
+
+.plan-feedback.warning {
+  background: #fff2df;
+  color: #8b5a1f;
+}
+
+.plan-feedback.info {
+  background: #f3ebff;
+  color: #563b8a;
+}
+
+.plan-action-row,
+.plan-success-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.plan-success-shell {
+  margin-top: 18px;
+}
+
+.plan-success-shell h3 {
+  margin-top: 0;
+}
+
 .payment-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -221,6 +286,11 @@
   .plan-grid {
     grid-template-columns: 1fr;
     gap: 0;
+  }
+
+  .plan-action-row,
+  .plan-success-actions {
+    flex-direction: column;
   }
 
   .plan-modal-header h2 {

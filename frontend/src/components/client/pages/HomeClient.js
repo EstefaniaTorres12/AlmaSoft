@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ClientLayout from "../layout/ClientLayout";
 import PlanModal from "../components/PlanModal";
 import { getPlanVisual } from "../data/clientPlanVisuals";
+import { authFetch } from "../../../utils/authFetch";
 import "../styles/homeClient.css";
 import "../styles/clientPages.css";
 
@@ -42,6 +43,7 @@ export default function HomeClient() {
   const [error, setError] = useState("");
   const [planSeleccionado, setPlanSeleccionado] = useState(null);
   const [clientSession, setClientSession] = useState(() => readClientSession());
+  const [activePlan, setActivePlan] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:3001/api/client/plans")
@@ -80,6 +82,38 @@ export default function HomeClient() {
       window.removeEventListener("client-profile-updated", syncClientSession);
       window.removeEventListener("storage", syncClientSession);
     };
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setActivePlan(null);
+      return;
+    }
+
+    authFetch("http://localhost:3001/api/client/contrato/mine")
+      .then(async (response) => {
+        const data = await response.json();
+
+        if (response.status === 404) {
+          setActivePlan(null);
+          return null;
+        }
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "No se pudo validar el plan activo.");
+        }
+
+        return data.data;
+      })
+      .then((data) => {
+        if (data) {
+          setActivePlan(data);
+        }
+      })
+      .catch((requestError) => {
+        console.error(requestError);
+      });
   }, []);
 
   return (
@@ -149,6 +183,14 @@ export default function HomeClient() {
           <p>Encuentra la opcion que mejor se adapta a tu familia y visualiza cada plan con mas claridad.</p>
         </div>
 
+        {activePlan ? (
+          <div className="plan-feedback info">
+            Ya tienes un plan activo: <strong>{activePlan.plan_nombre}</strong>. Si deseas consultarlo, entra a
+            {" "}
+            <a href="/client/plan">Tu plan</a>.
+          </div>
+        ) : null}
+
         {loading ? (
           <div className="client-empty-state">Cargando planes disponibles...</div>
         ) : error ? (
@@ -193,8 +235,9 @@ export default function HomeClient() {
                       type="button"
                       className="client-primary-button full-width"
                       onClick={() => setPlanSeleccionado(plan)}
+                      disabled={Boolean(activePlan)}
                     >
-                      Ver detalles y adquirir
+                      {activePlan ? "Ya tienes un plan activo" : "Ver detalles y adquirir"}
                     </button>
                   </div>
                 </article>
@@ -208,6 +251,14 @@ export default function HomeClient() {
         <PlanModal
           plan={planSeleccionado}
           onClose={() => setPlanSeleccionado(null)}
+          hasActivePlan={Boolean(activePlan)}
+          onPurchaseSuccess={(purchaseData) => {
+            setActivePlan({
+              contrato_id: purchaseData.contrato_id,
+              plan_id: purchaseData.plan_id,
+              plan_nombre: purchaseData.plan_nombre,
+            });
+          }}
         />
       )}
     </ClientLayout>

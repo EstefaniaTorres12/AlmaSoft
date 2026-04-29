@@ -25,6 +25,7 @@ export default function SidebarClient() {
     }
   });
   const [profilePhoto, setProfilePhoto] = useState("/img/usuario.png");
+  const rol = localStorage.getItem("rol");
 
   useEffect(() => {
     const syncProfile = () => {
@@ -65,6 +66,10 @@ export default function SidebarClient() {
     navigate("/");
   };
 
+  const items = rol === "Afiliado"
+    ? NAV_ITEMS.filter((item) => ["/client/afiliados", "/client/perfil"].includes(item.path))
+    : NAV_ITEMS;
+
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
@@ -84,7 +89,7 @@ export default function SidebarClient() {
       </div>
 
       <nav className="sidebar-nav">
-        {NAV_ITEMS.map((item) => {
+        {items.map((item) => {
           const active =
             item.path === "/client"
               ? location.pathname === item.path

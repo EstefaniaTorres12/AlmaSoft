@@ -4,17 +4,44 @@ const Usuario = {};
 const RolUsuario = require('./rolUsuario');
 const dayjs = require('dayjs');
 
-// En esta base de datos actual el rol Cliente es 1.
-const CLIENT_ROLE_ID = 1;
-
 function isEmpty(value) {
   return value === undefined || value === null || value === '';
+}
+
+function normalizarRolNombre(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function resolveClientRoleId(callback) {
+  const sql = `
+    SELECT rol_id, rol_nombre
+    FROM ROL
+    ORDER BY rol_id
+  `;
+
+  db.query(sql, (err, roles) => {
+    if (err) return callback(err);
+
+    const clientRole = (roles || []).find((role) => {
+      const normalized = normalizarRolNombre(role.rol_nombre);
+      return normalized === 'cliente' || normalized === 'clieente';
+    });
+
+    if (!clientRole) {
+      return callback({ message: 'No se encontro el rol de cliente en la base de datos' });
+    }
+
+    callback(null, clientRole);
+  });
 }
 
 // Crear usuario
 Usuario.create = async (user, result) => {
   const required = [
-    'rol_id',
     'usuario_documento',
     'usuario_primer_nombre',
     'usuario_primer_apellido',
@@ -30,7 +57,9 @@ Usuario.create = async (user, result) => {
     }
   }
 
-  if (Number(user.rol_id) === CLIENT_ROLE_ID) {
+  resolveClientRoleId((errRole, clientRole) => {
+    if (errRole) return result(errRole, null);
+
     if (isEmpty(user.usuario_telefono)) {
       return result({ message: 'usuario_telefono es obligatorio para cliente' }, null);
     }
@@ -38,92 +67,93 @@ Usuario.create = async (user, result) => {
     if (isEmpty(user.cliente_fecha_nacimiento)) {
       return result({ message: 'cliente_fecha_nacimiento es obligatorio para cliente' }, null);
     }
-  }
 
-  Usuario.findByDocument(user.usuario_documento, async (errDoc, existsDoc) => {
-    if (errDoc) return result(errDoc, null);
-    if (existsDoc) return result({ message: 'El documento ya existe' }, null);
+    Usuario.findByDocument(user.usuario_documento, async (errDoc, existsDoc) => {
+      if (errDoc) return result(errDoc, null);
+      if (existsDoc) return result({ message: 'El documento ya existe' }, null);
 
-    const sqlCheckEmail = 'SELECT usuario_id FROM USUARIO WHERE usuario_correo = ? LIMIT 1';
-    db.query(sqlCheckEmail, [user.usuario_correo], async (errEmail, rowsEmail) => {
-      if (errEmail) return result(errEmail, null);
-      if (rowsEmail.length > 0) return result({ message: 'El correo ya existe' }, null);
+      const sqlCheckEmail = 'SELECT usuario_id FROM USUARIO WHERE usuario_correo = ? LIMIT 1';
+      db.query(sqlCheckEmail, [user.usuario_correo], async (errEmail, rowsEmail) => {
+        if (errEmail) return result(errEmail, null);
+        if (rowsEmail.length > 0) return result({ message: 'El correo ya existe' }, null);
 
-      const hash = await bcrypt.hash(user.usuario_credencial, 10);
+        const hash = await bcrypt.hash(user.usuario_credencial, 10);
 
-      const sqlUsuario = `INSERT INTO USUARIO(
-        usuario_primer_nombre,
-        usuario_segundo_nombre,
-        usuario_primer_apellido,
-        usuario_segundo_apellido,
-        usuario_documento,
-        usuario_correo,
-        usuario_direccion,
-        usuario_credencial
-      ) VALUES (?,?,?,?,?,?,?,?)`;
+        const sqlUsuario = `INSERT INTO USUARIO(
+          usuario_primer_nombre,
+          usuario_segundo_nombre,
+          usuario_primer_apellido,
+          usuario_segundo_apellido,
+          usuario_documento,
+          usuario_correo,
+          usuario_direccion,
+          usuario_credencial
+        ) VALUES (?,?,?,?,?,?,?,?)`;
 
-      db.query(
-        sqlUsuario,
-        [
-          user.usuario_primer_nombre,
-          user.usuario_segundo_nombre || '',
-          user.usuario_primer_apellido,
-          user.usuario_segundo_apellido,
-          user.usuario_documento,
-          user.usuario_correo,
-          user.usuario_direccion,
-          hash
-        ],
-        (errInsertUsuario, resUsuario) => {
-          if (errInsertUsuario) return result(errInsertUsuario, null);
+        db.query(
+          sqlUsuario,
+          [
+            user.usuario_primer_nombre,
+            user.usuario_segundo_nombre || '',
+            user.usuario_primer_apellido,
+            user.usuario_segundo_apellido,
+            user.usuario_documento,
+            user.usuario_correo,
+            user.usuario_direccion,
+            hash
+          ],
+          (errInsertUsuario, resUsuario) => {
+            if (errInsertUsuario) return result(errInsertUsuario, null);
 
-          const usuarioId = resUsuario.insertId;
+            const usuarioId = resUsuario.insertId;
 
-          const rolUsuario = {
-            rol_id: Number(user.rol_id),
-            usuario_id: usuarioId,
-            estado_cred: true
-          };
+            const rolUsuario = {
+              rol_id: Number(clientRole.rol_id),
+              usuario_id: usuarioId,
+              estado_cred: true
+            };
 
-          RolUsuario.create(rolUsuario, (errRol) => {
-            if (errRol) return result(errRol, null);
+            RolUsuario.create(rolUsuario, (errRol) => {
+              if (errRol) return result(errRol, null);
 
-            if (Number(user.rol_id) !== CLIENT_ROLE_ID) {
-              return result(null, { usuario_id: usuarioId, ...user });
-            }
+              const edad = dayjs().diff(user.cliente_fecha_nacimiento, 'year');
 
-            const edad = dayjs().diff(user.cliente_fecha_nacimiento, 'year');
+              const sqlCliente = `INSERT INTO CLIENTE(
+                cliente_id,
+                cliente_fecha_nacimiento,
+                cliente_edad
+              ) VALUES (?,?,?)`;
 
-            const sqlCliente = `INSERT INTO CLIENTE(
-              cliente_id,
-              cliente_fecha_nacimiento,
-              cliente_edad
-            ) VALUES (?,?,?)`;
+              db.query(
+                sqlCliente,
+                [usuarioId, user.cliente_fecha_nacimiento, edad],
+                (errCliente) => {
+                  if (errCliente) return result(errCliente, null);
 
-            db.query(
-              sqlCliente,
-              [usuarioId, user.cliente_fecha_nacimiento, edad],
-              (errCliente) => {
-                if (errCliente) return result(errCliente, null);
+                  const sqlTelefono = `INSERT INTO TELEFONO(
+                    telefono,
+                    usuario_id
+                  ) VALUES (?,?)`;
 
-                const sqlTelefono = `INSERT INTO TELEFONO(
-                  telefono,
-                  usuario_id
-                ) VALUES (?,?)`;
-
-                db.query(
-                  sqlTelefono,
-                  [user.usuario_telefono, usuarioId],
-                  (errTelefono) => {
-                    if (errTelefono) return result(errTelefono, null);
-                    return result(null, { usuario_id: usuarioId, ...user });
-                  }
-                );
-              }
-            );
-          });
-        }
-      );
+                  db.query(
+                    sqlTelefono,
+                    [user.usuario_telefono, usuarioId],
+                    (errTelefono) => {
+                      if (errTelefono) return result(errTelefono, null);
+                      return result(null, {
+                        usuario_id: usuarioId,
+                        rol_id: clientRole.rol_id,
+                        rol_nombre: clientRole.rol_nombre,
+                        ...user
+                      });
+                    }
+                  );
+                }
+              );
+            });
+          }
+        );
+      });
     });
   });
 };
@@ -311,7 +341,17 @@ Usuario.findByEmailWithRole = (email, result) => {
 
   db.query(sql, [email], (err, rows) => {
     if (err) return result(err, null);
-    result(null, rows[0]);
+    if (!rows[0]) {
+      return result(null, null);
+    }
+
+    result(null, {
+      ...rows[0],
+      rol_nombre:
+        normalizarRolNombre(rows[0].rol_nombre) === 'clieente'
+          ? 'Cliente'
+          : rows[0].rol_nombre
+    });
   });
 };
 

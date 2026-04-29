@@ -1,27 +1,37 @@
-import "../styles/PlanModal.css";
 import { useMemo, useState } from "react";
 import { authFetch } from "../../../utils/authFetch";
+import "../styles/PlanModal.css";
 
-const ENTIDADES_PSE = [
-  "Nequi",
-  "Daviplata",
+const PSE_ENTITIES = [
   "Bancolombia",
-  "Davivienda",
-  "BBVA",
+  "Bancoomeva",
+  "Banco Agrario de Colombia",
+  "Banco Caja Social",
   "Banco de Bogota",
-  "Banco Popular",
+  "Banco Cooperativo Coopcentral",
   "Banco AV Villas",
+  "BBVA Colombia",
+  "Banco Pichincha",
+  "Banco GNB Sudameris",
+  "Banco Falabella",
+  "Banco de Occidente",
+  "Banco Popular",
+  "Banco ProCredit",
+  "Santander",
+  "ItaU",
+  "Nequi",
+  "Banco Serfinanza",
+  "Confiar Cooperativa Financiera",
+  "DaviPlata",
+  "Citibank",
+  "CFA Cooperativa Financiera",
+  "Davivienda",
+  "RappiPay",
+  "Scotiabank Colpatria",
 ];
 
-const ENTIDADES_TARJETA = [
-  "Visa",
-  "Mastercard",
-  "American Express",
-  "Banco de Bogota",
-  "Bancolombia",
-  "Davivienda",
-  "BBVA",
-];
+const CARD_FRANCHISES = ["Visa", "Mastercard", "American Express", "Diners Club"];
+const CASH_LOCATIONS = ["Sede principal", "Sede norte", "Sede centro", "Sede sur"];
 
 function formatPrice(value) {
   const number = Number(value);
@@ -34,50 +44,33 @@ function formatPrice(value) {
   }).format(number);
 }
 
-function normalizeText(value) {
-  return (value || "")
+function getClientId() {
+  const rawCliente = localStorage.getItem("usuario_id");
+  const clienteId = Number(rawCliente);
+  return !clienteId || Number.isNaN(clienteId) ? null : clienteId;
+}
+
+function normalizePlanName(value) {
+  return String(value || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}
-
-function onlyDigits(value) {
-  return value.replace(/\D/g, "");
-}
-
-function formatCardNumber(value) {
-  return onlyDigits(value)
-    .slice(0, 16)
-    .replace(/(.{4})/g, "$1 ")
+    .toLowerCase()
     .trim();
 }
 
-function formatExpiry(value) {
-  const digits = onlyDigits(value).slice(0, 4);
-  if (digits.length <= 2) return digits;
-  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-}
-
-function buildPseReference(planId, clienteId) {
-  return `PSE-${planId}-${clienteId}-${Date.now().toString().slice(-6)}`;
-}
-
-export default function PlanModal({ plan, onClose }) {
+export default function PlanModal({ plan, onClose, onPurchaseSuccess, hasActivePlan = false }) {
   const [metodoPago, setMetodoPago] = useState("");
+  const [entidadPago, setEntidadPago] = useState("");
+  const [pseTipoCliente, setPseTipoCliente] = useState("persona_natural");
+  const [pseCorreo, setPseCorreo] = useState("");
+  const [titularPago, setTitularPago] = useState("");
+  const [ultimos4, setUltimos4] = useState("");
+  const [franquiciaTarjeta, setFranquiciaTarjeta] = useState("");
+  const [sedePago, setSedePago] = useState("");
   const [loading, setLoading] = useState(false);
   const [mostrarPago, setMostrarPago] = useState(false);
-  const [mostrarPasarelaPse, setMostrarPasarelaPse] = useState(false);
-  const [formPago, setFormPago] = useState({
-    entidadPse: "",
-    tipoTarjeta: "credito",
-    entidadTarjeta: "",
-    numeroTarjeta: "",
-    titularTarjeta: "",
-    vencimientoTarjeta: "",
-    cvvTarjeta: "",
-  });
-
-  if (!plan) return null;
+  const [error, setError] = useState("");
+  const [successData, setSuccessData] = useState(null);
 
   const productosPorPlan = {
     basico: ["Ataud basico", "Urna", "Traslado", "Preparacion"],
@@ -86,43 +79,114 @@ export default function PlanModal({ plan, onClose }) {
     vip: ["Ataud de lujo", "Urna exclusiva", "Servicios VIP"],
   };
 
-  const servicios = Array.isArray(plan.servicios) ? plan.servicios : [];
-  const productos = productosPorPlan[normalizeText(plan.plan_nombre)] || [];
-  const ultimos4 = useMemo(
-    () => onlyDigits(formPago.numeroTarjeta).slice(-4),
-    [formPago.numeroTarjeta]
-  );
+  const servicios = Array.isArray(plan?.servicios) ? plan.servicios : [];
+  const productos = productosPorPlan[normalizePlanName(plan?.plan_nombre)] || [];
 
-  const resumenTarjeta = useMemo(() => {
-    if (metodoPago !== "tarjeta") return "";
+  const paymentPreview = useMemo(() => {
+    if (!metodoPago) return "Selecciona un metodo de pago para ver el flujo correspondiente.";
 
-    const tipo = formPago.tipoTarjeta || "credito";
-    const entidad = formPago.entidadTarjeta || "Entidad por definir";
-    const numero = ultimos4 ? `**** ${ultimos4}` : "****";
-    return `Tarjeta ${tipo} - ${entidad} - ${numero}`;
-  }, [formPago.entidadTarjeta, formPago.tipoTarjeta, metodoPago, ultimos4]);
+    if (metodoPago === "pse") {
+      return entidadPago
+        ? `PSE con ${entidadPago}, perfil ${pseTipoCliente === "persona_juridica" ? "persona juridica" : "persona natural"}.`
+        : "Selecciona una entidad financiera PSE.";
+    }
 
-  const resumenEfectivo = useMemo(() => {
-    if (metodoPago !== "efectivo") return "";
-    return "Pago en efectivo en sede con soporte por correo";
-  }, [metodoPago]);
+    if (metodoPago === "debito") {
+      const ending = ultimos4 ? `terminada en ${ultimos4}` : "sin terminacion registrada";
+      return `Tarjeta debito de ${entidadPago || "entidad emisora"}, ${ending}.`;
+    }
 
-  const updatePagoField = (field, value) => {
-    setFormPago((current) => ({
-      ...current,
-      [field]: value,
-    }));
+    if (metodoPago === "credito") {
+      const ending = ultimos4 ? `terminada en ${ultimos4}` : "sin terminacion registrada";
+      return `Tarjeta credito ${franquiciaTarjeta || "sin franquicia"} de ${entidadPago || "entidad emisora"}, ${ending}.`;
+    }
+
+    return `Pago en efectivo en ${sedePago || "la sede seleccionada"}, pendiente por confirmar en caja.`;
+  }, [entidadPago, franquiciaTarjeta, metodoPago, pseTipoCliente, sedePago, ultimos4]);
+
+  if (!plan) return null;
+
+  const resetPaymentForm = () => {
+    setMetodoPago("");
+    setEntidadPago("");
+    setPseTipoCliente("persona_natural");
+    setPseCorreo("");
+    setTitularPago("");
+    setUltimos4("");
+    setFranquiciaTarjeta("");
+    setSedePago("");
+    setMostrarPago(false);
+    setError("");
+    setSuccessData(null);
   };
 
-  const enviarPago = async (payload) => {
-    const cliente_id = Number(localStorage.getItem("usuario_id"));
+  const handleClose = () => {
+    resetPaymentForm();
+    onClose();
+  };
+
+  const handleMethodChange = (value) => {
+    setMetodoPago(value);
+    setEntidadPago("");
+    setPseTipoCliente("persona_natural");
+    setPseCorreo("");
+    setTitularPago("");
+    setUltimos4("");
+    setFranquiciaTarjeta("");
+    setSedePago("");
+    setError("");
+  };
+
+  const validatePaymentForm = () => {
+    if (!metodoPago) return "Selecciona un metodo de pago.";
+
+    if (metodoPago === "pse") {
+      if (!entidadPago) return "Selecciona una entidad PSE.";
+      if (!pseCorreo) return "Ingresa el correo asociado al pago PSE.";
+      return "";
+    }
+
+    if (metodoPago === "debito") {
+      if (!entidadPago) return "Selecciona la entidad de la tarjeta debito.";
+      if (!titularPago) return "Ingresa el titular de la tarjeta debito.";
+      if (!/^\d{4}$/.test(ultimos4)) return "Ingresa los ultimos 4 digitos de la tarjeta debito.";
+      return "";
+    }
+
+    if (metodoPago === "credito") {
+      if (!entidadPago) return "Selecciona la entidad de la tarjeta credito.";
+      if (!titularPago) return "Ingresa el titular de la tarjeta credito.";
+      if (!franquiciaTarjeta) return "Selecciona la franquicia de la tarjeta credito.";
+      if (!/^\d{4}$/.test(ultimos4)) return "Ingresa los ultimos 4 digitos de la tarjeta credito.";
+      return "";
+    }
+
+    if (!sedePago) return "Selecciona la sede para el pago en efectivo.";
+    if (!titularPago) return "Ingresa la persona responsable del pago en efectivo.";
+    return "";
+  };
+
+  const handlePagar = async () => {
+    const cliente_id = getClientId();
 
     if (!cliente_id) {
-      alert("Usuario no identificado");
+      setError("No fue posible identificar al cliente autenticado.");
+      return;
+    }
+
+    if (hasActivePlan) {
+      setError("Ya tienes un plan activo registrado.");
+      return;
+    }
+
+    const validationError = validatePaymentForm();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
     setLoading(true);
+    setError("");
 
     try {
       const response = await authFetch("http://localhost:3001/api/client/contrato", {
@@ -130,364 +194,399 @@ export default function PlanModal({ plan, onClose }) {
         body: JSON.stringify({
           cliente_id,
           plan_id: plan.plan_id,
-          ...payload,
+          metodo_pago: metodoPago,
+          entidad_pago: entidadPago || null,
+          tipo_tarjeta: metodoPago === "credito" || metodoPago === "debito" ? metodoPago : null,
+          ultimos4: metodoPago === "credito" || metodoPago === "debito" ? ultimos4 : null,
+          pse_tipo_cliente: metodoPago === "pse" ? pseTipoCliente : null,
+          pse_correo: metodoPago === "pse" ? pseCorreo : null,
+          franquicia_tarjeta: metodoPago === "credito" ? franquiciaTarjeta : null,
+          titular_pago: metodoPago !== "pse" ? titularPago : null,
+          sede_pago: metodoPago === "efectivo" ? sedePago : null,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message);
+        throw new Error(data.message || "No fue posible registrar el pago.");
       }
 
-      if (payload.metodo_pago === "efectivo") {
-        const fechaPago = data.fecha_limite_pago
-          ? `\nFecha limite de pago: ${data.fecha_limite_pago}`
-          : "";
-        const avisoCorreo = data.advertencia_correo ? `\n${data.advertencia_correo}` : "";
-        alert(
-          `Acercate a una sede con el correo para realizar el pago.${fechaPago}${avisoCorreo}`
-        );
-      } else {
-        const detalle = data.pago_registrado ? `\n${data.pago_registrado}` : "";
-        alert(`Plan adquirido correctamente${detalle}`);
+      setSuccessData(data.data);
+
+      if (typeof onPurchaseSuccess === "function") {
+        onPurchaseSuccess(data.data);
       }
-      setMostrarPasarelaPse(false);
-      onClose();
-    } catch (error) {
-      console.error(error);
-      alert(error.message || "Error al procesar el pago");
+    } catch (requestError) {
+      console.error("Error registrando pago:", requestError);
+      setError(requestError.message || "No fue posible procesar la compra.");
     } finally {
       setLoading(false);
     }
   };
 
-  const confirmarPagoTarjeta = async () => {
-    if (!formPago.entidadTarjeta || !formPago.numeroTarjeta || !formPago.titularTarjeta) {
-      alert("Completa los datos principales de la tarjeta");
-      return;
-    }
-
-    if (onlyDigits(formPago.numeroTarjeta).length < 16) {
-      alert("La tarjeta debe tener 16 digitos");
-      return;
-    }
-
-    if (formPago.vencimientoTarjeta.length !== 5 || formPago.cvvTarjeta.length < 3) {
-      alert("Completa el vencimiento y el codigo de seguridad");
-      return;
-    }
-
-    await enviarPago({
-      metodo_pago: "tarjeta",
-      entidad_pago: formPago.entidadTarjeta,
-      tipo_tarjeta: formPago.tipoTarjeta,
-      ultimos4,
-    });
-  };
-
-  const abrirPasarelaPse = () => {
-    if (!formPago.entidadPse) {
-      alert("Selecciona una entidad PSE");
-      return;
-    }
-
-    setMostrarPasarelaPse(true);
-  };
-
-  const confirmarPagoPse = async () => {
-    const cliente_id = Number(localStorage.getItem("usuario_id"));
-    const referencia = buildPseReference(plan.plan_id, cliente_id);
-
-    await enviarPago({
-      metodo_pago: "pse",
-      entidad_pago: formPago.entidadPse,
-      referencia_pago: referencia,
-    });
-  };
-
-  const confirmarPagoEfectivo = async () => {
-    await enviarPago({
-      metodo_pago: "efectivo",
-    });
-  };
-
   return (
-    <>
-      <div className="plan-modal-overlay" onClick={onClose}>
-        <div className="plan-modal" onClick={(e) => e.stopPropagation()}>
-          <button className="plan-modal-close" onClick={onClose}>
-            X
-          </button>
+    <div className="plan-modal-overlay" onClick={handleClose}>
+      <div className="plan-modal" onClick={(event) => event.stopPropagation()}>
+        <button className="plan-modal-close" onClick={handleClose} type="button">
+          X
+        </button>
 
-          <div className="plan-modal-header">
-            <h2>{plan.plan_nombre}</h2>
-            <p>{plan.plan_descripcion}</p>
+        <div className="plan-modal-header">
+          <h2>{plan.plan_nombre}</h2>
+          <p>{plan.plan_descripcion || "Cobertura lista para ser adquirida desde tu panel."}</p>
+        </div>
+
+        <div className="plan-modal-price">
+          <span>Valor del plan</span>
+          <strong>{formatPrice(plan.plan_precio)}</strong>
+        </div>
+
+        {hasActivePlan && !successData ? (
+          <div className="plan-feedback warning">
+            Ya tienes un plan activo. No puedes adquirir un segundo plan hasta finalizar el actual.
           </div>
+        ) : null}
 
-          <div className="plan-modal-price">
-            <span>Valor del plan</span>
-            <strong>{formatPrice(plan.plan_precio)}</strong>
-          </div>
+        {error ? <div className="plan-feedback error">{error}</div> : null}
 
-          <div className="plan-section">
-            <h3>Servicios incluidos</h3>
-            {servicios.length > 0 ? (
-              <ul>
-                {servicios.map((s, i) => (
-                  <li key={i}>OK {s.nombre}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>No hay servicios disponibles</p>
-            )}
-          </div>
+        {successData ? (
+          <div className="plan-success-shell">
+            <h3>Pago registrado</h3>
+            <div className="plan-card-preview">
+              <span>Referencia</span>
+              <strong>{successData.pago?.pago_referencia || "Generada por el sistema"}</strong>
+              <small>{successData.pago?.pago_metodo}</small>
+            </div>
 
-          <div className="plan-section">
-            <h3>Productos incluidos</h3>
-            {productos.length > 0 ? (
-              <ul>
-                {productos.map((p, i) => (
-                  <li key={i}>OK {p}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>No hay productos disponibles</p>
-            )}
-          </div>
+            <div className="plan-grid">
+              <div className="plan-payment-preview">
+                <span>Estado</span>
+                <strong>{successData.pago?.pago_estado || "Registrado"}</strong>
+              </div>
+              <div className="plan-payment-preview">
+                <span>Contrato</span>
+                <strong>#{successData.contrato_id}</strong>
+              </div>
+            </div>
 
-          <div className="plan-section">
-            {!mostrarPago ? (
-              <button
-                className="plan-modal-button"
-                onClick={() => setMostrarPago(true)}
-              >
-                Adquirir plan
+            {successData.pago?.pago_fecha_limite ? (
+              <div className="plan-feedback info">
+                Pago en efectivo pendiente. Fecha limite: {successData.pago.pago_fecha_limite}
+              </div>
+            ) : null}
+
+            <div className="plan-success-actions">
+              <a className="plan-modal-button plan-modal-button-link" href="/client/plan">
+                Ver mi plan
+              </a>
+              <button className="plan-secondary-button" onClick={handleClose} type="button">
+                Cerrar
               </button>
-            ) : (
-              <>
-                <h3>Metodo de pago</h3>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="plan-section">
+              <h3>Servicios incluidos</h3>
+              {servicios.length > 0 ? (
+                <ul>
+                  {servicios.map((servicio) => (
+                    <li key={servicio.servicio_id || servicio.nombre}>{servicio.nombre || servicio.servicio_nombre}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No hay servicios disponibles para este plan.</p>
+              )}
+            </div>
 
-                <div className="plan-payment">
+            <div className="plan-section">
+              <h3>Productos incluidos</h3>
+              {productos.length > 0 ? (
+                <ul>
+                  {productos.map((producto) => (
+                    <li key={producto}>{producto}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No hay productos configurados para este plan.</p>
+              )}
+            </div>
+
+            <div className="plan-section">
+              {!mostrarPago ? (
+                <button
+                  className="plan-modal-button"
+                  onClick={() => setMostrarPago(true)}
+                  type="button"
+                  disabled={hasActivePlan}
+                >
+                  Adquirir plan
+                </button>
+              ) : (
+                <>
+                  <h3>Registrar pago</h3>
+                  <label className="plan-payment-label" htmlFor="metodoPago">
+                    Metodo de pago
+                  </label>
                   <select
+                    id="metodoPago"
                     value={metodoPago}
-                    onChange={(e) => setMetodoPago(e.target.value)}
+                    onChange={(event) => handleMethodChange(event.target.value)}
                     className="plan-select"
                   >
-                    <option value="">Seleccionar metodo</option>
+                    <option value="">Selecciona un metodo</option>
                     <option value="pse">PSE</option>
-                    <option value="tarjeta">Tarjeta</option>
-                    <option value="efectivo">Efectivo</option>
+                    <option value="debito">Tarjeta debito</option>
+                    <option value="credito">Tarjeta credito</option>
+                    <option value="efectivo">Efectivo en sede</option>
                   </select>
 
-                  {metodoPago === "pse" && (
-                    <div className="plan-payment-fields">
-                      <p className="plan-payment-label">
-                        Seras redirigido a una pasarela tipo PSE para continuar.
-                      </p>
-
-                      <select
-                        value={formPago.entidadPse}
-                        onChange={(e) => updatePagoField("entidadPse", e.target.value)}
-                        className="plan-select"
-                      >
-                        <option value="">Seleccionar entidad PSE</option>
-                        {ENTIDADES_PSE.map((entidad) => (
-                          <option key={entidad} value={entidad}>
-                            {entidad}
-                          </option>
-                        ))}
-                      </select>
-
-                      <div className="plan-payment-preview">
-                        <span>Canal seleccionado</span>
-                        <strong>
-                          {formPago.entidadPse
-                            ? `PSE - ${formPago.entidadPse}`
-                            : "Aun no has elegido entidad"}
-                        </strong>
-                      </div>
-
-                      <button
-                        className="plan-modal-button"
-                        onClick={abrirPasarelaPse}
-                        disabled={loading}
-                      >
-                        Ir a PSE
-                      </button>
-                    </div>
-                  )}
-
-                  {metodoPago === "tarjeta" && (
+                  {metodoPago === "pse" ? (
                     <div className="plan-payment-fields">
                       <div className="plan-grid">
                         <div>
-                          <label className="plan-payment-label">Tipo de tarjeta</label>
+                          <label className="plan-payment-label" htmlFor="entidadPse">
+                            Entidad financiera
+                          </label>
                           <select
-                            value={formPago.tipoTarjeta}
-                            onChange={(e) =>
-                              updatePagoField("tipoTarjeta", e.target.value)
-                            }
+                            id="entidadPse"
+                            value={entidadPago}
+                            onChange={(event) => setEntidadPago(event.target.value)}
                             className="plan-select"
                           >
-                            <option value="credito">Credito</option>
-                            <option value="debito">Debito</option>
+                            <option value="">Selecciona tu entidad</option>
+                            {PSE_ENTITIES.map((entity) => (
+                              <option key={entity} value={entity}>
+                                {entity}
+                              </option>
+                            ))}
                           </select>
                         </div>
 
                         <div>
-                          <label className="plan-payment-label">Entidad</label>
+                          <label className="plan-payment-label" htmlFor="pseTipoCliente">
+                            Tipo de cliente PSE
+                          </label>
                           <select
-                            value={formPago.entidadTarjeta}
-                            onChange={(e) =>
-                              updatePagoField("entidadTarjeta", e.target.value)
-                            }
+                            id="pseTipoCliente"
+                            value={pseTipoCliente}
+                            onChange={(event) => setPseTipoCliente(event.target.value)}
                             className="plan-select"
                           >
-                            <option value="">Seleccionar entidad</option>
-                            {ENTIDADES_TARJETA.map((entidad) => (
-                              <option key={entidad} value={entidad}>
-                                {entidad}
+                            <option value="persona_natural">Persona natural</option>
+                            <option value="persona_juridica">Persona juridica</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <label className="plan-payment-label" htmlFor="pseCorreo">
+                        Correo del pagador
+                      </label>
+                      <input
+                        id="pseCorreo"
+                        className="plan-input"
+                        type="email"
+                        placeholder="correo@ejemplo.com"
+                        value={pseCorreo}
+                        onChange={(event) => setPseCorreo(event.target.value)}
+                      />
+                    </div>
+                  ) : null}
+
+                  {metodoPago === "debito" ? (
+                    <div className="plan-payment-fields">
+                      <div className="plan-grid">
+                        <div>
+                          <label className="plan-payment-label" htmlFor="debitoEntidad">
+                            Banco emisor
+                          </label>
+                          <select
+                            id="debitoEntidad"
+                            value={entidadPago}
+                            onChange={(event) => setEntidadPago(event.target.value)}
+                            className="plan-select"
+                          >
+                            <option value="">Selecciona el banco</option>
+                            {PSE_ENTITIES.map((entity) => (
+                              <option key={entity} value={entity}>
+                                {entity}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="plan-payment-label" htmlFor="debitoUltimos4">
+                            Ultimos 4 digitos
+                          </label>
+                          <input
+                            id="debitoUltimos4"
+                            className="plan-input"
+                            inputMode="numeric"
+                            maxLength={4}
+                            placeholder="1234"
+                            value={ultimos4}
+                            onChange={(event) => setUltimos4(event.target.value.replace(/\D/g, "").slice(0, 4))}
+                          />
+                        </div>
+                      </div>
+
+                      <label className="plan-payment-label" htmlFor="debitoTitular">
+                        Titular de la tarjeta
+                      </label>
+                      <input
+                        id="debitoTitular"
+                        className="plan-input"
+                        placeholder="Nombre completo"
+                        value={titularPago}
+                        onChange={(event) => setTitularPago(event.target.value)}
+                      />
+                    </div>
+                  ) : null}
+
+                  {metodoPago === "credito" ? (
+                    <div className="plan-payment-fields">
+                      <div className="plan-grid">
+                        <div>
+                          <label className="plan-payment-label" htmlFor="creditoEntidad">
+                            Banco emisor
+                          </label>
+                          <select
+                            id="creditoEntidad"
+                            value={entidadPago}
+                            onChange={(event) => setEntidadPago(event.target.value)}
+                            className="plan-select"
+                          >
+                            <option value="">Selecciona el banco</option>
+                            {PSE_ENTITIES.map((entity) => (
+                              <option key={entity} value={entity}>
+                                {entity}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="plan-payment-label" htmlFor="creditoFranquicia">
+                            Franquicia
+                          </label>
+                          <select
+                            id="creditoFranquicia"
+                            value={franquiciaTarjeta}
+                            onChange={(event) => setFranquiciaTarjeta(event.target.value)}
+                            className="plan-select"
+                          >
+                            <option value="">Selecciona la franquicia</option>
+                            {CARD_FRANCHISES.map((franchise) => (
+                              <option key={franchise} value={franchise}>
+                                {franchise}
                               </option>
                             ))}
                           </select>
                         </div>
                       </div>
 
-                      <label className="plan-payment-label">Numero de tarjeta</label>
-                      <input
-                        className="plan-input"
-                        value={formPago.numeroTarjeta}
-                        onChange={(e) =>
-                          updatePagoField("numeroTarjeta", formatCardNumber(e.target.value))
-                        }
-                        placeholder="1234 5678 9012 3456"
-                      />
-
-                      <label className="plan-payment-label">Titular</label>
-                      <input
-                        className="plan-input"
-                        value={formPago.titularTarjeta}
-                        onChange={(e) =>
-                          updatePagoField("titularTarjeta", e.target.value.toUpperCase())
-                        }
-                        placeholder="NOMBRE DEL TITULAR"
-                      />
-
                       <div className="plan-grid">
                         <div>
-                          <label className="plan-payment-label">Vence</label>
+                          <label className="plan-payment-label" htmlFor="creditoTitular">
+                            Titular de la tarjeta
+                          </label>
                           <input
+                            id="creditoTitular"
                             className="plan-input"
-                            value={formPago.vencimientoTarjeta}
-                            onChange={(e) =>
-                              updatePagoField(
-                                "vencimientoTarjeta",
-                                formatExpiry(e.target.value)
-                              )
-                            }
-                            placeholder="MM/AA"
+                            placeholder="Nombre completo"
+                            value={titularPago}
+                            onChange={(event) => setTitularPago(event.target.value)}
                           />
                         </div>
 
                         <div>
-                          <label className="plan-payment-label">CVV</label>
+                          <label className="plan-payment-label" htmlFor="creditoUltimos4">
+                            Ultimos 4 digitos
+                          </label>
                           <input
+                            id="creditoUltimos4"
                             className="plan-input"
-                            value={formPago.cvvTarjeta}
-                            onChange={(e) =>
-                              updatePagoField(
-                                "cvvTarjeta",
-                                onlyDigits(e.target.value).slice(0, 4)
-                              )
-                            }
-                            placeholder="123"
+                            inputMode="numeric"
+                            maxLength={4}
+                            placeholder="1234"
+                            value={ultimos4}
+                            onChange={(event) => setUltimos4(event.target.value.replace(/\D/g, "").slice(0, 4))}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {metodoPago === "efectivo" ? (
+                    <div className="plan-payment-fields">
+                      <div className="plan-grid">
+                        <div>
+                          <label className="plan-payment-label" htmlFor="sedePago">
+                            Sede de pago
+                          </label>
+                          <select
+                            id="sedePago"
+                            value={sedePago}
+                            onChange={(event) => setSedePago(event.target.value)}
+                            className="plan-select"
+                          >
+                            <option value="">Selecciona una sede</option>
+                            {CASH_LOCATIONS.map((location) => (
+                              <option key={location} value={location}>
+                                {location}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="plan-payment-label" htmlFor="efectivoResponsable">
+                            Responsable del pago
+                          </label>
+                          <input
+                            id="efectivoResponsable"
+                            className="plan-input"
+                            placeholder="Nombre completo"
+                            value={titularPago}
+                            onChange={(event) => setTitularPago(event.target.value)}
                           />
                         </div>
                       </div>
 
-                      <div className="plan-card-preview">
-                        <span>Resumen del medio de pago</span>
-                        <strong>{resumenTarjeta}</strong>
-                        <small>
-                          {formPago.titularTarjeta || "Titular pendiente"}
-                        </small>
+                      <div className="plan-feedback info">
+                        El pago en efectivo quedara pendiente y se registrara con fecha limite para realizarlo en sede.
                       </div>
-
-                      <button
-                        className="plan-modal-button"
-                        onClick={confirmarPagoTarjeta}
-                        disabled={loading}
-                      >
-                        {loading ? "Procesando..." : "Pagar con tarjeta"}
-                      </button>
                     </div>
-                  )}
+                  ) : null}
 
-                  {metodoPago === "efectivo" && (
-                    <div className="plan-payment-fields">
-                      <p className="plan-payment-label">
-                        Te enviaremos un correo con la informacion del plan y la fecha
-                        maxima para acercarte a pagar en una sede.
-                      </p>
+                  <div className="plan-payment-preview">
+                    <span>Resumen del canal</span>
+                    <strong>{paymentPreview}</strong>
+                  </div>
 
-                      <div className="plan-payment-preview">
-                        <span>Resumen del medio de pago</span>
-                        <strong>{resumenEfectivo}</strong>
-                      </div>
-
-                      <button
-                        className="plan-modal-button"
-                        onClick={confirmarPagoEfectivo}
-                        disabled={loading}
-                      >
-                        {loading ? "Registrando..." : "Reservar pago en efectivo"}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {mostrarPasarelaPse && (
-        <div
-          className="payment-modal-backdrop"
-          onClick={() => {
-            if (!loading) setMostrarPasarelaPse(false);
-          }}
-        >
-          <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Pasarela PSE</h3>
-            <p>Entidad: {formPago.entidadPse}</p>
-            <p>Plan: {plan.plan_nombre}</p>
-            <p>Valor: {formatPrice(plan.plan_precio)}</p>
-            <p>
-              Simulacion de redireccion PSE: al continuar se registrara el pago
-              como si hubiera sido aprobado por la entidad seleccionada.
-            </p>
-
-            <div className="payment-modal-actions">
-              <button
-                className="payment-modal-cancel"
-                onClick={() => setMostrarPasarelaPse(false)}
-                disabled={loading}
-              >
-                Volver
-              </button>
-              <button
-                className="plan-modal-button"
-                onClick={confirmarPagoPse}
-                disabled={loading}
-              >
-                {loading ? "Conectando..." : "Continuar y pagar"}
-              </button>
+                  <div className="plan-action-row">
+                    <button
+                      className="plan-secondary-button"
+                      onClick={() => {
+                        setMostrarPago(false);
+                        handleMethodChange("");
+                      }}
+                      type="button"
+                    >
+                      Volver
+                    </button>
+                    <button className="plan-modal-button" onClick={handlePagar} disabled={loading} type="button">
+                      {loading ? "Registrando..." : "Confirmar y registrar pago"}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
-          </div>
-        </div>
-      )}
-    </>
+          </>
+        )}
+      </div>
+    </div>
   );
 }

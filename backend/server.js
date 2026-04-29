@@ -10,6 +10,7 @@
   const planFunebreRoutes = require('./routes/planFunebreRoutes');
   const clientPlanRoutes = require("./routes/client/clientPlan.routes");
   const clientContratoRoutes = require("./routes/client/clientContrato.routes");
+  const clientAffiliateRoutes = require("./routes/client/clientAffiliate.routes");
 
 
   const app = express();
@@ -31,6 +32,7 @@
   app.use('/api/planes', planFunebreRoutes);
   app.use("/api/client/plans", clientPlanRoutes);
   app.use("/api/client/contrato", clientContratoRoutes);
+  app.use("/api/client/affiliates", clientAffiliateRoutes);
 
   // Endpoints de prueba
   app.get('/', (req, res) => {
