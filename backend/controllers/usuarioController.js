@@ -8,7 +8,7 @@ module.exports = {
     async register(req, res) {
         const usuario = req.body;
 
-        // normalizar correo a minúsculas
+        
         usuario.usuario_correo = usuario.usuario_correo.toLowerCase();
 
         Usuario.create(usuario, (err, data) => {
@@ -91,10 +91,6 @@ module.exports = {
                 usuario:{
                     usuario_id: user.usuario_id,
                     usuario_correo: user.usuario_correo,
-                    usuario_primer_nombre: user.usuario_primer_nombre,
-                    usuario_segundo_nombre: user.usuario_segundo_nombre,
-                    usuario_primer_apellido: user.usuario_primer_apellido,
-                    usuario_segundo_apellido: user.usuario_segundo_apellido,
                 }
             });
 
@@ -128,16 +124,6 @@ module.exports = {
 
     getUsuarioById(req, res) {
         const id = req.params.id;
-        const userId = req.user?.usuario_id || req.user?.id;
-        const userRole = req.user?.role;
-
-        if (userRole === 'Cliente' && Number(id) !== Number(userId)) {
-            return res.status(403).json({
-                success: false,
-                message: 'No tienes permiso para consultar este usuario'
-            });
-        }
-
         Usuario.findById(id, (err, user) => {
             if (err) return res.status(501).json({ success: false, message: 'Error al consultar el usuario', error: err });
             if (!user) return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
@@ -157,15 +143,6 @@ module.exports = {
     getUsuarioUpdate(req, res) {
     const id = req.params.id;
     const usuario = req.body;
-    const userId = req.user?.usuario_id || req.user?.id;
-    const userRole = req.user?.role;
-
-    if (userRole === 'Cliente' && Number(id) !== Number(userId)) {
-        return res.status(403).json({
-            success: false,
-            message: 'No tienes permiso para actualizar este usuario'
-        });
-    }
 
     Usuario.update(id, usuario, (err, data) => {
         if (err) {

@@ -330,6 +330,180 @@
   margin-top: 22px;
 }
 
+.client-kicker {
+  margin: 0 0 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a63d2;
+}
+
+.client-empty-state {
+  padding: 48px 24px;
+  text-align: center;
+  color: #8a7aaa;
+  font-size: 1rem;
+}
+
+.client-primary-button {
+  padding: 12px 24px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #7a4cff 0%, #4d2a99 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.client-primary-button:hover:not(:disabled) { opacity: 0.88; }
+.client-primary-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.client-secondary-button {
+  padding: 12px 24px;
+  border-radius: 14px;
+  border: 1px solid rgba(121, 91, 194, 0.35);
+  background: transparent;
+  color: #5a3fa0;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.client-secondary-button:hover { background: rgba(121, 91, 194, 0.06); }
+
+/* ─── Plan actions ───────────────────────────────────────────────────────────── */
+.plan-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+
+.plan-btn-upgrade {
+  padding: 12px 24px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #7a4cff 0%, #4d2a99 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.plan-btn-upgrade:hover:not(:disabled) { opacity: 0.88; }
+.plan-btn-upgrade:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.plan-btn-cancel {
+  padding: 12px 24px;
+  border-radius: 14px;
+  border: 1px solid rgba(192, 57, 43, 0.4);
+  background: transparent;
+  color: #c0392b;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.plan-btn-cancel:hover:not(:disabled) { background: rgba(255, 80, 80, 0.06); }
+.plan-btn-cancel:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── Plan modal ─────────────────────────────────────────────────────────────── */
+.plan-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 5, 28, 0.55);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.plan-modal-box {
+  background: #fff;
+  border-radius: 22px;
+  padding: 32px 28px;
+  width: min(440px, 100%);
+  box-shadow: 0 24px 60px rgba(74, 47, 139, 0.28);
+}
+
+.plan-modal-box h3 {
+  margin: 0 0 6px;
+  color: #2f1d57;
+}
+
+.plan-modal-box > p {
+  margin: 0 0 18px;
+  color: #6f6789;
+  font-size: 0.9rem;
+}
+
+.plan-modal-plans {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.plan-modal-option {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 2px solid rgba(121, 91, 194, 0.18);
+  background: #f7f3ff;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.plan-modal-option:hover,
+.plan-modal-option.selected {
+  border-color: #7a4cff;
+  background: #f0e8ff;
+}
+
+.plan-modal-option strong {
+  display: block;
+  color: #2f1d57;
+  margin-bottom: 2px;
+}
+
+.plan-modal-option span {
+  color: #7a4cff;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.plan-modal-option small {
+  display: block;
+  color: #6f6789;
+  margin-top: 4px;
+  font-size: 0.82rem;
+}
+
+.plan-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.plan-msg {
+  margin: 14px 0 0;
+  padding: 13px 16px;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.plan-msg.success { background: #e9f8f1; color: #2e7b59; }
+.plan-msg.error   { background: #ffe8ef; color: #8c3353; }
+
 .affiliates-shell {
   display: grid;
   gap: 22px;

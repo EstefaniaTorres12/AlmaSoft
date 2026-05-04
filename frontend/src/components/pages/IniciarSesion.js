@@ -8,7 +8,6 @@ const IniciarSesion = () => {
     usuario_credencial: ""
   });
 
-  const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [mensajeError, setMensajeError] = useState("");
 
   const handleChange = (e) => {
@@ -32,37 +31,47 @@ const IniciarSesion = () => {
       });
 
       const data = await response.json();
-      
-      console.log("RESPUESTA BACKEND ", data);
+      console.log("🔵 RESPUESTA BACKEND:", data);
 
       if (!data.success) {
         setMensajeError(data.message || "Credenciales incorrectas");
         return;
       }
 
-      // guardar token y rol
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("rol", data.rol);
-      localStorage.setItem("usuario_id", data.usuario.usuario_id);
-      localStorage.setItem("usuario", JSON.stringify(data.usuario));
+   
+      const usuario_id =
+        data.usuario?.usuario_id ||
+        data.data?.usuario_id ||
+        data.usuario_id;
 
-  
-      setTimeout(() => {
-        if (data.rol === "Administrador") {
-          window.location.href = "/usuarios";
-        } else if (data.rol === "Asesor") {
-          window.location.href = "/admin/afiliaciones";
-        } else if (data.rol === "Cliente") {
-          window.location.href = "/client";
-        } else if (data.rol === "Afiliado") {
-          window.location.href = "/client/afiliados";
-        } else {
-          window.location.href = "/";
-        }
-      }, 1000);
+      console.log(" usuario_id detectado:", usuario_id);
+
+      if (!usuario_id) {
+        alert(" Error: el backend no envió el usuario_id");
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("usuario_id", String(usuario_id));
+      localStorage.setItem("rol", data.rol);
+
+      console.log(" localStorage guardado:", {
+        token: data.token,
+        usuario_id: String(usuario_id),
+        rol: data.rol
+      });
+
+      
+      if (data.rol === "Administrador") {
+        window.location.href = "/usuarios";
+      } else if (data.rol === "Cliente") {
+        window.location.href = "/client";
+      } else {
+        window.location.href = "/";
+      }
 
     } catch (error) {
-      console.error("Error al iniciar sesión:", error);
+      console.error(" Error al iniciar sesión:", error);
       setMensajeError("Error de conexión con el servidor");
     }
   };
@@ -74,7 +83,6 @@ const IniciarSesion = () => {
         backgroundImage: `url(/img/3302177.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
         display: "flex",
         justifyContent: "center",
         alignItems: "center"
@@ -87,16 +95,6 @@ const IniciarSesion = () => {
               Iniciar Sesión
             </h1>
 
-            {mostrarAlerta && (
-              <Alert
-                variant="success"
-                onClose={() => setMostrarAlerta(false)}
-                dismissible
-              >
-                Inicio de sesión exitoso
-              </Alert>
-            )}
-
             {mensajeError && (
               <Alert variant="danger">
                 {mensajeError}
@@ -106,26 +104,24 @@ const IniciarSesion = () => {
 
           <Card.Body>
             <Form onSubmit={enviarDatos}>
-              <Form.Group className="mb-3" controlId="usuario_correo">
+              <Form.Group className="mb-3">
                 <Form.Label>Correo</Form.Label>
                 <Form.Control
                   type="email"
                   name="usuario_correo"
                   value={formData.usuario_correo}
                   onChange={handleChange}
-                  placeholder="Digite su correo"
                   required
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="usuario_credencial">
+              <Form.Group className="mb-3">
                 <Form.Label>Contraseña</Form.Label>
                 <Form.Control
                   type="password"
                   name="usuario_credencial"
                   value={formData.usuario_credencial}
                   onChange={handleChange}
-                  placeholder="Digite su contraseña"
                   required
                 />
               </Form.Group>

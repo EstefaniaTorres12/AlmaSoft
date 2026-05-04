@@ -36,12 +36,7 @@ INSERT INTO ROL (rol_nombre) VALUES
 ('Cliente'),
 ('Afiliado');
 
-/*
-Credenciales funcionales para probar:
-- admin@almasoft.com / admin123
-- cliente@almasoft.com / cliente123
-- clienteplan@almasoft.com / cliente456
-*/
+
 INSERT INTO USUARIO (
   usuario_primer_nombre,
   usuario_segundo_nombre,

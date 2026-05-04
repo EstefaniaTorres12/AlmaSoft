@@ -150,3 +150,60 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Confirmación de cierre de sesión ──────────────────────────────────────── */
+.sidebar-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 5, 28, 0.6);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.sidebar-confirm-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px 28px;
+  width: min(340px, 100%);
+  box-shadow: 0 20px 50px rgba(74, 47, 139, 0.25);
+  text-align: center;
+}
+
+.sidebar-confirm-box p {
+  color: #2f1d57;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 22px;
+}
+
+.sidebar-confirm-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.sidebar-confirm-yes {
+  padding: 10px 24px;
+  border-radius: 13px;
+  border: none;
+  background: linear-gradient(135deg, #7a4cff 0%, #4d2a99 100%);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.sidebar-confirm-yes:hover { opacity: 0.88; }
+
+.sidebar-confirm-no {
+  padding: 10px 24px;
+  border-radius: 13px;
+  border: 1px solid rgba(121, 91, 194, 0.35);
+  background: transparent;
+  color: #5a3fa0;
+  font-weight: 600;
+  cursor: pointer;
+}

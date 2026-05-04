@@ -2,127 +2,131 @@ import { useEffect, useState } from "react";
 import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/clientPages.css";
+import "../styles/tienda.css";
 
-function formatDate(value) {
+const API = "http://localhost:3001";
+
+function formatFecha(value) {
   if (!value) return "Sin fecha";
-  return new Date(value).toLocaleString("es-CO");
+  return new Date(value).toLocaleDateString("es-CO", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
-function paymentChannel(payment) {
-  if (payment.pago_tipo_tarjeta) {
-    return `Tarjeta ${payment.pago_tipo_tarjeta}`;
-  }
-
-  if (payment.pago_entidad) {
-    return payment.pago_entidad;
-  }
-
-  if ((payment.pago_metodo || "").toLowerCase().includes("efectivo")) {
-    return "Pago en sede";
-  }
-
-  return "Canal registrado";
+function clasificarPago(metodo) {
+  const m = (metodo || "").toLowerCase();
+  if (m.startsWith("tienda"))   return { label: "Tienda",   color: "#3a7bd5", bg: "#e8f0ff" };
+  if (m.startsWith("servicio")) return { label: "Servicio", color: "#6a5acd", bg: "#f0eeff" };
+  return                               { label: "Plan",     color: "#2e7b59", bg: "#e1f5e9" };
 }
 
 export default function Pagos() {
+  const [pagos, setPagos]     = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [planData, setPlanData] = useState(null);
+  const [error, setError]     = useState("");
 
   useEffect(() => {
-    authFetch("http://localhost:3001/api/client/contrato/mine")
-      .then(async (response) => {
-        const data = await response.json();
-
-        if (response.status === 404) {
-          return null;
-        }
-
-        if (!response.ok || !data.success) {
-          throw new Error(data.message || "No fue posible cargar los pagos.");
-        }
-
-        return data.data;
-      })
+    authFetch(`${API}/api/client/store/pagos/historial`)
+      .then((r) => r.json())
       .then((data) => {
-        setPlanData(data);
-        setError("");
+        if (data.success) setPagos(data.data);
+        else setError(data.message || "No fue posible cargar el historial.");
       })
-      .catch((requestError) => {
-        console.error(requestError);
-        setPlanData(null);
-        setError(requestError.message || "No fue posible consultar los pagos.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .catch(() => setError("Error al cargar el historial."))
+      .finally(() => setLoading(false));
   }, []);
 
-  const payments = planData?.pagos || [];
+  const totalTienda   = pagos.filter((p) => p.pago_metodo?.toLowerCase().startsWith("tienda")).length;
+  const totalServicio = pagos.filter((p) => p.pago_metodo?.toLowerCase().startsWith("servicio")).length;
+  const totalPlan     = pagos.length - totalTienda - totalServicio;
 
   return (
     <ClientLayout>
       <section className="client-page-shell">
+
         <div className="client-page-header">
           <p className="client-kicker">Seguimiento financiero</p>
           <h1>Pagos</h1>
-          <p>
-            Consulta las referencias registradas para tu plan, el estado de cada pago y el canal utilizado para la
-            compra.
-          </p>
+          <p>Historial completo: plan, productos comprados y servicios solicitados.</p>
         </div>
 
-        {loading ? <div className="client-empty-state">Cargando pagos...</div> : null}
+        {loading && <div className="client-empty-state">Cargando historial...</div>}
+        {!loading && error && <div className="client-empty-state">{error}</div>}
 
-        {!loading && error ? <div className="client-empty-state">{error}</div> : null}
+        {!loading && !error && pagos.length === 0 && (
+          <div className="client-empty-state">No tienes pagos registrados aun.</div>
+        )}
 
-        {!loading && !error && !planData ? (
-          <div className="client-empty-state">Aun no tienes un plan adquirido con pagos registrados.</div>
-        ) : null}
-
-        {!loading && !error && planData ? (
+        {!loading && !error && pagos.length > 0 && (
           <>
-            <div className="client-info-grid">
-              <article className="client-info-card">
-                <h3>Plan asociado</h3>
-                <p>{planData.plan_nombre}</p>
-              </article>
-              <article className="client-info-card">
-                <h3>Contrato</h3>
-                <p>#{planData.contrato_id}</p>
-              </article>
+            {/* Resumen */}
+            <div className="client-info-grid" style={{ marginBottom: "22px" }}>
               <article className="client-info-card">
                 <h3>Total de registros</h3>
-                <p>{payments.length}</p>
+                <strong style={{ display: "block", fontSize: "2rem", color: "#342157", marginTop: "6px" }}>
+                  {pagos.length}
+                </strong>
+              </article>
+              <article className="client-info-card">
+                <h3>Pagos de plan</h3>
+                <strong style={{ display: "block", fontSize: "2rem", color: "#2e7b59", marginTop: "6px" }}>
+                  {totalPlan}
+                </strong>
+              </article>
+              <article className="client-info-card">
+                <h3>Compras en tienda</h3>
+                <strong style={{ display: "block", fontSize: "2rem", color: "#3a7bd5", marginTop: "6px" }}>
+                  {totalTienda}
+                </strong>
+              </article>
+              <article className="client-info-card">
+                <h3>Servicios solicitados</h3>
+                <strong style={{ display: "block", fontSize: "2rem", color: "#6a5acd", marginTop: "6px" }}>
+                  {totalServicio}
+                </strong>
               </article>
             </div>
 
+            {/* Historial */}
             <section className="client-info-card payments-shell">
-              <h3>Historial registrado</h3>
-              {payments.length ? (
-                <div className="plan-payments-list">
-                  {payments.map((payment) => (
-                    <article className="plan-payment-item payment-item-stacked" key={payment.pago_id}>
+              <h3>Historial completo</h3>
+              <div className="plan-payments-list">
+                {pagos.map((p) => {
+                  const tipo = clasificarPago(p.pago_metodo);
+                  return (
+                    <article key={p.pago_id} className="plan-payment-item payment-item-stacked">
                       <div className="plan-payment-copy">
-                        <strong>{payment.pago_metodo}</strong>
-                        <span>Canal: {paymentChannel(payment)}</span>
-                        <span>Referencia: {payment.pago_referencia || "No disponible"}</span>
-                        <span>Estado: {payment.pago_estado || "Registrado"}</span>
-                        {payment.pago_fecha_limite ? (
-                          <span>Fecha limite: {formatDate(payment.pago_fecha_limite)}</span>
-                        ) : null}
-                        {payment.pago_observacion ? <span>{payment.pago_observacion}</span> : null}
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                          <span
+                            style={{
+                              padding: "3px 12px",
+                              borderRadius: "20px",
+                              background: tipo.bg,
+                              color: tipo.color,
+                              fontWeight: 700,
+                              fontSize: "0.78rem",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {tipo.label}
+                          </span>
+                          <strong style={{ color: "#2f1d57", fontSize: "0.9rem" }}>{p.pago_metodo}</strong>
+                        </div>
+                        <span>Contrato #{p.contrato_id}</span>
+                        {p.plan_nombre && <span>Plan: {p.plan_nombre}</span>}
                       </div>
-                      <span>{formatDate(payment.pago_fecha)}</span>
+                      <span style={{ whiteSpace: "nowrap", color: "#6f6789", fontSize: "0.9rem" }}>
+                        {formatFecha(p.pago_fecha)}
+                      </span>
                     </article>
-                  ))}
-                </div>
-              ) : (
-                <p>No hay pagos registrados para este contrato.</p>
-              )}
+                  );
+                })}
+              </div>
             </section>
           </>
-        ) : null}
+        )}
       </section>
     </ClientLayout>
   );

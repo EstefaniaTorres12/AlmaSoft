@@ -17,6 +17,7 @@ const NAV_ITEMS = [
 export default function SidebarClient() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [confirmLogout, setConfirmLogout] = useState(false);
   const [usuario, setUsuario] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("usuario")) || {};
@@ -71,54 +72,68 @@ export default function SidebarClient() {
     : NAV_ITEMS;
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-brand">
-        <img src="/img/logoAS.png" alt="AlmaSoft" className="sidebar-brand-logo" />
-        <div>
-          <p className="sidebar-kicker">Panel cliente</p>
-          <h2 className="sidebar-title">AlmaSoft</h2>
+    <>
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <img src="/img/logoAS.png" alt="AlmaSoft" className="sidebar-brand-logo" />
+          <div>
+            <p className="sidebar-kicker">Panel cliente</p>
+            <h2 className="sidebar-title">AlmaSoft</h2>
+          </div>
         </div>
-      </div>
 
-      <div className="sidebar-profile-card">
-        <img src={profilePhoto} alt="Perfil" className="sidebar-avatar" />
-        <div>
-          <strong>{nombreCorto}</strong>
-          <p>{usuario.usuario_correo || "Gestiona tus planes, pagos y acompanamiento"}</p>
+        <div className="sidebar-profile-card">
+          <img src={profilePhoto} alt="Perfil" className="sidebar-avatar" />
+          <div>
+            <strong>{nombreCorto}</strong>
+            <p>{usuario.usuario_correo || "Gestiona tus planes, pagos y acompanamiento"}</p>
+          </div>
         </div>
-      </div>
 
-      <nav className="sidebar-nav">
-        {items.map((item) => {
-          const active =
-            item.path === "/client"
-              ? location.pathname === item.path
-              : location.pathname.startsWith(item.path);
+        <nav className="sidebar-nav">
+          {items.map((item) => {
+            const active =
+              item.path === "/client"
+                ? location.pathname === item.path
+                : location.pathname.startsWith(item.path);
 
-          return (
-            <button
-              key={item.path}
-              type="button"
-              className={`sidebar-item ${active ? "is-active" : ""}`}
-              onClick={() => navigate(item.path)}
-            >
-              <span className="sidebar-item-icon">{item.icon}</span>
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
+            return (
+              <button
+                key={item.path}
+                type="button"
+                className={`sidebar-item ${active ? "is-active" : ""}`}
+                onClick={() => navigate(item.path)}
+              >
+                <span className="sidebar-item-icon">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
 
-      <div className="sidebar-footer">
-        <button
-          type="button"
-          className="sidebar-item sidebar-logout"
-          onClick={cerrarSesion}
-        >
-          <span className="sidebar-item-icon">Salir</span>
-          <span>Cerrar sesion</span>
-        </button>
-      </div>
-    </aside>
+        <div className="sidebar-footer">
+          <button
+            type="button"
+            className="sidebar-item sidebar-logout"
+            onClick={() => setConfirmLogout(true)}
+          >
+            <span className="sidebar-item-icon">Salir</span>
+            <span>Cerrar sesion</span>
+          </button>
+        </div>
+      </aside>
+
+      {confirmLogout && (
+        <div className="sidebar-confirm-overlay" onClick={() => setConfirmLogout(false)}>
+          <div className="sidebar-confirm-box" onClick={(e) => e.stopPropagation()}>
+            <p>¿Deseas cerrar sesion?</p>
+            <div className="sidebar-confirm-actions">
+              <button className="sidebar-confirm-yes" onClick={cerrarSesion}>Si, salir</button>
+              <button className="sidebar-confirm-no" onClick={() => setConfirmLogout(false)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
