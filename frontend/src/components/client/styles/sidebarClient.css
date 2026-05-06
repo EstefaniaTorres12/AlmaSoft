@@ -10,7 +10,20 @@
   left: 0;
   top: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   border-right: 1px solid rgba(255, 232, 212, 0.08);
+  z-index: 100;
+  /* Scrollbar sutil */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.12) transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 4px;
 }
 
 .sidebar-brand {
@@ -23,6 +36,7 @@
 .sidebar-brand-logo {
   width: 46px;
   height: 46px;
+  flex-shrink: 0;
   border-radius: 14px;
   object-fit: contain;
   background: rgba(255, 248, 241, 0.08);
@@ -50,11 +64,13 @@
   border-radius: 18px;
   background: rgba(248, 243, 255, 0.08);
   border: 1px solid rgba(236, 226, 255, 0.08);
+  min-width: 0;
 }
 
 .sidebar-avatar {
   width: 46px;
   height: 46px;
+  flex-shrink: 0;
   border-radius: 14px;
   object-fit: cover;
 }
@@ -63,6 +79,9 @@
   display: block;
   margin-bottom: 4px;
   color: #fff6ef;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sidebar-profile-card p {
@@ -70,6 +89,9 @@
   color: #cbbcf2;
   line-height: 1.5;
   font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sidebar-nav {
@@ -92,7 +114,7 @@
   padding: 12px;
   cursor: pointer;
   border-radius: 14px;
-  transition: 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
   font-size: 15px;
   text-align: left;
   color: #f6f1ff;
@@ -119,6 +141,8 @@
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 .sidebar-logout {
@@ -129,25 +153,75 @@
   color: #ffd1ef;
 }
 
+/* ── Tablet (≤980px): sidebar colapsa a barra superior ─────────────────────── */
 @media (max-width: 980px) {
   .sidebar {
     position: static;
-    width: auto;
+    width: 100%;
     min-height: auto;
     margin: 0 0 16px;
     border-right: 0;
     border-bottom: 1px solid rgba(255, 232, 212, 0.08);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 16px 18px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sidebar-brand {
+    margin-bottom: 12px;
+  }
+
+  .sidebar-profile-card {
+    margin-bottom: 12px;
   }
 
   .sidebar-nav {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .sidebar-item:hover {
+    transform: none; /* sin deslizamiento horizontal en tablet */
+  }
 }
 
+/* ── Móvil (≤640px): una columna ────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .sidebar-nav {
     grid-template-columns: 1fr;
+  }
+
+  .sidebar-title {
+    font-size: 1.3rem;
+  }
+
+  .sidebar-item {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .sidebar-item-icon {
+    min-width: 40px;
+    padding: 6px 8px;
+    font-size: 0.72rem;
+  }
+}
+
+/* ── Ultra pequeño (≤400px) ─────────────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .sidebar {
+    padding: 12px;
+  }
+
+  .sidebar-brand-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sidebar-avatar {
+    width: 36px;
+    height: 36px;
   }
 }
 
@@ -183,6 +257,7 @@
   display: flex;
   gap: 12px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .sidebar-confirm-yes {

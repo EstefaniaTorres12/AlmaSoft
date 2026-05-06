@@ -1,9 +1,11 @@
 .client-page-shell {
-  padding: 30px;
+  padding: clamp(16px, 3vw, 30px);
   border-radius: 28px;
   background: rgba(252, 249, 255, 0.82);
   border: 1px solid rgba(121, 91, 194, 0.12);
   box-shadow: 0 24px 48px rgba(72, 45, 137, 0.08);
+  /* No desborda la ventana en pantallas angostas */
+  overflow-x: hidden;
 }
 
 .client-page-header {
@@ -882,6 +884,7 @@
   background: rgba(121, 91, 194, 0.06);
 }
 
+/* ── Tablet (≤980px) ───────────────────────────────────────────────────────── */
 @media (max-width: 980px) {
   .profile-header,
   .profile-layout {
@@ -904,9 +907,24 @@
   .profile-highlight-card {
     min-width: 0;
   }
+
+  /* Tablas: scroll horizontal en vez de romper layout */
+  .client-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .client-info-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
 }
 
+/* ── Móvil (≤640px) ────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
+  .client-page-shell {
+    border-radius: 18px;
+  }
+
   .profile-grid {
     grid-template-columns: 1fr;
   }
@@ -915,8 +933,70 @@
     flex-direction: column;
   }
 
+  .profile-actions > * {
+    width: 100%;
+    text-align: center;
+  }
+
   .affiliate-benefits-inline,
   .affiliate-overview-grid {
     grid-template-columns: 1fr;
+  }
+
+  .affiliate-stat-card strong {
+    font-size: 1.6rem;
+  }
+
+  /* Pagos: items en columna */
+  .plan-payment-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* Modal de plan: padding reducido */
+  .plan-modal-box {
+    padding: 24px 18px;
+  }
+
+  .plan-modal-actions {
+    flex-direction: column;
+  }
+
+  .plan-modal-actions > * {
+    width: 100%;
+  }
+
+  /* Sedes: mínimo 100% en pantallas muy pequeñas */
+  .sedes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Cabecera perfil: stack vertical */
+  .profile-header {
+    flex-direction: column;
+  }
+
+  .client-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Ultra pequeño (≤400px) ────────────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .client-page-shell {
+    border-radius: 14px;
+  }
+
+  .affiliate-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .client-secondary-button,
+  .client-primary-button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
   }
 }

@@ -54,7 +54,6 @@ function App() {
   useEffect(() => {
     document.body.style.margin = '0';
     document.body.style.padding = '0';
-   
   }, []);
 
   const location = useLocation();
@@ -99,323 +98,137 @@ function App() {
         <Route path='/pages/Registrarse' element={<Registrarse />} />
 
         {/* ADMIN */}
-        <Route
-          path='/clientes/Cliente'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <Cliente />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/clientes/AgregarCliente'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <AgregarCliente />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/clientes/EditarCliente/:id'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <EditarCliente />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/usuarios/DetallesCliente/:id'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <DetallesCliente />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/usuarios'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <UsuarioFront />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/usuarios/AgregarUsuario'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <AgregarUsuario />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/usuarios/EditarUsuario/:id'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <EditarUsuario />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/usuarios/DetallesUsuario/:id'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <DetallesUsuario />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/admin/CategoriaFront'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <CategoriaFront />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/categorias/agregar'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <AgregarCategoria />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/categorias/editar/:id'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <EditarCategoria />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/admin/SubCategoriaFront'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <SubCategoriaFront />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/subcategorias/agregar'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <AgregarSubCategoria />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/subcategorias/editar/:id'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <EditarSubCategoria />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/admin/ProductoFront'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <ProductoFront />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/productos/agregar'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <AgregarProducto />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/productos/editar/:id'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
-                <EditarProducto />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/admin/Planes'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', minHeight: '100vh' }}>
-                <PlanFront />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/planes/agregar'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', minHeight: '100vh' }}>
-                <AgregarPlan />
-              </div>
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/planes/editar/:id'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', minHeight: '100vh' }}>
-                <EditarPlan />
-              </div>
-            </RutaProtegida>
-          }
-        />
+        <Route path='/clientes/Cliente' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><Cliente /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/clientes/AgregarCliente' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><AgregarCliente /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/clientes/EditarCliente/:id' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><EditarCliente /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/usuarios/DetallesCliente/:id' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><DetallesCliente /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/usuarios' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><UsuarioFront /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/usuarios/AgregarUsuario' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><AgregarUsuario /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/usuarios/EditarUsuario/:id' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><EditarUsuario /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/usuarios/DetallesUsuario/:id' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><DetallesUsuario /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/admin/CategoriaFront' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><CategoriaFront /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/categorias/agregar' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><AgregarCategoria /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/categorias/editar/:id' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><EditarCategoria /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/admin/SubCategoriaFront' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><SubCategoriaFront /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/subcategorias/agregar' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><AgregarSubCategoria /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/subcategorias/editar/:id' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><EditarSubCategoria /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/admin/ProductoFront' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><ProductoFront /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/productos/agregar' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><AgregarProducto /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/productos/editar/:id' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><EditarProducto /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/admin/Planes' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><PlanFront /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/planes/agregar' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><AgregarPlan /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/planes/editar/:id' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><EditarPlan /></div>
+          </RutaProtegida>
+        } />
+        <Route path='/admin/afiliaciones' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><AfiliacionesAdmin /></div>
+          </RutaProtegida>
+        } />
 
         {/* CLIENTE */}
-        <Route
-          path='/client'
-          element={
-            <RutaProtegida rolPermitido='Cliente'>
-              <HomeClient />
-            </RutaProtegida>
-          }
-        />
-
-        <Route
-          path='/admin/afiliaciones'
-          element={
-            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-              <SideBar />
-              <div style={{ marginLeft: '200px', background: '#D8CFE8', minHeight: '100vh' }}>
-                <AfiliacionesAdmin />
-              </div>
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path='/client/plan'
-          element={
-            <RutaProtegida rolPermitido='Cliente'>
-              <TuPlan />
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path='/client/afiliados'
-          element={
-            <RutaProtegida rolPermitido={['Cliente', 'Afiliado']}>
-              <Afiliados />
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path='/client/contrato'
-          element={
-            <RutaProtegida rolPermitido='Cliente'>
-              <Contrato />
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path='/client/pagos'
-          element={
-            <RutaProtegida rolPermitido='Cliente'>
-              <Pagos />
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path='/client/sedes'
-          element={
-            <RutaProtegida rolPermitido='Cliente'>
-              <Sedes />
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path='/client/contacto'
-          element={
-            <RutaProtegida rolPermitido='Cliente'>
-              <Servicios />
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path='/client/perfil'
-          element={
-            <RutaProtegida rolPermitido={['Cliente', 'Afiliado']}>
-              <Perfil />
-            </RutaProtegida>
-          }
-        />
+        <Route path='/client' element={
+          <RutaProtegida rolPermitido='Cliente'><HomeClient /></RutaProtegida>
+        } />
+        <Route path='/client/plan' element={
+          <RutaProtegida rolPermitido='Cliente'><TuPlan /></RutaProtegida>
+        } />
+        <Route path='/client/afiliados' element={
+          <RutaProtegida rolPermitido={['Cliente', 'Afiliado']}><Afiliados /></RutaProtegida>
+        } />
+        <Route path='/client/contrato' element={
+          <RutaProtegida rolPermitido='Cliente'><Contrato /></RutaProtegida>
+        } />
+        <Route path='/client/pagos' element={
+          <RutaProtegida rolPermitido='Cliente'><Pagos /></RutaProtegida>
+        } />
+        <Route path='/client/sedes' element={
+          <RutaProtegida rolPermitido='Cliente'><Sedes /></RutaProtegida>
+        } />
+        <Route path='/client/contacto' element={
+          <RutaProtegida rolPermitido='Cliente'><Servicios /></RutaProtegida>
+        } />
+        <Route path='/client/perfil' element={
+          <RutaProtegida rolPermitido={['Cliente', 'Afiliado']}><Perfil /></RutaProtegida>
+        } />
 
         <Route path='*' element={<Navigate to='/' />} />
       </Routes>
