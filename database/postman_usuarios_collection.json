@@ -1,0 +1,179 @@
+{
+  "info": {
+    "_postman_id": "df1d963a-7fc4-4a42-97bc-2a0fc0a89d65",
+    "name": "AlmaSoft Usuarios API",
+    "description": "Colección para crear Cliente, Asesor y Administrador, y realizar login con el backend de AlmaSoft.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Crear Cliente",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario_primer_nombre\": \"Carlos\",\n  \"usuario_segundo_nombre\": \"Daniel\",\n  \"usuario_primer_apellido\": \"Pérez\",\n  \"usuario_segundo_apellido\": \"López\",\n  \"usuario_documento\": 123456789,\n  \"usuario_correo\": \"cliente@example.com\",\n  \"usuario_direccion\": \"Calle Falsa 123\",\n  \"usuario_credencial\": \"Cliente123!\",\n  \"rol_id\": 1,\n  \"cliente_fecha_nacimiento\": \"1990-05-06\",\n  \"usuario_telefono\": 3001234567\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/usuarios/usuarioCreate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "usuarios",
+            "usuarioCreate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Crear Asesor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario_primer_nombre\": \"Ana\",\n  \"usuario_segundo_nombre\": \"María\",\n  \"usuario_primer_apellido\": \"Gómez\",\n  \"usuario_segundo_apellido\": \"Ruiz\",\n  \"usuario_documento\": 987654321,\n  \"usuario_correo\": \"asesor@example.com\",\n  \"usuario_direccion\": \"Avenida Siempre Viva 742\",\n  \"usuario_credencial\": \"Asesor123!\",\n  \"rol_id\": 2\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/usuarios/usuarioCreate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "usuarios",
+            "usuarioCreate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Crear Administrador",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario_primer_nombre\": \"Laura\",\n  \"usuario_segundo_nombre\": \"Isabel\",\n  \"usuario_primer_apellido\": \"Martínez\",\n  \"usuario_segundo_apellido\": \"Cruz\",\n  \"usuario_documento\": 1122334455,\n  \"usuario_correo\": \"admin@example.com\",\n  \"usuario_direccion\": \"Boulevard Central 55\",\n  \"usuario_credencial\": \"Admin123!\",\n  \"rol_id\": 3\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/usuarios/usuarioCreate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "usuarios",
+            "usuarioCreate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login Cliente",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario_correo\": \"cliente@example.com\",\n  \"usuario_credencial\": \"Cliente123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/usuarios/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "usuarios",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login Asesor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario_correo\": \"asesor@example.com\",\n  \"usuario_credencial\": \"Asesor123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/usuarios/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "usuarios",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login Administrador",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario_correo\": \"admin@example.com\",\n  \"usuario_credencial\": \"Admin123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/usuarios/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "usuarios",
+            "login"
+          ]
+        }
+      }
+    }
+  ]
+}

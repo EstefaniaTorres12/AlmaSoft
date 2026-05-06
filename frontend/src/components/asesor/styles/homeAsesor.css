@@ -1,0 +1,110 @@
+.home-asesor {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-asesor-header {
+  margin-bottom: 34px;
+}
+
+.home-asesor-header h1 {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  line-height: 1;
+  color: #2b184b;
+}
+
+.home-asesor-header p {
+  margin: 0;
+  max-width: 60ch;
+  color: #655b7e;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.home-asesor-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 34px;
+}
+
+.stat-card {
+  padding: 24px;
+  border-radius: 20px;
+  background: rgba(250, 247, 255, 0.9);
+  border: 1px solid rgba(124, 93, 196, 0.14);
+  box-shadow: 0 18px 34px rgba(84, 56, 153, 0.08);
+  text-align: center;
+}
+
+.stat-card h3 {
+  margin: 0 0 8px;
+  color: #372163;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.stat-card p {
+  margin: 0;
+  color: #6a6184;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.home-asesor-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.action-card {
+  padding: 28px;
+  border-radius: 24px;
+  background: rgba(252, 250, 255, 0.82);
+  border: 1px solid rgba(126, 91, 202, 0.12);
+  box-shadow: 0 24px 48px rgba(78, 48, 145, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 28px 56px rgba(78, 48, 145, 0.12);
+}
+
+.action-card h4 {
+  margin: 0 0 12px;
+  color: #2d1b53;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.action-card p {
+  margin: 0 0 20px;
+  color: #6d6488;
+  line-height: 1.6;
+}
+
+.action-card button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 14px;
+  border: 0;
+  background: linear-gradient(135deg, #7a4cff 0%, #4d2a99 100%);
+  color: #fffdf9;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.action-card button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(86, 52, 164, 0.3);
+}
