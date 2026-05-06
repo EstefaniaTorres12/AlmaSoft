@@ -20,16 +20,15 @@ const BarraPrincipal = () => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     
-                   
-                    <Form className="d-flex ">
+
+                    <Form className="d-flex flex-grow-1 mx-3">
                         <Form.Control
                             type="search"
                             placeholder="¿Qué estas buscando?"
-                            className="me-2"
+                            className="me-2 w-100"
                             aria-label="Search"
-                            style={{ width: "500px" }}
                         />
-                        <Button variant="dark">Search</Button>
+                        <Button variant="dark" style={{ whiteSpace: "nowrap" }}>Search</Button>
                     </Form>
                     <Button as={Link} to="/pages/IniciarSesion" className="ms-auto me-2" variant="dark">Iniciar Sesion</Button>
                     <Button as={Link} to="/pages/Registrarse" variant="dark">Registrarse</Button>

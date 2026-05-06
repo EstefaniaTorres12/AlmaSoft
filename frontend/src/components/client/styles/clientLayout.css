@@ -22,6 +22,14 @@
   border: 1px dashed rgba(107, 78, 181, 0.24);
 }
 
+/* ── Tablet (≤1100px): reduce padding y sidebar más estrecha ──────────────── */
+@media (max-width: 1100px) {
+  .client-content {
+    padding: 24px 20px;
+  }
+}
+
+/* ── Tablet media (≤980px): sidebar colapsa a barra superior ─────────────── */
 @media (max-width: 980px) {
   .client-layout {
     display: block;
@@ -30,5 +38,26 @@
   .client-content {
     margin-left: 0;
     padding: 20px 16px 28px;
+  }
+}
+
+/* ── Móvil (≤640px): padding mínimo ────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .client-content {
+    padding: 16px 12px 24px;
+  }
+}
+
+/* ── Ultra pequeño (≤400px) ────────────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .client-content {
+    padding: 12px 8px 20px;
+  }
+}
+
+/* ── Pantallas grandes (≥1400px): limitar ancho del contenido ─────────────── */
+@media (min-width: 1400px) {
+  .client-content {
+    padding: 40px 48px;
   }
 }
