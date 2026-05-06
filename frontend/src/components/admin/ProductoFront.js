@@ -118,11 +118,16 @@ const ProductoFront = () => {
 
               {/* IMAGEN */}
               <td>
-                <img
-                  src={`/${p.producto_imagen}`}
-                  alt="producto"
-                  width="150"
-                />
+                {p.producto_imagen ? (
+                  <img
+                    src={p.producto_imagen}
+                    alt="producto"
+                    width="150"
+                    onError={(e) => { e.target.onerror = null; e.target.style.display = "none"; }}
+                  />
+                ) : (
+                  <span style={{ color: "#aaa", fontSize: "12px" }}>Sin imagen</span>
+                )}
               </td>
 
               <td>{p.producto_nombre}</td>

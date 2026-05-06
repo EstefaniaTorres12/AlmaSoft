@@ -127,6 +127,7 @@ producto_precio double not null,
 producto_stock int not null,
 producto_estado boolean not null,
 subcategoria_id int not null,
+producto_imagen varchar(255) null,
 primary key(producto_id),
 
 constraint fk_subc_producto
