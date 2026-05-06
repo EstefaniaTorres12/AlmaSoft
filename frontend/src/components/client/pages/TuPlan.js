@@ -46,14 +46,17 @@ export default function TuPlan() {
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState("");
   const [planData, setPlanData]       = useState(null);
+  const [sinPlanActivo, setSinPlanActivo] = useState(false);
 
   const [planes, setPlanes]           = useState([]);
-  const [modalMejora, setModalMejora] = useState(false);
-  const [planSel, setPlanSel]         = useState(null);
-  const [procesando, setProcesando]   = useState(false);
+  const [modalMejora, setModalMejora]       = useState(false);
+  const [planSel, setPlanSel]               = useState(null);
+  const [metodoPagoMejora, setMetodoPagoMejora] = useState("");
+  const [procesando, setProcesando]         = useState(false);
 
-  const [modalCancelar, setModalCancelar] = useState(false);
-  const [cancelando, setCancelando]   = useState(false);
+  const [modalCancelar, setModalCancelar]   = useState(false);
+  const [cancelando, setCancelando]         = useState(false);
+  const [errorCancelar, setErrorCancelar]   = useState("");
 
   const [msg, setMsg]                 = useState({ text: "", type: "" });
 
@@ -64,13 +67,19 @@ export default function TuPlan() {
 
   const cargarPlan = useCallback(() => {
     setLoading(true);
+    setSinPlanActivo(false);
+    setError("");
     authFetch(`${API}/api/client/contrato/mine`)
       .then(async (r) => {
         const data = await parseJsonSafe(r);
+        if (r.status === 404) {
+          setSinPlanActivo(true);
+          return null;
+        }
         if (!r.ok || !data.success) throw new Error(data.message || "No se pudo cargar el plan");
         return data.data;
       })
-      .then((data) => { setPlanData(data); setError(""); })
+      .then((data) => { if (data) setPlanData(data); })
       .catch((err) => { setPlanData(null); setError(err.message || "No fue posible cargar el plan."); })
       .finally(() => setLoading(false));
   }, []);
@@ -84,6 +93,7 @@ export default function TuPlan() {
       if (data.success) {
         setPlanes(data.data);
         setPlanSel(null);
+        setMetodoPagoMejora("");
         setModalMejora(true);
       }
     } catch (_) {
@@ -93,16 +103,25 @@ export default function TuPlan() {
 
   const confirmarMejora = async () => {
     if (!planSel) return;
+    if (!metodoPagoMejora) {
+      flash("Selecciona un metodo de pago para continuar.", "error");
+      return;
+    }
     setProcesando(true);
     try {
       const res  = await authFetch(`${API}/api/client/contrato/mejorar`, {
         method: "PUT",
-        body: JSON.stringify({ plan_id: planSel }),
+        body: JSON.stringify({ plan_id: planSel, metodo_pago: metodoPagoMejora }),
       });
       const data = await res.json();
-      setModalMejora(false);
-      if (data.success) { flash(data.message, "success"); cargarPlan(); }
-      else flash(data.message || "Error al mejorar el plan.", "error");
+      if (data.success) {
+        setModalMejora(false);
+        setMetodoPagoMejora("");
+        flash(data.message, "success");
+        cargarPlan();
+      } else {
+        flash(data.message || "Error al mejorar el plan.", "error");
+      }
     } catch (_) {
       setModalMejora(false);
       flash("Error de conexion.", "error");
@@ -113,15 +132,19 @@ export default function TuPlan() {
 
   const confirmarCancelar = async () => {
     setCancelando(true);
+    setErrorCancelar("");
     try {
       const res  = await authFetch(`${API}/api/client/contrato/cancelar`, { method: "PATCH" });
       const data = await res.json();
-      setModalCancelar(false);
-      if (data.success) { flash(data.message, "success"); cargarPlan(); }
-      else flash(data.message || "No se pudo cancelar el plan.", "error");
+      if (data.success) {
+        setModalCancelar(false);
+        flash(data.message, "success");
+        cargarPlan();
+      } else {
+        setErrorCancelar(data.message || "No se pudo cancelar el plan.");
+      }
     } catch (_) {
-      setModalCancelar(false);
-      flash("Error de conexion.", "error");
+      setErrorCancelar("Error de conexion. Intenta nuevamente.");
     } finally {
       setCancelando(false);
     }
@@ -143,6 +166,13 @@ export default function TuPlan() {
 
         {loading ? (
           <div className="client-empty-state">Cargando informacion del plan...</div>
+        ) : sinPlanActivo ? (
+          <div className="client-empty-state" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+            <p style={{ fontSize: "1.1rem", color: "#6f6789" }}>No tienes un plan activo en este momento.</p>
+            <a href="/client" className="client-primary-button" style={{ textDecoration: "none", padding: "12px 28px", borderRadius: "14px" }}>
+              Volver a adquirir un plan
+            </a>
+          </div>
         ) : error ? (
           <div className="client-empty-state">{error}</div>
         ) : !planData ? (
@@ -250,9 +280,9 @@ export default function TuPlan() {
         <div className="plan-modal-overlay" onClick={() => setModalMejora(false)}>
           <div className="plan-modal-box" onClick={(e) => e.stopPropagation()}>
             <h3>Mejorar plan</h3>
-            <p>Selecciona el nuevo plan que deseas adquirir.</p>
+            <p>Selecciona el nuevo plan y registra el pago correspondiente.</p>
             <div className="plan-modal-plans">
-              {planes.filter((p) => p.plan_id !== planData?.plan_id).map((p) => (
+              {planes.filter((p) => p.plan_id !== planData?.plan_id && p.plan_precio > (planData?.plan_precio || 0)).map((p) => (
                 <button
                   key={p.plan_id}
                   className={`plan-modal-option ${planSel === p.plan_id ? "selected" : ""}`}
@@ -263,10 +293,29 @@ export default function TuPlan() {
                   {p.plan_descripcion && <small>{p.plan_descripcion}</small>}
                 </button>
               ))}
-              {planes.filter((p) => p.plan_id !== planData?.plan_id).length === 0 && (
-                <p style={{ color: "#6f6789", fontSize: "0.9rem" }}>No hay otros planes disponibles.</p>
+              {planes.filter((p) => p.plan_id !== planData?.plan_id && p.plan_precio > (planData?.plan_precio || 0)).length === 0 && (
+                <p style={{ color: "#6f6789", fontSize: "0.9rem" }}>No hay planes de mayor valor disponibles.</p>
               )}
             </div>
+
+            <div style={{ marginTop: "1rem" }}>
+              <label style={{ display: "block", marginBottom: "0.4rem", fontWeight: 600 }}>
+                Metodo de pago
+              </label>
+              <select
+                value={metodoPagoMejora}
+                onChange={(e) => setMetodoPagoMejora(e.target.value)}
+                className="plan-select"
+                style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #ccc" }}
+              >
+                <option value="">Selecciona un metodo</option>
+                <option value="pse">PSE</option>
+                <option value="debito">Tarjeta debito</option>
+                <option value="credito">Tarjeta credito</option>
+                <option value="efectivo">Efectivo en sede</option>
+              </select>
+            </div>
+
             <div className="plan-modal-actions">
               <button className="client-secondary-button" onClick={() => setModalMejora(false)}>
                 Cancelar
@@ -274,9 +323,9 @@ export default function TuPlan() {
               <button
                 className="client-primary-button"
                 onClick={confirmarMejora}
-                disabled={!planSel || procesando}
+                disabled={!planSel || !metodoPagoMejora || procesando}
               >
-                {procesando ? "Actualizando..." : "Confirmar"}
+                {procesando ? "Procesando pago..." : "Confirmar y pagar"}
               </button>
             </div>
           </div>
@@ -285,14 +334,19 @@ export default function TuPlan() {
 
       {/* Modal cancelar plan */}
       {modalCancelar && (
-        <div className="plan-modal-overlay" onClick={() => setModalCancelar(false)}>
+        <div className="plan-modal-overlay" onClick={() => { setModalCancelar(false); setErrorCancelar(""); }}>
           <div className="plan-modal-box" onClick={(e) => e.stopPropagation()}>
             <h3>Cancelar plan</h3>
             <p>
               Esta accion desactivara tu contrato. Solo puedes cancelar si estas a paz y salvo con tus pagos.
             </p>
+            {errorCancelar && (
+              <div style={{ background: "#fdecea", color: "#c0392b", borderRadius: "8px", padding: "10px 14px", marginBottom: "1rem", fontSize: "0.9rem" }}>
+                {errorCancelar}
+              </div>
+            )}
             <div className="plan-modal-actions">
-              <button className="client-secondary-button" onClick={() => setModalCancelar(false)}>
+              <button className="client-secondary-button" onClick={() => { setModalCancelar(false); setErrorCancelar(""); }}>
                 Volver
               </button>
               <button

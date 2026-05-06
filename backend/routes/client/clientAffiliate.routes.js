@@ -7,6 +7,7 @@ const { verifyToken, authorizeRoles } = require("../../middlewares/authMiddlewar
 router.get("/dashboard", verifyToken, authorizeRoles(["Cliente", "Afiliado"]), controller.getAffiliateDashboard);
 router.get("/candidates", verifyToken, authorizeRoles(["Cliente"]), controller.searchAffiliateCandidates);
 router.post("/request", verifyToken, authorizeRoles(["Cliente"]), controller.requestAffiliate);
+router.delete("/remove/:id", verifyToken, authorizeRoles(["Cliente"]), controller.removeAffiliate);
 router.put("/notifications/read", verifyToken, authorizeRoles(["Cliente", "Afiliado"]), controller.markNotificationsAsRead);
 
 router.get("/review", verifyToken, authorizeRoles(["Administrador", "Asesor"]), controller.getAffiliateRequestsForReview);

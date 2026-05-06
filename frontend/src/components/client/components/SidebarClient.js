@@ -10,7 +10,6 @@ const NAV_ITEMS = [
   { label: "Pagos", path: "/client/pagos", icon: "Pago" },
   { label: "Sedes", path: "/client/sedes", icon: "Sede" },
   { label: "Servicios", path: "/client/contacto", icon: "Ayuda" },
-  { label: "Tienda", path: "/client/tienda", icon: "Shop" },
   { label: "Perfil", path: "/client/perfil", icon: "Perfil" },
 ];
 

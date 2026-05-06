@@ -212,10 +212,14 @@ export default function PlanModal({ plan, onClose, onPurchaseSuccess, hasActiveP
         throw new Error(data.message || "No fue posible registrar el pago.");
       }
 
-      setSuccessData(data.data);
+      setSuccessData(data);
 
       if (typeof onPurchaseSuccess === "function") {
-        onPurchaseSuccess(data.data);
+        onPurchaseSuccess({
+          contrato_id: data.contrato_id,
+          plan_id: plan.plan_id,
+          plan_nombre: plan.plan_nombre,
+        });
       }
     } catch (requestError) {
       console.error("Error registrando pago:", requestError);

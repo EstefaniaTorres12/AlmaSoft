@@ -84,7 +84,7 @@ function asignarRolUsuario(user, insertId, result) {
             return result(error, null);
         }
 
-        if (user.rol_id === 3) {
+        if (user.rol_id === 1) {
             datosCliente(user, insertId, result);
         } else {
             result(null, { usuario_id: insertId, ...user });
@@ -94,16 +94,12 @@ function asignarRolUsuario(user, insertId, result) {
 
 // Crear datos de cliente
 function datosCliente(user, insertId, result) {
+    if (!user.cliente_fecha_nacimiento) {
+        return result({ message: 'Falta la fecha de nacimiento del cliente' }, null);
+    }
 
-   let hoy = new Date();
+    const años = dayjs().diff(dayjs(user.cliente_fecha_nacimiento), 'year');
 
-let años = 0;
-
-if (user.cliente_fecha_nacimiento) {
-    años = dayjs(hoy).diff(user.cliente_fecha_nacimiento, "year");
-}
-
-    // 🔹 INSERT CLIENTE
     const sqlCliente = `
         INSERT INTO CLIENTE(
             cliente_id,
@@ -117,13 +113,11 @@ if (user.cliente_fecha_nacimiento) {
         user.cliente_fecha_nacimiento,
         años
     ], (err) => {
-
         if (err) {
-            console.log("Error creando cliente:", err);
+            console.log('Error creando cliente:', err);
             return result(err, null);
         }
 
-        // 🔹 INSERT TELEFONO (CORREGIDO ORDEN)
         const sqlTelefono = `
             INSERT INTO TELEFONO(
                 telefono,
@@ -132,12 +126,11 @@ if (user.cliente_fecha_nacimiento) {
         `;
 
         db.query(sqlTelefono, [
-            user.usuario_telefono, // 👈 este sí existe
+            user.usuario_telefono,
             insertId
         ], (err2) => {
-
             if (err2) {
-                console.log("Error insertando telefono:", err2);
+                console.log('Error insertando telefono:', err2);
                 return result(err2, null);
             }
 

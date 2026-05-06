@@ -29,6 +29,7 @@ const Registrarse = () => {
         e.preventDefault();
 
         const usuario = {
+            rol_id: 1,
             usuario_documento: formData.DocumentoCliente,
             usuario_primer_nombre: formData.PrimerNombreCliente,
             usuario_segundo_nombre: formData.SegundoNombreCliente,

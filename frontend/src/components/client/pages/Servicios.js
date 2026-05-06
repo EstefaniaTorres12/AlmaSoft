@@ -3,27 +3,51 @@ import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/clientPages.css";
 import "../styles/servicios.css";
-import "../styles/tienda.css";
 
 const API = "http://localhost:3001";
 
+const PAYMENT_METHODS = [
+  { value: "Efectivo",        label: "Efectivo",         sub: "Pago en sede" },
+  { value: "Tarjeta debito",  label: "Tarjeta debito",   sub: "Pago electronico" },
+  { value: "Tarjeta credito", label: "Tarjeta credito",  sub: "Cuotas disponibles" },
+  { value: "PSE",             label: "PSE",              sub: "Transferencia online" },
+];
+
+function formatPrice(precio) {
+  const n = Number(precio);
+  if (!n) return null;
+  return new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+  }).format(n);
+}
+
+function isIncluded(precio) {
+  return !Number(precio);
+}
+
+function SkeletonCard() {
+  return <div className="sv-skeleton-card" aria-hidden="true" />;
+}
+
 export default function Servicios() {
-  const [servicios, setServicios] = useState([]);
-  const [loading, setLoading]     = useState(true);
-  const [modal, setModal]         = useState(null);
-  const [metodoPago, setMetodoPago] = useState("Efectivo");
-  const [procesando, setProcesando] = useState(false);
-  const [msg, setMsg]             = useState({ text: "", type: "" });
+  const [servicios, setServicios]     = useState([]);
+  const [loading, setLoading]         = useState(true);
+  const [modal, setModal]             = useState(null);
+  const [metodoPago, setMetodoPago]   = useState("Efectivo");
+  const [procesando, setProcesando]   = useState(false);
+  const [msg, setMsg]                 = useState({ text: "", type: "" });
 
   const flash = (text, type = "success") => {
     setMsg({ text, type });
-    setTimeout(() => setMsg({ text: "", type: "" }), 4000);
+    setTimeout(() => setMsg({ text: "", type: "" }), 5000);
   };
 
   useEffect(() => {
     authFetch(`${API}/api/client/store/servicios`)
       .then((r) => r.json())
-      .then((data) => { if (data.success) setServicios(data.data); })
+      .then((data) => { if (data.success) setServicios(data.data || []); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -31,6 +55,10 @@ export default function Servicios() {
   const abrirModal = (servicio) => {
     setModal(servicio);
     setMetodoPago("Efectivo");
+  };
+
+  const cerrarModal = () => {
+    if (!procesando) setModal(null);
   };
 
   const solicitar = async () => {
@@ -43,85 +71,188 @@ export default function Servicios() {
       });
       const data = await res.json();
       setModal(null);
-      flash(data.message || (data.success ? "Servicio solicitado." : "Error."), data.success ? "success" : "error");
-    } catch (_) {
+      flash(
+        data.message || (data.success ? "Solicitud registrada correctamente." : "No se pudo procesar la solicitud."),
+        data.success ? "success" : "error"
+      );
+    } catch {
       setModal(null);
-      flash("Error de conexion.", "error");
+      flash("Error de conexion. Intenta nuevamente.", "error");
     } finally {
       setProcesando(false);
     }
   };
 
+  const totalIncluidos = servicios.filter((s) => isIncluded(s.servicio_precio)).length;
+  const totalAdicionales = servicios.length - totalIncluidos;
+  const modalPrecio = modal ? formatPrice(modal.servicio_precio) : null;
+
   return (
     <ClientLayout>
-      <section className="client-page-shell">
+      <section className="client-page-shell sv-shell">
 
-        <div className="client-page-header">
-          <p className="client-kicker">Acompanamiento</p>
-          <h1>Servicios</h1>
-          <p>
-            Solicita servicios adicionales directamente desde tu panel. Cada solicitud
-            queda registrada en tu historial de pagos.
-          </p>
+        {/* ── Cabecera ──────────────────────────────────────────────── */}
+        <div className="sv-page-header">
+          <div className="sv-header-text">
+            <p className="client-kicker">Acompanamiento integral</p>
+            <h1>Servicios</h1>
+            <p>
+              Solicita servicios adicionales directamente desde tu panel.
+              Cada solicitud queda registrada en tu historial de pagos.
+            </p>
+          </div>
+
+          {!loading && servicios.length > 0 && (
+            <div className="sv-header-stats">
+              <div className="sv-stat">
+                <strong>{servicios.length}</strong>
+                <span>disponibles</span>
+              </div>
+              {totalIncluidos > 0 && (
+                <div className="sv-stat sv-stat-green">
+                  <strong>{totalIncluidos}</strong>
+                  <span>en tu plan</span>
+                </div>
+              )}
+              {totalAdicionales > 0 && (
+                <div className="sv-stat sv-stat-purple">
+                  <strong>{totalAdicionales}</strong>
+                  <span>adicionales</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
-        {msg.text && <div className={`tienda-msg ${msg.type}`}>{msg.text}</div>}
-
-        {loading && <div className="client-empty-state">Cargando servicios...</div>}
-
-        {!loading && servicios.length === 0 && (
-          <div className="client-empty-state">No hay servicios disponibles en este momento.</div>
+        {/* ── Feedback ──────────────────────────────────────────────── */}
+        {msg.text && (
+          <div className={`sv-feedback ${msg.type}`} role="alert">
+            <span className="sv-feedback-icon">{msg.type === "success" ? "✓" : "!"}</span>
+            {msg.text}
+          </div>
         )}
 
+        {/* ── Skeleton ──────────────────────────────────────────────── */}
+        {loading && (
+          <div className="sv-skeleton-list">
+            {[1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)}
+          </div>
+        )}
+
+        {/* ── Estado vacío ──────────────────────────────────────────── */}
+        {!loading && servicios.length === 0 && (
+          <div className="sv-empty">
+            <div className="sv-empty-icon">🕊</div>
+            <h3>Sin servicios disponibles</h3>
+            <p>En este momento no hay servicios configurados. Vuelve pronto.</p>
+          </div>
+        )}
+
+        {/* ── Lista de servicios ────────────────────────────────────── */}
         {!loading && servicios.length > 0 && (
-          <div className="servicios-grid">
-            {servicios.map((s) => (
-              <article key={s.servicio_id} className="servicio-card">
-                <h3>{s.servicio_nombre}</h3>
-                <p>{s.servicio_descripcion || "Servicio disponible para tu plan."}</p>
-                <div className="servicio-card-footer">
-                  <span>
-                    {Number(s.servicio_precio) > 0
-                      ? `$${Number(s.servicio_precio).toLocaleString("es-CO")}`
-                      : "Incluido en plan"}
-                  </span>
-                  <button className="tienda-add-btn" onClick={() => abrirModal(s)}>
-                    Solicitar
-                  </button>
-                </div>
-              </article>
-            ))}
+          <div className="sv-list">
+            {servicios.map((s, i) => {
+              const incluido = isIncluded(s.servicio_precio);
+              const precio   = formatPrice(s.servicio_precio);
+              return (
+                <article
+                  key={s.servicio_id}
+                  className={`sv-card ${incluido ? "sv-card-included" : "sv-card-paid"}`}
+                >
+                  <div className="sv-card-index" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
+
+                  <div className="sv-card-body">
+                    <div className="sv-card-title-row">
+                      <h3 className="sv-card-name">{s.servicio_nombre}</h3>
+                      {incluido ? (
+                        <span className="sv-badge sv-badge-included">Incluido en plan</span>
+                      ) : (
+                        <span className="sv-badge sv-badge-paid">{precio}</span>
+                      )}
+                    </div>
+                    {s.servicio_descripcion && (
+                      <p className="sv-card-desc">{s.servicio_descripcion}</p>
+                    )}
+                  </div>
+
+                  <div className="sv-card-action">
+                    <button
+                      className={`sv-btn ${incluido ? "sv-btn-ghost" : "sv-btn-solid"}`}
+                      onClick={() => abrirModal(s)}
+                    >
+                      Solicitar
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
       </section>
 
-      {/* Modal de solicitud */}
+      {/* ── Modal de solicitud ────────────────────────────────────── */}
       {modal && (
-        <div className="modal-overlay" onClick={() => setModal(null)}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-            <h3>Solicitar: {modal.servicio_nombre}</h3>
-            <p>
-              Valor:{" "}
-              {Number(modal.servicio_precio) > 0
-                ? `$${Number(modal.servicio_precio).toLocaleString("es-CO")}`
-                : "Incluido en tu plan"}
-            </p>
+        <div className="sv-modal-overlay" onClick={cerrarModal}>
+          <div className="sv-modal" onClick={(e) => e.stopPropagation()} role="dialog">
 
-            <label className="modal-label">
-              Metodo de pago
-              <select value={metodoPago} onChange={(e) => setMetodoPago(e.target.value)}>
-                <option>Efectivo</option>
-                <option>Tarjeta debito</option>
-                <option>Tarjeta credito</option>
-                <option>PSE</option>
-              </select>
-            </label>
+            <button className="sv-modal-close" onClick={cerrarModal} disabled={procesando}>
+              ✕
+            </button>
 
-            <div className="modal-actions">
-              <button className="tienda-pay-btn" onClick={solicitar} disabled={procesando}>
-                {procesando ? "Procesando..." : "Confirmar solicitud"}
+            <div className="sv-modal-hero">
+              <div className={`sv-modal-index ${modalPrecio ? "paid" : "included"}`}>
+                {String(servicios.findIndex((s) => s.servicio_id === modal.servicio_id) + 1).padStart(2, "0")}
+              </div>
+              <div>
+                <h2 className="sv-modal-title">{modal.servicio_nombre}</h2>
+                {modalPrecio ? (
+                  <p className="sv-modal-price">{modalPrecio}</p>
+                ) : (
+                  <p className="sv-modal-price sv-modal-price-free">Incluido en tu plan</p>
+                )}
+              </div>
+            </div>
+
+            {modal.servicio_descripcion && (
+              <p className="sv-modal-desc">{modal.servicio_descripcion}</p>
+            )}
+
+            <div className="sv-modal-section">
+              <p className="sv-modal-label">Metodo de pago</p>
+              <div className="sv-payment-grid">
+                {PAYMENT_METHODS.map((method) => (
+                  <button
+                    key={method.value}
+                    type="button"
+                    className={`sv-payment-card ${metodoPago === method.value ? "is-selected" : ""}`}
+                    onClick={() => setMetodoPago(method.value)}
+                  >
+                    <strong>{method.label}</strong>
+                    <span>{method.sub}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="sv-modal-actions">
+              <button
+                className="sv-modal-confirm"
+                onClick={solicitar}
+                disabled={procesando}
+              >
+                {procesando ? (
+                  <><span className="sv-spinner" />Procesando...</>
+                ) : (
+                  "Confirmar solicitud"
+                )}
               </button>
-              <button className="tienda-cancel-btn" onClick={() => setModal(null)}>
+              <button
+                className="sv-modal-cancel"
+                onClick={cerrarModal}
+                disabled={procesando}
+              >
                 Cancelar
               </button>
             </div>

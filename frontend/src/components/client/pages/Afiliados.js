@@ -3,6 +3,8 @@ import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/clientPages.css";
 
+const API = "http://localhost:3001";
+
 const KINSHIP_OPTIONS = [
   "Padre o madre",
   "Hijo o hija",
@@ -49,20 +51,17 @@ export default function Afiliados() {
   const [search, setSearch] = useState("");
   const [candidates, setCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
-  const [formData, setFormData] = useState({
-    parentesco: "Hijo o hija",
-    observacion: "",
-  });
+  const [formData, setFormData] = useState({ parentesco: "Hijo o hija", observacion: "" });
+  const [confirmRemoveId, setConfirmRemoveId] = useState(null);
+  const [removing, setRemoving] = useState(false);
   const rol = localStorage.getItem("rol");
 
   const loadDashboard = async () => {
     setLoading(true);
     setError("");
-
     try {
-      const response = await authFetch("http://localhost:3001/api/client/affiliates/dashboard");
+      const response = await authFetch(`${API}/api/client/affiliates/dashboard`);
       const data = await response.json();
-
       if (!response.ok || !data.success) {
         const message = data.message || "No pudimos cargar la informacion de afiliados.";
         if (
@@ -70,61 +69,33 @@ export default function Afiliados() {
           message.includes("No tienes un plan") ||
           message.includes("no tiene una afiliacion")
         ) {
-          setDashboard({
-            is_titular: false,
-            is_afiliado: false,
-            titular_panel: null,
-            afiliado_panel: null,
-          });
+          setDashboard({ is_titular: false, is_afiliado: false, titular_panel: null, afiliado_panel: null });
           return;
         }
-
         throw new Error(message);
       }
-
       setDashboard(data.data);
     } catch (requestError) {
-      console.error(requestError);
       setError(requestError.message || "No pudimos cargar la informacion de afiliados.");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    loadDashboard();
-  }, []);
+  useEffect(() => { loadDashboard(); }, []);
 
   useEffect(() => {
     if (rol !== "Cliente") return;
-
-    if (!/^\d{3,}$/.test(search.trim())) {
-      setCandidates([]);
-      return;
-    }
-
+    if (!/^\d{3,}$/.test(search.trim())) { setCandidates([]); return; }
     const timeout = setTimeout(async () => {
       setSearching(true);
-
       try {
-        const response = await authFetch(
-          `http://localhost:3001/api/client/affiliates/candidates?q=${encodeURIComponent(search)}`
-        );
+        const response = await authFetch(`${API}/api/client/affiliates/candidates?q=${encodeURIComponent(search)}`);
         const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          throw new Error(data.message || "No pudimos buscar el documento en este momento.");
-        }
-
+        if (!response.ok || !data.success) throw new Error(data.message || "Error al buscar.");
         setCandidates(data.data || []);
-      } catch (requestError) {
-        console.error(requestError);
-        setCandidates([]);
-      } finally {
-        setSearching(false);
-      }
+      } catch { setCandidates([]); } finally { setSearching(false); }
     }, 350);
-
     return () => clearTimeout(timeout);
   }, [rol, search]);
 
@@ -139,18 +110,12 @@ export default function Afiliados() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    if (!selectedCandidate) {
-      setError("Selecciona a la persona que deseas vincular como afiliada.");
-      return;
-    }
-
+    if (!selectedCandidate) { setError("Selecciona a la persona que deseas vincular como afiliada."); return; }
     setSubmitting(true);
     setError("");
     setSuccess("");
-
     try {
-      const response = await authFetch("http://localhost:3001/api/client/affiliates/request", {
+      const response = await authFetch(`${API}/api/client/affiliates/request`, {
         method: "POST",
         body: JSON.stringify({
           usuario_postulado_id: selectedCandidate.usuario_id,
@@ -158,27 +123,35 @@ export default function Afiliados() {
           observacion: formData.observacion,
         }),
       });
-
       const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "No pudimos enviar la solicitud.");
-      }
-
+      if (!response.ok || !data.success) throw new Error(data.message || "No pudimos enviar la solicitud.");
       setSuccess(data.message);
       setSearch("");
       setCandidates([]);
       setSelectedCandidate(null);
-      setFormData({
-        parentesco: "Hijo o hija",
-        observacion: "",
-      });
+      setFormData({ parentesco: "Hijo o hija", observacion: "" });
       await loadDashboard();
     } catch (requestError) {
-      console.error(requestError);
       setError(requestError.message || "No pudimos enviar la solicitud.");
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleRemove = async (afiliadoId) => {
+    setRemoving(true);
+    setError("");
+    try {
+      const response = await authFetch(`${API}/api/client/affiliates/remove/${afiliadoId}`, { method: "DELETE" });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "No pudimos eliminar el afiliado.");
+      setSuccess(data.message);
+      setConfirmRemoveId(null);
+      await loadDashboard();
+    } catch (requestError) {
+      setError(requestError.message || "No pudimos eliminar el afiliado.");
+    } finally {
+      setRemoving(false);
     }
   };
 
@@ -188,10 +161,7 @@ export default function Afiliados() {
         <div className="client-page-header">
           <p className="client-kicker">Red familiar</p>
           <h1>Afiliados</h1>
-          <p>
-            Aqui puedes vincular familiares a tu plan, revisar los cupos disponibles y consultar el estado de cada
-            solicitud.
-          </p>
+          <p>Aqui puedes vincular familiares a tu plan, revisar los cupos disponibles y gestionar tus afiliados.</p>
         </div>
 
         {loading ? <div className="client-empty-state">Cargando informacion de afiliados...</div> : null}
@@ -210,16 +180,14 @@ export default function Afiliados() {
               <p className="client-kicker">Estado del afiliado</p>
               <h2>Ya haces parte del plan {afiliadoPanel.plan_nombre}</h2>
               <p>
-                Tu afiliacion fue aprobada dentro del plan del titular <strong>{afiliadoPanel.titular_nombre}</strong>.
-                Desde aqui puedes consultar los beneficios que tienes disponibles.
+                Tu afiliacion fue aprobada dentro del plan del titular{" "}
+                <strong>{afiliadoPanel.titular_nombre}</strong>. Desde aqui puedes consultar los beneficios que tienes
+                disponibles.
               </p>
             </div>
-
             <div className="affiliate-benefits-inline">
               {afiliadoPanel.beneficios.map((benefit) => (
-                <article key={benefit} className="affiliate-benefit-chip">
-                  {benefit}
-                </article>
+                <article key={benefit} className="affiliate-benefit-chip">{benefit}</article>
               ))}
             </div>
           </section>
@@ -233,24 +201,19 @@ export default function Afiliados() {
                 <strong>{titularPanel.plan_nombre}</strong>
                 <p>{titularPanel.plan_descripcion || "Cobertura activa para tu grupo principal."}</p>
               </article>
-
               <article className="affiliate-stat-card">
                 <span>Cupo del plan</span>
                 <strong>{titularPanel.limite_etiqueta}</strong>
                 <p>Capacidad de afiliados disponible segun tu plan actual.</p>
               </article>
-
               <article className="affiliate-stat-card">
-                <span>Cupos usados</span>
+                <span>Afiliados activos</span>
                 <strong>{titularPanel.cupos_usados}</strong>
-                <p>Incluye afiliados aprobados y solicitudes pendientes.</p>
+                <p>Personas vinculadas actualmente a tu contrato.</p>
               </article>
-
               <article className="affiliate-stat-card">
                 <span>Disponibles</span>
-                <strong>
-                  {titularPanel.cupos_disponibles === null ? "VIP" : titularPanel.cupos_disponibles}
-                </strong>
+                <strong>{titularPanel.cupos_disponibles === null ? "VIP" : titularPanel.cupos_disponibles}</strong>
                 <p>Espacios restantes para nuevas afiliaciones.</p>
               </article>
             </section>
@@ -268,13 +231,10 @@ export default function Afiliados() {
               <form className="affiliate-request-card" onSubmit={handleSubmit}>
                 <div className="affiliate-section-header">
                   <div>
-                    <p className="client-kicker">Nueva solicitud</p>
-                    <h2>Postular un afiliado</h2>
+                    <p className="client-kicker">Nueva afiliacion</p>
+                    <h2>Vincular un familiar</h2>
                   </div>
-                  <p>
-                    Escribe el numero de documento de la persona que deseas vincular y envia la solicitud para
-                    validacion.
-                  </p>
+                  <p>Escribe el numero de documento de la persona que deseas vincular al plan.</p>
                 </div>
 
                 <label className="profile-field profile-field-full">
@@ -321,53 +281,75 @@ export default function Afiliados() {
                     <span>Parentesco</span>
                     <select
                       value={formData.parentesco}
-                      onChange={(event) =>
-                        setFormData((current) => ({
-                          ...current,
-                          parentesco: event.target.value,
-                        }))
-                      }
+                      onChange={(event) => setFormData((c) => ({ ...c, parentesco: event.target.value }))}
                     >
                       {KINSHIP_OPTIONS.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
+                        <option key={option} value={option}>{option}</option>
                       ))}
                     </select>
                   </label>
-
                   <label className="profile-field">
                     <span>Observacion</span>
                     <input
                       value={formData.observacion}
-                      onChange={(event) =>
-                        setFormData((current) => ({
-                          ...current,
-                          observacion: event.target.value,
-                        }))
-                      }
-                      placeholder="Comentario adicional para la solicitud"
+                      onChange={(event) => setFormData((c) => ({ ...c, observacion: event.target.value }))}
+                      placeholder="Comentario adicional"
                     />
                   </label>
                 </div>
 
                 <div className="profile-actions">
                   <button type="submit" className="client-primary-button" disabled={submitting}>
-                    {submitting ? "Enviando solicitud..." : "Solicitar afiliacion"}
+                    {submitting ? "Vinculando..." : "Vincular afiliado"}
                   </button>
                 </div>
               </form>
 
               <div className="affiliate-status-column">
                 <article className="client-info-card">
-                  <h3>Afiliados aprobados</h3>
+                  <h3>Afiliados activos</h3>
                   {titularPanel.afiliados_aprobados?.length ? (
                     <div className="affiliate-stack-list">
                       {titularPanel.afiliados_aprobados.map((item) => (
-                        <article key={`${item.afiliado_id}-${item.parentesco || "ok"}`} className="affiliate-mini-card">
-                          <strong>{formatApprovedName(item)}</strong>
-                          <span>{item.parentesco || "Afiliado aprobado"}</span>
-                          <small>{item.fecha_revision ? `Aprobado: ${formatDate(item.fecha_revision)}` : "Activo"}</small>
+                        <article key={item.afiliado_id} className="affiliate-mini-card">
+                          <div className="affiliate-mini-info">
+                            <strong>{formatApprovedName(item)}</strong>
+                            <span>{item.parentesco || "Afiliado activo"}</span>
+                            <small>
+                              {item.fecha_revision ? `Desde: ${formatDate(item.fecha_revision)}` : "Activo"}
+                            </small>
+                          </div>
+
+                          {confirmRemoveId === item.afiliado_id ? (
+                            <div className="affiliate-remove-confirm">
+                              <span>¿Eliminar?</span>
+                              <button
+                                type="button"
+                                className="affiliate-remove-yes"
+                                onClick={() => handleRemove(item.afiliado_id)}
+                                disabled={removing}
+                              >
+                                {removing ? "..." : "Si"}
+                              </button>
+                              <button
+                                type="button"
+                                className="affiliate-remove-no"
+                                onClick={() => setConfirmRemoveId(null)}
+                                disabled={removing}
+                              >
+                                No
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              className="affiliate-remove-btn"
+                              onClick={() => setConfirmRemoveId(item.afiliado_id)}
+                              title="Eliminar afiliado"
+                            >
+                              🗑
+                            </button>
+                          )}
                         </article>
                       ))}
                     </div>
@@ -382,9 +364,11 @@ export default function Afiliados() {
                     <div className="affiliate-stack-list">
                       {titularPanel.solicitudes_pendientes.map((item) => (
                         <article key={item.solicitud_id} className="affiliate-mini-card pending">
-                          <strong>{formatApprovedName(item)}</strong>
-                          <span>{item.parentesco}</span>
-                          <small>Enviada: {formatDate(item.fecha_solicitud)}</small>
+                          <div className="affiliate-mini-info">
+                            <strong>{formatApprovedName(item)}</strong>
+                            <span>{item.parentesco}</span>
+                            <small>Enviada: {formatDate(item.fecha_solicitud)}</small>
+                          </div>
                         </article>
                       ))}
                     </div>
@@ -408,19 +392,19 @@ export default function Afiliados() {
                 type="button"
                 className="client-secondary-button"
                 onClick={async () => {
-                  await authFetch("http://localhost:3001/api/client/affiliates/notifications/read", {
-                    method: "PUT",
-                  });
+                  await authFetch(`${API}/api/client/affiliates/notifications/read`, { method: "PUT" });
                   await loadDashboard();
                 }}
               >
                 Marcar como revisadas
               </button>
             </div>
-
             <div className="affiliate-notification-list">
               {notifications.map((notification) => (
-                <article key={notification.notificacion_id} className={`affiliate-notification-card ${notification.leida ? "is-read" : ""}`}>
+                <article
+                  key={notification.notificacion_id}
+                  className={`affiliate-notification-card ${notification.leida ? "is-read" : ""}`}
+                >
                   <strong>{notification.notificacion_titulo}</strong>
                   <p>{notification.notificacion_mensaje}</p>
                   <small>{formatDate(notification.fecha_creacion)}</small>

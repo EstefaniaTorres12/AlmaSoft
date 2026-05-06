@@ -46,7 +46,6 @@ import TuPlan from './components/client/pages/TuPlan';
 import Afiliados from './components/client/pages/Afiliados';
 import Contrato from './components/client/pages/Contrato';
 import Servicios from './components/client/pages/Servicios';
-import Tienda from './components/client/pages/Tienda';
 import Pagos from './components/client/pages/Pagos';
 import Sedes from './components/client/pages/Sedes';
 import Perfil from './components/client/pages/Perfil';
@@ -406,14 +405,6 @@ function App() {
           element={
             <RutaProtegida rolPermitido='Cliente'>
               <Servicios />
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path='/client/tienda'
-          element={
-            <RutaProtegida rolPermitido='Cliente'>
-              <Tienda />
             </RutaProtegida>
           }
         />

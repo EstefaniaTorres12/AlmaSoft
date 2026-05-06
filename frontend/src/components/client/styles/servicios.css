@@ -1,121 +1,609 @@
-/* ─── Grilla de servicios ───────────────────────────────────────────────────── */
-.servicios-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
-  margin-top: 10px;
+/* ═══════════════════════════════════════════════════════════════
+   SERVICIOS — diseño profesional
+   Paleta: morado/violeta (#7a4cff, #4d2a99, #2f1d57, #6f6789)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Shell ─────────────────────────────────────────────────────────────────── */
+.sv-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
-.servicio-card {
-  padding: 24px;
-  border-radius: 22px;
-  background: linear-gradient(180deg, #fffeff 0%, #f3edff 100%);
+/* ─── Cabecera ───────────────────────────────────────────────────────────────── */
+.sv-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.sv-header-text h1 {
+  margin: 4px 0 10px;
+  color: #301f57;
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+}
+
+.sv-header-text p {
+  margin: 0;
+  max-width: 56ch;
+  color: #6f6789;
+  line-height: 1.7;
+}
+
+.sv-header-stats {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.sv-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(121, 91, 194, 0.14);
-  box-shadow: 0 12px 24px rgba(74, 47, 139, 0.07);
+  min-width: 72px;
+  text-align: center;
+  gap: 2px;
+}
+
+.sv-stat strong {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #2f1d57;
+  line-height: 1;
+}
+
+.sv-stat span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a76aa;
+}
+
+.sv-stat-green strong { color: #2e7b59; }
+.sv-stat-green        { border-color: rgba(46, 123, 89, 0.15); }
+
+.sv-stat-purple strong { color: #5a3fa0; }
+.sv-stat-purple        { border-color: rgba(90, 63, 160, 0.18); }
+
+/* ─── Feedback ───────────────────────────────────────────────────────────────── */
+.sv-feedback {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.93rem;
+  animation: svFadeIn 0.25s ease;
+}
+
+.sv-feedback.success {
+  background: #e9f8f1;
+  color: #2e7b59;
+  border: 1px solid rgba(46, 123, 89, 0.18);
+}
+
+.sv-feedback.error {
+  background: #fdecea;
+  color: #8c2d3b;
+  border: 1px solid rgba(192, 57, 43, 0.15);
+}
+
+.sv-feedback-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.sv-feedback.success .sv-feedback-icon {
+  background: #2e7b59;
+  color: #fff;
+}
+
+.sv-feedback.error .sv-feedback-icon {
+  background: #8c2d3b;
+  color: #fff;
+}
+
+/* ─── Skeleton loading ───────────────────────────────────────────────────────── */
+.sv-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sv-skeleton-card {
+  height: 88px;
+  border-radius: 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(121, 91, 194, 0.07) 25%,
+    rgba(121, 91, 194, 0.13) 50%,
+    rgba(121, 91, 194, 0.07) 75%
+  );
+  background-size: 200% 100%;
+  animation: svShimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes svShimmer {
+  0%   { background-position:  200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Estado vacío ───────────────────────────────────────────────────────────── */
+.sv-empty {
+  padding: 56px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.sv-empty-icon {
+  font-size: 2.8rem;
+  line-height: 1;
+  opacity: 0.5;
+}
+
+.sv-empty h3 {
+  margin: 0;
+  color: #3b2a6a;
+  font-size: 1.1rem;
+}
+
+.sv-empty p {
+  margin: 0;
+  color: #8a7aaa;
+  max-width: 40ch;
+  line-height: 1.6;
+}
+
+/* ─── Lista de servicios ─────────────────────────────────────────────────────── */
+.sv-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: transform 0.18s ease;
 }
 
-.servicio-card:hover {
+/* ─── Tarjeta ────────────────────────────────────────────────────────────────── */
+.sv-card {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 24px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid rgba(121, 91, 194, 0.11);
+  box-shadow: 0 2px 10px rgba(74, 47, 139, 0.05);
+  transition: box-shadow 0.22s ease, transform 0.22s ease;
+  animation: svFadeIn 0.3s ease both;
+}
+
+.sv-card:hover {
+  box-shadow: 0 8px 28px rgba(74, 47, 139, 0.11);
   transform: translateY(-2px);
 }
 
-.servicio-card h3 {
-  margin: 0;
-  color: #2f1d57;
-  font-size: 1.05rem;
-}
+/* Borde izquierdo de acento */
+.sv-card-included { border-left: 3px solid #4caf82; }
+.sv-card-paid     { border-left: 3px solid #7a4cff; }
 
-.servicio-card p {
-  margin: 0;
-  color: #6f6789;
-  line-height: 1.6;
-  font-size: 0.9rem;
-  flex: 1;
-}
-
-.servicio-card-footer {
+/* ─── Número de índice ────────────────────────────────────────────────────────── */
+.sv-card-index {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 6px;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  user-select: none;
 }
 
-.servicio-card-footer span {
-  font-weight: 600;
-  color: #4a2d99;
-  font-size: 0.95rem;
+.sv-card-included .sv-card-index {
+  background: rgba(76, 175, 130, 0.12);
+  color: #2e7b59;
 }
 
-/* ─── Modal genérico ────────────────────────────────────────────────────────── */
-.modal-overlay {
+.sv-card-paid .sv-card-index {
+  background: rgba(122, 76, 255, 0.1);
+  color: #5a3fa0;
+}
+
+/* ─── Cuerpo de la tarjeta ────────────────────────────────────────────────────── */
+.sv-card-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sv-card-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sv-card-name {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #2f1d57;
+  line-height: 1.3;
+}
+
+.sv-card-desc {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6f6789;
+  line-height: 1.6;
+  max-width: 70ch;
+}
+
+/* ─── Badges ──────────────────────────────────────────────────────────────────── */
+.sv-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sv-badge-included {
+  background: #ecf9f3;
+  color: #2e7b59;
+  border: 1px solid rgba(46, 123, 89, 0.2);
+}
+
+.sv-badge-paid {
+  background: #f0e8ff;
+  color: #5a3fa0;
+  border: 1px solid rgba(90, 63, 160, 0.18);
+}
+
+/* ─── Botón de acción en tarjeta ─────────────────────────────────────────────── */
+.sv-card-action {
+  flex-shrink: 0;
+}
+
+.sv-btn {
+  padding: 10px 22px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.sv-btn:active { transform: scale(0.97); }
+
+.sv-btn-solid {
+  background: linear-gradient(135deg, #7a4cff 0%, #4d2a99 100%);
+  color: #fff;
+}
+
+.sv-btn-solid:hover { opacity: 0.88; }
+
+.sv-btn-ghost {
+  background: rgba(76, 175, 130, 0.1);
+  color: #2e7b59;
+  border: 1px solid rgba(76, 175, 130, 0.25);
+}
+
+.sv-btn-ghost:hover { background: rgba(76, 175, 130, 0.18); }
+
+/* ─── Overlay del modal ───────────────────────────────────────────────────────── */
+.sv-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(18, 10, 40, 0.46);
-  z-index: 300;
+  background: rgba(12, 6, 30, 0.52);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 400;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  animation: svFadeIn 0.2s ease;
 }
 
-.modal-box {
-  width: min(420px, 100%);
+/* ─── Caja del modal ─────────────────────────────────────────────────────────── */
+.sv-modal {
+  position: relative;
+  width: min(500px, 100%);
   background: #fff;
-  border-radius: 24px;
-  padding: 32px 28px;
-  box-shadow: 0 24px 60px rgba(74, 47, 139, 0.2);
+  border-radius: 28px;
+  padding: 36px 32px 28px;
+  box-shadow:
+    0 32px 72px rgba(74, 47, 139, 0.24),
+    0 0 0 1px rgba(121, 91, 194, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 22px;
+  animation: svSlideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.modal-box h3 {
-  margin: 0;
-  color: #2f1d57;
-  font-size: 1.2rem;
-}
-
-.modal-box p {
-  margin: 0;
+/* ─── Cerrar modal ────────────────────────────────────────────────────────────── */
+.sv-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(121, 91, 194, 0.08);
   color: #6f6789;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
 }
 
-.modal-label {
+.sv-modal-close:hover { background: rgba(121, 91, 194, 0.16); }
+.sv-modal-close:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── Hero del modal ─────────────────────────────────────────────────────────── */
+.sv-modal-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.sv-modal-index {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+}
+
+.sv-modal-index.included {
+  background: rgba(76, 175, 130, 0.12);
+  color: #2e7b59;
+}
+
+.sv-modal-index.paid {
+  background: linear-gradient(135deg, rgba(122, 76, 255, 0.18), rgba(77, 42, 153, 0.12));
+  color: #5a3fa0;
+}
+
+.sv-modal-title {
+  margin: 0 0 4px;
+  color: #2f1d57;
+  font-size: 1.25rem;
+  line-height: 1.25;
+  padding-right: 32px;
+}
+
+.sv-modal-price {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #5a3fa0;
+}
+
+.sv-modal-price-free {
+  color: #2e7b59;
+}
+
+/* ─── Descripción en modal ────────────────────────────────────────────────────── */
+.sv-modal-desc {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(121, 91, 194, 0.05);
+  border: 1px solid rgba(121, 91, 194, 0.1);
+  color: #6f6789;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+/* ─── Sección de métodos de pago ─────────────────────────────────────────────── */
+.sv-modal-section {}
+
+.sv-modal-label {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a60a0;
+}
+
+.sv-payment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.sv-payment-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  font-weight: 600;
-  color: #3b2a6a;
-  font-size: 0.92rem;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(121, 91, 194, 0.16);
+  background: #fafafa;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  text-align: left;
 }
 
-.modal-label select {
-  padding: 11px 14px;
-  border-radius: 13px;
-  border: 1px solid #d9cdf4;
-  background: #fff;
-  color: #34235b;
+.sv-payment-card strong {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #2f1d57;
+}
+
+.sv-payment-card span {
+  font-size: 0.76rem;
+  color: #8a76aa;
+}
+
+.sv-payment-card:hover {
+  border-color: rgba(121, 91, 194, 0.36);
+  background: #f7f2ff;
+}
+
+.sv-payment-card.is-selected {
+  border-color: #7a4cff;
+  background: #f0e8ff;
+  box-shadow: 0 0 0 4px rgba(122, 76, 255, 0.1);
+}
+
+.sv-payment-card.is-selected strong { color: #4d2a99; }
+
+/* ─── Acciones del modal ─────────────────────────────────────────────────────── */
+.sv-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.sv-modal-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 28px;
+  border-radius: 15px;
+  border: none;
+  background: linear-gradient(135deg, #7a4cff 0%, #4d2a99 100%);
+  color: #fff;
+  font-weight: 700;
   font-size: 0.95rem;
-  outline: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
 }
 
-.modal-label select:focus {
-  border-color: #8d6def;
-  box-shadow: 0 0 0 4px rgba(141, 109, 239, 0.12);
+.sv-modal-confirm:hover:not(:disabled) { opacity: 0.88; }
+.sv-modal-confirm:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.sv-modal-cancel {
+  min-height: 46px;
+  padding: 0 28px;
+  border-radius: 15px;
+  border: 1px solid rgba(121, 91, 194, 0.28);
+  background: transparent;
+  color: #6f6789;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
-.modal-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
+.sv-modal-cancel:hover:not(:disabled) { background: rgba(121, 91, 194, 0.05); }
+.sv-modal-cancel:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── Spinner ────────────────────────────────────────────────────────────────── */
+.sv-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: svSpin 0.7s linear infinite;
+  flex-shrink: 0;
 }
 
-@media (max-width: 640px) {
-  .servicios-grid {
+/* ─── Animaciones ────────────────────────────────────────────────────────────── */
+@keyframes svFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes svSlideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+@keyframes svSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .sv-card {
+    grid-template-columns: 44px 1fr;
+    grid-template-rows: auto auto;
+    gap: 14px 16px;
+    padding: 18px 20px;
+  }
+
+  .sv-card-index {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-size: 0.76rem;
+  }
+
+  .sv-card-action {
+    grid-column: 1 / -1;
+  }
+
+  .sv-btn {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+  }
+
+  .sv-page-header {
+    flex-direction: column;
+  }
+
+  .sv-header-stats {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 540px) {
+  .sv-modal {
+    padding: 28px 20px 22px;
+    border-radius: 22px;
+  }
+
+  .sv-payment-grid {
     grid-template-columns: 1fr;
+  }
+
+  .sv-header-stats {
+    flex-wrap: wrap;
   }
 }
