@@ -1,0 +1,100 @@
+/* ─── Encabezado con botón ──────────────────────────────────────────────────── */
+.contrato-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* ─── Grilla de tarjetas ────────────────────────────────────────────────────── */
+.contrato-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+/* ─── ID grande ─────────────────────────────────────────────────────────────── */
+.contrato-id {
+  display: block;
+  font-size: 2rem;
+  color: #342157;
+  margin-top: 6px;
+}
+
+/* ─── Badge de estado ───────────────────────────────────────────────────────── */
+.contrato-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 5px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.contrato-badge.activo {
+  background: #e1f5e9;
+  color: #2e7b59;
+}
+
+.contrato-badge.inactivo {
+  background: #fde8ef;
+  color: #9b3060;
+}
+
+/* ─── Tabla del contrato ────────────────────────────────────────────────────── */
+.contrato-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+}
+
+.contrato-table th,
+.contrato-table td {
+  padding: 10px 14px;
+  border: 1px solid rgba(121, 91, 194, 0.14);
+  text-align: left;
+  font-size: 0.92rem;
+}
+
+.contrato-table th {
+  background: #f0ebff;
+  color: #3b2a6a;
+  font-weight: 700;
+}
+
+.contrato-table td {
+  color: #4b3f72;
+  background: #fff;
+}
+
+.contrato-table tr:nth-child(even) td {
+  background: #faf6ff;
+}
+
+/* ─── Botón descargar ───────────────────────────────────────────────────────── */
+.contrato-download-btn {
+  padding: 11px 22px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #7a4cff 0%, #4d2a99 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.contrato-download-btn:hover { opacity: 0.88; }
+
+@media (max-width: 640px) {
+  .contrato-header {
+    flex-direction: column;
+  }
+
+  .contrato-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

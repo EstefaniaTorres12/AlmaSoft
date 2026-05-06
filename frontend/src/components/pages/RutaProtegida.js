@@ -8,8 +8,12 @@ const RutaProtegida = ({ children, rolPermitido }) => {
     return <Navigate to="/" replace />;
   }
 
-  if (rolPermitido && rol !== rolPermitido) {
-    return <Navigate to="/" replace />;
+  if (rolPermitido) {
+    const roles = Array.isArray(rolPermitido) ? rolPermitido : [rolPermitido];
+
+    if (!roles.includes(rol)) {
+      return <Navigate to="/" replace />;
+    }
   }
 
   return children;

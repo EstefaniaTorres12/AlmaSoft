@@ -1,40 +1,28 @@
 const dayjs = require('dayjs');
 const db = require('../config/config');
 const bcrypt = require('bcryptjs');
+
 const Cliente = {};
 
 Cliente.create = async (cliente, result) => {
     try {
 
-        const correo = cliente.usuario_correo
-            ? cliente.usuario_correo.toLowerCase()
-            : null;
-
-        // ✅ VALIDACIONES ANTES DE USAR LOS DATOS
-        if (!cliente.usuario_documento) {
-            return result({ message: "Documento es obligatorio" }, null);
-        }
-
-        if (!cliente.usuario_credencial) {
-            return result({ message: "La contraseña es obligatoria" }, null);
-        }
-
-        if (!cliente.cliente_fecha_nacimiento) {
-            return result({ message: "Fecha de nacimiento es obligatoria" }, null);
-        }
-
-        // ✅ HASH DESPUÉS DE VALIDAR
-        const hash = await bcrypt.hash(cliente.usuario_credencial, 10);
+        const correo = cliente.correo.toLowerCase();
+        const hash = await bcrypt.hash(cliente.credencial, 10);
 
         const checkSql = "SELECT * FROM USUARIO WHERE usuario_documento = ?";
-        db.query(checkSql, [cliente.usuario_documento], (err, rows) => {
+        db.query(checkSql, [cliente.documento], (err, rows) => {
 
-            if (err) return result(err, null);
+            if (err) {
+                console.log(err);
+                return result(err, null);
+            }
 
             if (rows.length > 0) {
                 return result({ message: "El documento ya existe" }, null);
             }
 
+            // 🔹 1. INSERT USUARIO
             const sqlUsuario = `
                 INSERT INTO USUARIO(
                     usuario_documento,
@@ -49,66 +37,94 @@ Cliente.create = async (cliente, result) => {
             `;
 
             db.query(sqlUsuario, [
-                cliente.usuario_documento,
-                cliente.usuario_primer_nombre,
-                cliente.usuario_segundo_nombre,
-                cliente.usuario_primer_apellido,
-                cliente.usuario_segundo_apellido,
+                cliente.documento,
+                cliente.primer_nombre,
+                cliente.segundo_nombre,
+                cliente.primer_apellido,
+                cliente.segundo_apellido,
                 correo,
-                cliente.usuario_direccion,
+                cliente.direccion,
                 hash
             ], (err2, resUsuario) => {
 
-                if (err2) return result(err2, null);
+                if (err2) {
+                    console.log(err2);
+                    return result(err2, null);
+                }
 
                 const usuario_id = resUsuario.insertId;
 
-                const fecha = cliente.cliente_fecha_nacimiento;
-
-                const edad = cliente.cliente_edad
-                    ? cliente.cliente_edad
-                    : dayjs().diff(fecha, "year");
-
-                const sqlCliente = `
-                    INSERT INTO CLIENTE(
-                        cliente_id,
-                        cliente_fecha_nacimiento,
-                        cliente_edad
+                // 🔥 1.5 INSERT ROL_USUARIO (CLIENTE = 1)
+                const sqlRolUsuario = `
+                    INSERT INTO ROL_USUARIO(
+                        rol_id,
+                        usuario_id,
+                        estado_cred
                     ) VALUES (?,?,?)
                 `;
 
-                db.query(sqlCliente, [
+                db.query(sqlRolUsuario, [
+                    1, // 👈 SIEMPRE CLIENTE
                     usuario_id,
-                    fecha,
-                    edad
-                ], (err3) => {
+                    true
+                ], (errRol) => {
 
-                    if (err3) return result(err3, null);
+                    if (errRol) {
+                        console.log(errRol);
+                        return result(errRol, null);
+                    }
 
-                    const sqlTelefono = `
-                        INSERT INTO TELEFONO(
-                            usuario_id,
-                            telefono
-                        ) VALUES (?,?)
+                    // 🔹 2. INSERT CLIENTE
+                    const sqlCliente = `
+                        INSERT INTO CLIENTE(
+                            cliente_id,
+                            cliente_fecha_nacimiento,
+                            cliente_edad
+                        ) VALUES (?,?,?)
                     `;
 
-                    db.query(sqlTelefono, [
+                    db.query(sqlCliente, [
                         usuario_id,
-                        cliente.usuario_telefono || null
-                    ], (err4) => {
+                        dayjs(cliente.fecha_nacimiento, "DD/MM/YYYY").toDate(),
+                        cliente.edad
+                    ], (err3) => {
 
-                        if (err4) return result(err4, null);
+                        if (err3) {
+                            console.log(err3);
+                            return result(err3, null);
+                        }
 
-                        return result(null, { id: usuario_id });
+                        // 🔹 3. INSERT TELEFONO
+                        const sqlTelefono = `
+                            INSERT INTO TELEFONO(
+                                usuario_id,
+                                telefono
+                            ) VALUES (?,?)
+                        `;
+
+                        db.query(sqlTelefono, [
+                            usuario_id,
+                            cliente.telefono
+                        ], (err4) => {
+
+                            if (err4) {
+                                console.log(err4);
+                                return result(err4, null);
+                            }
+
+                            result(null, { id: usuario_id });
+                        });
                     });
                 });
             });
         });
 
     } catch (error) {
-        return result(error, null);
+        console.log(error);
+        result(error, null);
     }
 };
+
 
 Cliente.findAll = (result) => {
     const sql = `SELECT 
@@ -139,6 +155,7 @@ GROUP BY u.usuario_id`;
     });
 };
 
+
 Cliente.findById = (id, result) => {
 
     const sql = `SELECT 
@@ -168,6 +185,7 @@ Cliente.findById = (id, result) => {
         }
     });
 };
+
 
 Cliente.update = (id, cliente, result) => {
 
@@ -217,6 +235,24 @@ Cliente.update = (id, cliente, result) => {
 
             console.log('Cliente completo actualizado');
             result(null, res);
+        });
+    });
+};
+
+Cliente.delete = (id, result) => {
+    const sqlTelefono = `DELETE FROM TELEFONO WHERE usuario_id = ?`;
+    db.query(sqlTelefono, [id], (err) => {
+        if (err) return result(err, null);
+
+        const sqlCliente = `DELETE FROM CLIENTE WHERE cliente_id = ?`;
+        db.query(sqlCliente, [id], (err2) => {
+            if (err2) return result(err2, null);
+
+            const sqlUsuario = `DELETE FROM USUARIO WHERE usuario_id = ?`;
+            db.query(sqlUsuario, [id], (err3, res) => {
+                if (err3) return result(err3, null);
+                result(null, res);
+            });
         });
     });
 };

@@ -1,4 +1,4 @@
-﻿const Cliente = require('../models/cliente');
+const Cliente = require('../models/cliente');
 
 module.exports = {
 
@@ -52,13 +52,8 @@ module.exports = {
     createCliente(req, res) {
         const cliente = req.body;
 
-        // ✅ VALIDACIÓN CORREGIDA (alineada con frontend y modelo)
-        if (
-            !cliente.usuario_documento ||
-            !cliente.usuario_primer_nombre ||
-            !cliente.usuario_primer_apellido ||
-            !cliente.usuario_credencial
-        ) {
+        // Validación básica
+        if (!cliente.documento || !cliente.primer_nombre || !cliente.primer_apellido || !cliente.credencial) {
             return res.status(400).json({
                 success: false,
                 message: 'Faltan datos obligatorios'

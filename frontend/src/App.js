@@ -38,12 +38,17 @@ import EditarProducto from './components/admin/EditarProducto';
 import PlanFront from './components/admin/PlanFront';
 import AgregarPlan from './components/admin/AgregarPlan';
 import EditarPlan from './components/admin/EditarPlan';
+import AfiliacionesAdmin from './components/admin/AfiliacionesAdmin';
 
 /* CLIENTE */
 import HomeClient from './components/client/pages/HomeClient';
+import TuPlan from './components/client/pages/TuPlan';
+import Afiliados from './components/client/pages/Afiliados';
+import Contrato from './components/client/pages/Contrato';
 import Servicios from './components/client/pages/Servicios';
-import Tienda from './components/client/pages/Tienda';
 import Pagos from './components/client/pages/Pagos';
+import Sedes from './components/client/pages/Sedes';
+import Perfil from './components/client/pages/Perfil';
 
 function App() {
   useEffect(() => {
@@ -97,7 +102,7 @@ function App() {
         <Route
           path='/clientes/Cliente'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <Cliente />
@@ -109,7 +114,7 @@ function App() {
         <Route
           path='/clientes/AgregarCliente'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <AgregarCliente />
@@ -121,7 +126,7 @@ function App() {
         <Route
           path='/clientes/EditarCliente/:id'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <EditarCliente />
@@ -133,7 +138,7 @@ function App() {
         <Route
           path='/usuarios/DetallesCliente/:id'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <DetallesCliente />
@@ -145,7 +150,7 @@ function App() {
         <Route
           path='/usuarios'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <UsuarioFront />
@@ -157,7 +162,7 @@ function App() {
         <Route
           path='/usuarios/AgregarUsuario'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <AgregarUsuario />
@@ -169,7 +174,7 @@ function App() {
         <Route
           path='/usuarios/EditarUsuario/:id'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <EditarUsuario />
@@ -181,7 +186,7 @@ function App() {
         <Route
           path='/usuarios/DetallesUsuario/:id'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <DetallesUsuario />
@@ -193,7 +198,7 @@ function App() {
         <Route
           path='/admin/CategoriaFront'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <CategoriaFront />
@@ -205,7 +210,7 @@ function App() {
         <Route
           path='/categorias/agregar'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <AgregarCategoria />
@@ -217,7 +222,7 @@ function App() {
         <Route
           path='/categorias/editar/:id'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <EditarCategoria />
@@ -229,7 +234,7 @@ function App() {
         <Route
           path='/admin/SubCategoriaFront'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <SubCategoriaFront />
@@ -241,7 +246,7 @@ function App() {
         <Route
           path='/subcategorias/agregar'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <AgregarSubCategoria />
@@ -253,7 +258,7 @@ function App() {
         <Route
           path='/subcategorias/editar/:id'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <EditarSubCategoria />
@@ -265,7 +270,7 @@ function App() {
         <Route
           path='/admin/ProductoFront'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <ProductoFront />
@@ -277,7 +282,7 @@ function App() {
         <Route
           path='/productos/agregar'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <AgregarProducto />
@@ -289,7 +294,7 @@ function App() {
         <Route
           path='/productos/editar/:id'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', height: '150vh' }}>
                 <EditarProducto />
@@ -301,7 +306,7 @@ function App() {
         <Route
           path='/admin/Planes'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', minHeight: '100vh' }}>
                 <PlanFront />
@@ -313,7 +318,7 @@ function App() {
         <Route
           path='/planes/agregar'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', minHeight: '100vh' }}>
                 <AgregarPlan />
@@ -325,7 +330,7 @@ function App() {
         <Route
           path='/planes/editar/:id'
           element={
-            <RutaProtegida>
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
               <SideBar />
               <div style={{ marginLeft: '200px', background: '#D8CFE8', minHeight: '100vh' }}>
                 <EditarPlan />
@@ -335,15 +340,82 @@ function App() {
         />
 
         {/* CLIENTE */}
-       <Route path='/client' element={<HomeClient />} />
-<Route path='/client/plan' element={<div>Plan</div>} />
-<Route path='/client/afiliados' element={<div>Afiliados</div>} />
-<Route path='/client/contrato' element={<div>Contrato</div>} />
-<Route path='/client/pagos' element={<Pagos />} />
-<Route path='/client/sedes' element={<div>Sedes</div>} />
-<Route path='/client/contacto' element={<div>Contacto</div>} />
-<Route path='/client/tienda' element={<Tienda />} />
-<Route path='/client/perfil' element={<div>Perfil</div>} />
+        <Route
+          path='/client'
+          element={
+            <RutaProtegida rolPermitido='Cliente'>
+              <HomeClient />
+            </RutaProtegida>
+          }
+        />
+
+        <Route
+          path='/admin/afiliaciones'
+          element={
+            <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+              <SideBar />
+              <div style={{ marginLeft: '200px', background: '#D8CFE8', minHeight: '100vh' }}>
+                <AfiliacionesAdmin />
+              </div>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/client/plan'
+          element={
+            <RutaProtegida rolPermitido='Cliente'>
+              <TuPlan />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/client/afiliados'
+          element={
+            <RutaProtegida rolPermitido={['Cliente', 'Afiliado']}>
+              <Afiliados />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/client/contrato'
+          element={
+            <RutaProtegida rolPermitido='Cliente'>
+              <Contrato />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/client/pagos'
+          element={
+            <RutaProtegida rolPermitido='Cliente'>
+              <Pagos />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/client/sedes'
+          element={
+            <RutaProtegida rolPermitido='Cliente'>
+              <Sedes />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/client/contacto'
+          element={
+            <RutaProtegida rolPermitido='Cliente'>
+              <Servicios />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/client/perfil'
+          element={
+            <RutaProtegida rolPermitido={['Cliente', 'Afiliado']}>
+              <Perfil />
+            </RutaProtegida>
+          }
+        />
 
         <Route path='*' element={<Navigate to='/' />} />
       </Routes>
