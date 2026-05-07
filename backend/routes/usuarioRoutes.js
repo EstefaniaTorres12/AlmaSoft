@@ -7,10 +7,10 @@ router.post('/login', usuarioController.login);
 router.post('/usuarioCreate', usuarioController.register);
 
 //rutas protegidas
-router.get('/id/:id', verifyToken, authorizeRoles(['Administrador', 'Asesor']), usuarioController.getUsuarioById);
+router.get('/id/:id', verifyToken, authorizeRoles(['Administrador', 'Asesor', 'Cliente']), usuarioController.getUsuarioById);
 router.get('/documento/:documento', verifyToken, authorizeRoles(['Administrador', 'Asesor']), usuarioController.getUsuarioByDocument);
 router.put('/update/:id', verifyToken, authorizeRoles(['Administrador', 'Asesor', 'Cliente']), usuarioController.getUsuarioUpdate);
 router.delete('/deleteU/:id',verifyToken, authorizeRoles(['Administrador', 'Asesor']), usuarioController.getUsuarioDelete);
-router.get('/usuariosAll',usuarioController.getUsuarioAll);
+router.get('/usuariosAll', verifyToken, authorizeRoles(['Administrador', 'Asesor']), usuarioController.getUsuarioAll);
 
 module.exports = router;

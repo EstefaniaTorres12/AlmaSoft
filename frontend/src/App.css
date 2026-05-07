@@ -29,11 +29,111 @@
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ADMIN LAYOUT — sidebar + content
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Sidebar admin */
+.admin-sidebar {
+  width: 200px;
+  min-height: 100vh;
+  background-color: #211730;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+}
+
+.admin-sidebar h3 {
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Área de contenido admin */
+.admin-page {
+  margin-left: 200px;
+  background: #D8CFE8;
+  min-height: 100vh;
+  overflow-x: auto;          /* tablas desbordan horizontalmente sin romper layout */
+}
+
+/* ── Tablet (≤992px): sidebar colapsa a barra horizontal superior ─────────── */
+@media (max-width: 992px) {
+  .admin-sidebar {
+    width: 100%;
+    min-height: unset;
+    height: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 6px 12px;
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
-  to {
-    transform: rotate(360deg);
+
+  .admin-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .admin-sidebar h3 {
+    font-size: 0.85rem;
+    margin: 0 10px 0 0;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  /* Bootstrap Nav que normalmente es flex-column */
+  .admin-sidebar .flex-column {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    gap: 0;
+  }
+
+  .admin-sidebar .btn {
+    font-size: 0.72rem !important;
+    padding: 5px 8px !important;
+    white-space: nowrap;
+    margin: 2px 2px !important;
+  }
+
+  .admin-page {
+    margin-left: 0;
+    padding-top: 54px;        /* altura de la barra superior */
   }
 }
 
+/* ── Móvil (≤576px): botones más compactos ───────────────────────────────── */
+@media (max-width: 576px) {
+  .admin-sidebar .btn {
+    font-size: 0.66rem !important;
+    padding: 4px 6px !important;
+  }
+}

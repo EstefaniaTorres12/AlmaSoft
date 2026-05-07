@@ -114,9 +114,11 @@ const Registrarse = () => {
                             <Form.Group className="mb-3">
                                 <Form.Label>DOCUMENTO</Form.Label>
                                 <Form.Control
+                                    type="number"
                                     name="DocumentoCliente"
                                     value={formData.DocumentoCliente}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
 
@@ -126,6 +128,7 @@ const Registrarse = () => {
                                     name="PrimerNombreCliente"
                                     value={formData.PrimerNombreCliente}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
 
@@ -144,6 +147,7 @@ const Registrarse = () => {
                                     name="PrimerApellidoCliente"
                                     value={formData.PrimerApellidoCliente}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
 
@@ -153,6 +157,7 @@ const Registrarse = () => {
                                     name="SegundoApellidoCliente"
                                     value={formData.SegundoApellidoCliente}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
 
@@ -162,24 +167,29 @@ const Registrarse = () => {
                                     name="DireccionCliente"
                                     value={formData.DireccionCliente}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
 
                             <Form.Group className="mb-3">
                                 <Form.Label>TELEFONO</Form.Label>
                                 <Form.Control
+                                    type="tel"
                                     name="TelefonoCliente"
                                     value={formData.TelefonoCliente}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
 
                             <Form.Group className="mb-3">
                                 <Form.Label>CORREO</Form.Label>
                                 <Form.Control
+                                    type="email"
                                     name="CorreoCliente"
                                     value={formData.CorreoCliente}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
 
@@ -190,6 +200,7 @@ const Registrarse = () => {
                                     name="Credencial"
                                     value={formData.Credencial}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
 
@@ -200,6 +211,7 @@ const Registrarse = () => {
                                     name="FechaNacimiento"
                                     value={formData.FechaNacimiento}
                                     onChange={handleChange}
+                                    required
                                 />
                             </Form.Group>
 
