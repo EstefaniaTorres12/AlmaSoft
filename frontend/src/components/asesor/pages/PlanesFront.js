@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../../utils/authFetch";
 import AsesorLayout from "../layout/AsesorLayout";
 import "../styles/asesorPages.css";
 
 const PlanesFrontAsesor = () => {
+    const navigate = useNavigate();
     const [planes, setPlanes] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     const [loading, setLoading] = useState(true);
@@ -11,7 +13,7 @@ const PlanesFrontAsesor = () => {
     useEffect(() => {
         const fetchPlanes = async () => {
             try {
-                const response = await authFetch("http://localhost:3001/api/planes/all");
+                const response = await authFetch("http://localhost:3001/api/planes/");
                 const data = await response.json();
 
                 if (response.ok) {
@@ -62,16 +64,17 @@ const PlanesFrontAsesor = () => {
                                 <th>Descripción</th>
                                 <th>Precio</th>
                                 <th>Estado</th>
+                                <th style={{ textAlign: 'center' }}>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>Cargando planes...</td>
+                                    <td colSpan="6" style={{ textAlign: 'center', padding: '40px' }}>Cargando planes...</td>
                                 </tr>
                             ) : planesFiltrados.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>No se encontraron planes.</td>
+                                    <td colSpan="6" style={{ textAlign: 'center', padding: '40px' }}>No se encontraron planes.</td>
                                 </tr>
                             ) : (
                                 planesFiltrados.map(plan => (
@@ -90,6 +93,15 @@ const PlanesFrontAsesor = () => {
                                             }}>
                                                 {plan.plan_estado === 1 ? "Activo" : "Inactivo"}
                                             </span>
+                                        </td>
+                                        <td style={{ textAlign: 'center' }}>
+                                            <button 
+                                                className="asesor-btn"
+                                                style={{ padding: '6px 12px', minHeight: '34px', fontSize: '0.85rem' }}
+                                                onClick={() => navigate(`/asesor/planes/editar/${plan.plan_id}`)}
+                                            >
+                                                Editar
+                                            </button>
                                         </td>
                                     </tr>
                                 ))

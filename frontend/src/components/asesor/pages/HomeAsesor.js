@@ -43,9 +43,9 @@ export default function HomeAsesor() {
       try {
         const [resClientes, resPlanes, resProductos, resAfiliados] = await Promise.all([
           authFetch("http://localhost:3001/api/clientes/clientesAll"),
-          authFetch("http://localhost:3001/api/planes/all"),
+          authFetch("http://localhost:3001/api/planes/"),
           authFetch("http://localhost:3001/api/productos/productosAll"),
-          authFetch("http://localhost:3001/api/client/affiliates/review")
+          authFetch("http://localhost:3001/api/client/affiliates/all-for-asesor")
         ]);
 
         const dataClientes = await resClientes.json();

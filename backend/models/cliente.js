@@ -186,6 +186,29 @@ Cliente.findById = (id, result) => {
     });
 };
 
+Cliente.getClientesConPlanes = (result) => {
+    const sql = `
+        SELECT 
+            u.usuario_primer_nombre AS primer_nombre,
+            u.usuario_primer_apellido AS primer_apellido,
+            u.usuario_documento AS documento,
+            p.plan_nombre AS plan_nombre
+        FROM CLIENTE c
+        INNER JOIN USUARIO u ON u.usuario_id = c.cliente_id
+        INNER JOIN CONTRATO co ON co.cliente_id = c.cliente_id
+        INNER JOIN PLAN_FUNEBRE p ON p.plan_id = co.plan_id
+        WHERE co.contrato_estado = 1
+    `;
+
+    db.query(sql, (err, res) => {
+        if (err) {
+            console.log('Error al obtener clientes con planes:', err);
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
 
 Cliente.update = (id, cliente, result) => {
 

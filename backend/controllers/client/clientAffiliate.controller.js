@@ -389,3 +389,108 @@ exports.reviewAffiliateRequest = async (req, res) => {
     message: "No hay solicitudes pendientes para revisar.",
   });
 };
+
+exports.registerAffiliateByAsesor = async (req, res) => {
+  const { cliente_id, documento, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, telefono } = req.body;
+
+  if (!cliente_id || !documento || !primer_nombre || !primer_apellido) {
+    return res.status(400).json({ success: false, message: "Faltan datos obligatorios del afiliado." });
+  }
+
+  try {
+    // 1. Obtener contrato activo del cliente
+    const contratoRows = await ejecutarConsulta(
+      db,
+      `SELECT contrato_id FROM CONTRATO WHERE cliente_id = ? AND contrato_estado = 1 LIMIT 1`,
+      [cliente_id]
+    );
+
+    if (contratoRows.length === 0) {
+      return res.status(404).json({ success: false, message: "El cliente no tiene un contrato activo para agregar afiliados." });
+    }
+
+    const contrato_id = contratoRows[0].contrato_id;
+
+    // 2. Verificar si el afiliado ya existe en USUARIO por documento
+    let afiliado_id;
+    const userRows = await ejecutarConsulta(
+      db,
+      `SELECT usuario_id FROM USUARIO WHERE usuario_documento = ? LIMIT 1`,
+      [documento]
+    );
+
+    if (userRows.length > 0) {
+      afiliado_id = userRows[0].usuario_id;
+    } else {
+      // 3. Crear nuevo usuario si no existe
+       const resultUser = await ejecutarConsulta(
+         db,
+         `INSERT INTO USUARIO (usuario_documento, usuario_primer_nombre, usuario_segundo_nombre, usuario_primer_apellido, usuario_segundo_apellido, usuario_correo, usuario_direccion, usuario_credencial) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+         [documento, primer_nombre, segundo_nombre || null, primer_apellido, segundo_apellido || null, correo || null, 'No especificada', 'afiliado123']
+       );
+       afiliado_id = resultUser.insertId;
+
+      // Asignar rol de cliente por defecto (o un rol de afiliado si existe)
+      await ejecutarConsulta(db, `INSERT INTO ROL_USUARIO (rol_id, usuario_id, estado_cred) VALUES (1, ?, 1)`, [afiliado_id]);
+      
+      // Agregar teléfono si se proporcionó
+      if (telefono) {
+        await ejecutarConsulta(db, `INSERT INTO TELEFONO (usuario_id, telefono) VALUES (?, ?)`, [afiliado_id, telefono]);
+      }
+    }
+
+    // 4. Verificar si ya está afiliado a este contrato
+    const existing = await ejecutarConsulta(
+      db,
+      `SELECT afiliado_id FROM AFILIADO WHERE afiliado_id = ? AND contrato_id = ? LIMIT 1`,
+      [afiliado_id, contrato_id]
+    );
+
+    if (existing.length > 0) {
+      return res.status(409).json({ success: false, message: "Esta persona ya es afiliada de este contrato." });
+    }
+
+    // 5. Vincular a la tabla AFILIADO
+    await ejecutarConsulta(
+      db,
+      `INSERT INTO AFILIADO (afiliado_id, contrato_id) VALUES (?, ?)`,
+      [afiliado_id, contrato_id]
+    );
+
+    return res.status(201).json({ success: true, message: "Afiliado registrado y vinculado correctamente." });
+  } catch (error) {
+    console.error("Error en registerAffiliateByAsesor:", error);
+    return res.status(500).json({ success: false, message: "Error interno al registrar afiliado.", error });
+  }
+};
+
+exports.getAllAffiliatesForAsesor = async (req, res) => {
+  try {
+    const rows = await ejecutarConsulta(
+      db,
+      `
+        SELECT 
+          a.afiliado_id,
+          a.contrato_id,
+          u.usuario_documento AS afiliado_documento,
+          u.usuario_primer_nombre AS afiliado_nombre,
+          u.usuario_primer_apellido AS afiliado_apellido,
+          u.usuario_correo AS afiliado_correo,
+          tu.usuario_primer_nombre AS titular_nombre,
+          tu.usuario_primer_apellido AS titular_apellido,
+          tu.usuario_documento AS titular_documento,
+          (SELECT telefono FROM TELEFONO WHERE usuario_id = u.usuario_id LIMIT 1) AS afiliado_telefono
+        FROM AFILIADO a
+        INNER JOIN USUARIO u ON u.usuario_id = a.afiliado_id
+        INNER JOIN CONTRATO c ON c.contrato_id = a.contrato_id
+        INNER JOIN USUARIO tu ON tu.usuario_id = c.cliente_id
+        ORDER BY a.contrato_id DESC, u.usuario_primer_nombre ASC
+      `
+    );
+
+    return res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error("Error en getAllAffiliatesForAsesor:", error);
+    return res.status(500).json({ success: false, message: "Error al obtener la lista de afiliados.", error: error.message });
+  }
+};

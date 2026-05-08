@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../../utils/authFetch";
 import AsesorLayout from "../layout/AsesorLayout";
 import "../styles/asesorPages.css";
@@ -7,152 +8,130 @@ function buildName(firstName, lastName) {
   return [firstName, lastName].filter(Boolean).join(" ");
 }
 
-function formatDate(value) {
-  if (!value) return "Sin fecha";
-  return new Date(value).toLocaleString("es-CO");
-}
-
 export default function AfiliacionesAsesor() {
-  const [requests, setRequests] = useState([]);
+  const navigate = useNavigate();
+  const [affiliates, setAffiliates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [busqueda, setBusqueda] = useState("");
   const [error, setError] = useState("");
-  const [savingId, setSavingId] = useState(null);
-  const [notes, setNotes] = useState({});
 
   useEffect(() => {
-    const loadRequests = async () => {
+    const loadAffiliates = async () => {
       setLoading(true);
       setError("");
-
       try {
-        const response = await authFetch("http://localhost:3001/api/client/affiliates/review");
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          throw new Error(data.message || "No fue posible cargar solicitudes.");
+        const response = await authFetch("http://localhost:3001/api/client/affiliates/all-for-asesor");
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          throw new Error("La respuesta del servidor no es un JSON válido: " + text.substring(0, 100));
         }
-
-        setRequests(data.data || []);
-      } catch (requestError) {
-        console.error(requestError);
-        setError(requestError.message || "No fue posible cargar solicitudes.");
+        
+        if (response.ok && data.success) {
+          setAffiliates(data.data || []);
+        } else {
+          setError(data.message || "No fue posible cargar los afiliados.");
+        }
+      } catch (err) {
+        console.error("Error cargando afiliados:", err);
+        setError(err.message || "Error al conectar con el servidor.");
       } finally {
         setLoading(false);
       }
     };
-
-    loadRequests();
+    loadAffiliates();
   }, []);
 
-  const handleDecision = async (requestId, decision) => {
-    setSavingId(requestId);
-    setError("");
-
-    try {
-      const response = await authFetch(`http://localhost:3001/api/client/affiliates/review/${requestId}`, {
-        method: "PUT",
-        body: JSON.stringify({
-          decision,
-          motivo_revision: notes[requestId] || null,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "No fue posible procesar la solicitud.");
-      }
-
-      setRequests((current) => current.filter((request) => request.solicitud_id !== requestId));
-      alert(`Solicitud ${decision === 'aprobar' ? 'aprobada' : 'rechazada'} correctamente.`);
-    } catch (requestError) {
-      console.error(requestError);
-      setError(requestError.message || "No fue posible procesar la solicitud.");
-    } finally {
-      setSavingId(null);
-    }
-  };
+  const filteredAffiliates = affiliates.filter(a => 
+    String(a.afiliado_documento || "").includes(busqueda) ||
+    buildName(a.afiliado_nombre, a.afiliado_apellido).toLowerCase().includes(busqueda.toLowerCase()) ||
+    buildName(a.titular_nombre, a.titular_apellido).toLowerCase().includes(busqueda.toLowerCase())
+  );
 
   return (
     <AsesorLayout>
         <div className="asesor-page-shell">
-            <div className="asesor-page-header">
-                <h1>Solicitudes de Afiliación</h1>
-                <p>Revisa y gestiona las solicitudes de afiliados pendientes por aprobación.</p>
+            <div className="asesor-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                    <h1>Gestión de Afiliados</h1>
+                    <p>Visualiza y administra todos los afiliados vinculados a los contratos.</p>
+                </div>
+                <button 
+                    className="asesor-btn"
+                    onClick={() => navigate("/asesor/afiliados/registrar")}
+                >
+                    Registrar Nuevo Afiliado
+                </button>
             </div>
 
-            {loading ? (
-                <div className="client-empty-state">Cargando solicitudes...</div>
-            ) : error ? (
+            <div className="asesor-form-group" style={{ maxWidth: '450px', marginBottom: '30px' }}>
+                <input 
+                    className="asesor-form-control"
+                    type="text"
+                    placeholder="Buscar por documento, nombre de afiliado o titular..."
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                />
+            </div>
+
+            {error && (
                 <div style={{ color: '#721c24', backgroundColor: '#f8d7da', padding: '15px', borderRadius: '12px', marginBottom: '20px' }}>
                     {error}
                 </div>
-            ) : requests.length === 0 ? (
-                <div className="asesor-empty-state">
-                    No hay solicitudes pendientes por revisar en este momento.
-                </div>
-            ) : (
-                <div style={{ display: "grid", gap: "20px" }}>
-                    {requests.map((request) => (
-                        <div key={request.solicitud_id} className="asesor-info-card">
-                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: '15px' }}>
-                                <div>
-                                    <h3 style={{ margin: 0 }}>{buildName(request.postulado_primer_nombre, request.postulado_primer_apellido)}</h3>
-                                    <p style={{ margin: '5px 0 0' }}>{request.postulado_correo}</p>
-                                </div>
-                                <div style={{ textAlign: 'right' }}>
-                                    <span style={{ fontWeight: 'bold', color: '#5636a5' }}>{request.plan_nombre}</span>
-                                    <p style={{ margin: '5px 0 0', fontSize: '0.85rem' }}>{formatDate(request.fecha_solicitud)}</p>
-                                </div>
-                            </div>
-
-                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "15px", marginBottom: '20px' }}>
-                                <div>
-                                    <small style={{ textTransform: 'uppercase', color: '#6f6789', fontWeight: 'bold' }}>Titular</small>
-                                    <p style={{ margin: '4px 0 0' }}>{buildName(request.titular_primer_nombre, request.titular_primer_apellido)}</p>
-                                </div>
-                                <div>
-                                    <small style={{ textTransform: 'uppercase', color: '#6f6789', fontWeight: 'bold' }}>Parentesco</small>
-                                    <p style={{ margin: '4px 0 0' }}>{request.parentesco}</p>
-                                </div>
-                                <div>
-                                    <small style={{ textTransform: 'uppercase', color: '#6f6789', fontWeight: 'bold' }}>Observación</small>
-                                    <p style={{ margin: '4px 0 0' }}>{request.observacion || "Sin observación."}</p>
-                                </div>
-                            </div>
-
-                            <div className="asesor-form-group">
-                                <textarea
-                                    className="asesor-form-control"
-                                    value={notes[request.solicitud_id] || ""}
-                                    onChange={(e) => setNotes(prev => ({ ...prev, [request.solicitud_id]: e.target.value }))}
-                                    placeholder="Agrega un motivo o comentario para la revisión..."
-                                    style={{ minHeight: '80px', resize: 'vertical' }}
-                                />
-                            </div>
-
-                            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
-                                <button
-                                    type="button"
-                                    className="asesor-btn asesor-btn-secondary"
-                                    onClick={() => handleDecision(request.solicitud_id, "rechazar")}
-                                    disabled={savingId === request.solicitud_id}
-                                >
-                                    Rechazar
-                                </button>
-                                <button
-                                    type="button"
-                                    className="asesor-btn"
-                                    onClick={() => handleDecision(request.solicitud_id, "aprobar")}
-                                    disabled={savingId === request.solicitud_id}
-                                >
-                                    {savingId === request.solicitud_id ? "Procesando..." : "Aprobar Afiliación"}
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
             )}
+
+            <div className="asesor-table-container">
+                <table className="asesor-table">
+                    <thead>
+                        <tr>
+                            <th>Afiliado</th>
+                            <th>Documento</th>
+                            <th>Teléfono / Correo</th>
+                            <th>Titular Responsable</th>
+                            <th style={{ textAlign: 'center' }}>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loading ? (
+                            <tr>
+                                <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>Cargando afiliados...</td>
+                            </tr>
+                        ) : filteredAffiliates.length === 0 ? (
+                            <tr>
+                                <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>No se encontraron afiliados registrados.</td>
+                            </tr>
+                        ) : (
+                            filteredAffiliates.map((a) => (
+                                <tr key={`${a.afiliado_id}-${a.contrato_id}`}>
+                                    <td>
+                                        <strong>{buildName(a.afiliado_nombre, a.afiliado_apellido)}</strong>
+                                    </td>
+                                    <td>{a.afiliado_documento}</td>
+                                    <td>
+                                        <div style={{ fontSize: '0.85rem' }}>{a.afiliado_telefono || "Sin tel."}</div>
+                                        <div style={{ fontSize: '0.75rem', color: '#6f6789' }}>{a.afiliado_correo || "Sin correo"}</div>
+                                    </td>
+                                    <td>
+                                        <div style={{ fontWeight: '500' }}>{buildName(a.titular_nombre, a.titular_apellido)}</div>
+                                        <div style={{ fontSize: '0.75rem', color: '#6f6789' }}>CC {a.titular_documento}</div>
+                                    </td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <button 
+                                            className="asesor-btn"
+                                            style={{ padding: '6px 12px', minHeight: '34px', fontSize: '0.85rem' }}
+                                            onClick={() => navigate(`/asesor/afiliados/editar/${a.afiliado_id}`)}
+                                        >
+                                            Actualizar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </AsesorLayout>
   );

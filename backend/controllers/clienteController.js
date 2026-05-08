@@ -117,6 +117,23 @@ module.exports = {
                 message: 'Cliente eliminado correctamente'
             });
         });
+    },
+
+    getClientesConPlanes(req, res) {
+        Cliente.getClientesConPlanes((err, data) => {
+            if (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error al obtener estadísticas de planes',
+                    error: err
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                data
+            });
+        });
     }
 
 };

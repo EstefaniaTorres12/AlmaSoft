@@ -58,9 +58,12 @@ import AgregarClienteAsesor from './components/asesor/AgregarCliente';
 import EditarClienteAsesor from './components/asesor/EditarCliente';
 import DetallesClienteAsesor from './components/asesor/DetallesCliente';
 import PlanesFrontAsesor from './components/asesor/pages/PlanesFront';
+import EditarPlanAsesor from './components/asesor/EditarPlanAsesor';
 import ProductosFrontAsesor from './components/asesor/pages/ProductosFront';
 import AfiliacionesAsesor from './components/asesor/pages/AfiliacionesFront';
 import PerfilAsesor from './components/asesor/pages/PerfilAsesor';
+import RegistrarAfiliadoAsesor from './components/asesor/RegistrarAfiliado';
+import EditarAfiliadoAsesor from './components/asesor/EditarAfiliadoAsesor';
 
 function App() {
   useEffect(() => {
@@ -498,6 +501,17 @@ function App() {
         />
 
         <Route
+          path='/asesor/planes/editar/:id'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <EditarPlanAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+
+        <Route
           path='/asesor/productos'
           element={
             <RutaProtegida rolPermitido='Asesor'>
@@ -514,6 +528,28 @@ function App() {
             <RutaProtegida rolPermitido='Asesor'>
               <AsesorLayout>
                 <AfiliacionesAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+
+        <Route
+          path='/asesor/afiliados/registrar'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <RegistrarAfiliadoAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+
+        <Route
+          path='/asesor/afiliados/editar/:id'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <EditarAfiliadoAsesor />
               </AsesorLayout>
             </RutaProtegida>
           }

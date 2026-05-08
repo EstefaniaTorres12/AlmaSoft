@@ -1,266 +1,262 @@
 import React, { useState, useEffect } from "react";
-import { Container, Card, Form, Button, Alert, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import AsesorLayout from "./layout/AsesorLayout";
+import "./styles/asesorPages.css";
 
 const RegistrarAfiliado = () => {
-
     const navigate = useNavigate();
 
     const [formData, setData] = useState({
         cliente_id: "",
+        documento: "",
         primer_nombre: "",
         segundo_nombre: "",
         primer_apellido: "",
         segundo_apellido: "",
-        correo: "",
-        documento: "",
-        plan_id: ""
+        telefono: "",
+        correo: ""
     });
 
     const [clientes, setClientes] = useState([]);
-    const [planes, setPlanes] = useState([]);
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    // Cargar clientes y planes
+    // Cargar clientes titulares
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchClientes = async () => {
             try {
-                const [resClientes, resPlanes] = await Promise.all([
-                    authFetch("http://localhost:3001/api/clientes/clientesAll"),
-                    authFetch("http://localhost:3001/api/planes/all")
-                ]);
-
-                const dataClientes = await resClientes.json();
-                const dataPlanes = await resPlanes.json();
-
-                if (resClientes.ok) setClientes(dataClientes.data);
-                if (resPlanes.ok) setPlanes(dataPlanes.data);
+                const res = await authFetch("http://localhost:3001/api/clientes/clientesAll");
+                const data = await res.json();
+                if (res.ok) {
+                    setClientes(data.data || []);
+                }
             } catch (err) {
-                console.error(err);
+                console.error("Error cargando clientes:", err);
             }
         };
-
-        fetchData();
+        fetchClientes();
     }, []);
 
     const handleChange = (e) => {
-        setData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+        
+        // Validación de máximo 20 números para la cédula
+        if (name === "documento") {
+            const numericValue = value.replace(/\D/g, ""); // Solo números
+            if (numericValue.length <= 20) {
+                setData(prev => ({ ...prev, [name]: numericValue }));
+            }
+            return;
+        }
+
+        setData(prev => ({ ...prev, [name]: value }));
     };
 
     const enviarDatos = async (e) => {
         e.preventDefault();
-
-        // Assume API for registering affiliate
-        const afiliado = {
-            cliente_id: formData.cliente_id,
-            primer_nombre: formData.primer_nombre,
-            segundo_nombre: formData.segundo_nombre,
-            primer_apellido: formData.primer_apellido,
-            segundo_apellido: formData.segundo_apellido,
-            correo: formData.correo,
-            documento: formData.documento,
-            plan_id: formData.plan_id
-        };
+        setLoading(true);
 
         try {
             const response = await authFetch(
-                "http://localhost:3001/api/client/affiliates/register", // Assume endpoint
+                "http://localhost:3001/api/client/affiliates/register-by-asesor",
                 {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(afiliado)
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
                 }
             );
 
-            const data = await response.json();
+            const text = await response.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                throw new Error("Respuesta no válida del servidor: " + text.substring(0, 50));
+            }
 
             if (response.ok) {
                 setMostrarAlerta(true);
-
-                // limpiar form
                 setData({
                     cliente_id: "",
+                    documento: "",
                     primer_nombre: "",
                     segundo_nombre: "",
                     primer_apellido: "",
                     segundo_apellido: "",
-                    correo: "",
-                    documento: "",
-                    plan_id: ""
+                    telefono: "",
+                    correo: ""
                 });
-
                 setTimeout(() => {
-                    navigate("/asesor/RegistrarAfiliado"); // Or list
-                }, 1500);
-
+                    navigate("/asesor/afiliados");
+                }, 2000);
             } else {
                 alert(data.message || "Error al registrar afiliado");
             }
-
         } catch (error) {
             console.error("Error:", error);
-            alert("Error de conexión con el servidor");
+            alert(error.message || "Error de conexión con el servidor");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <Container className="mt-5" style={{ maxWidth: "900px" }}>
-            <Card>
-                <Card.Header>
-                    <h3 className="text-center">Registrar Afiliado</h3>
+        <AsesorLayout>
+            <div className="asesor-page-shell" style={{ maxWidth: '800px', margin: '0 auto' }}>
+                <div className="asesor-page-header">
+                    <h1>Registrar Nuevo Afiliado</h1>
+                    <p>Vincula un nuevo integrante al plan de un cliente titular.</p>
+                </div>
 
-                    {mostrarAlerta && (
-                        <Alert
-                            variant="success"
-                            onClose={() => setMostrarAlerta(false)}
-                            dismissible
-                        >
-                            Afiliado registrado correctamente ✅
-                        </Alert>
-                    )}
-                </Card.Header>
+                {mostrarAlerta && (
+                    <div style={{ 
+                        padding: '15px', 
+                        backgroundColor: '#d4edda', 
+                        color: '#155724', 
+                        borderRadius: '12px', 
+                        marginBottom: '20px',
+                        border: '1px solid #c3e6cb'
+                    }}>
+                        Afiliado registrado y vinculado correctamente ✅
+                    </div>
+                )}
 
-                <Card.Body>
-                    <Form onSubmit={enviarDatos}>
-                        <Row>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>CLIENTE</Form.Label>
-                                    <Form.Select
-                                        name="cliente_id"
-                                        value={formData.cliente_id}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        <option value="">Seleccionar cliente</option>
-                                        {clientes.map(c => (
-                                            <option key={c.usuario_id} value={c.usuario_id}>
-                                                {`${c.usuario_primer_nombre} ${c.usuario_primer_apellido} - ${c.usuario_documento}`}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>PLAN</Form.Label>
-                                    <Form.Select
-                                        name="plan_id"
-                                        value={formData.plan_id}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        <option value="">Seleccionar plan</option>
-                                        {planes.filter(p => p.plan_estado === 1).map(p => (
-                                            <option key={p.plan_id} value={p.plan_id}>
-                                                {p.plan_nombre} - ${p.plan_precio}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-                        </Row>
+                <form onSubmit={enviarDatos}>
+                    <div className="asesor-info-card" style={{ marginBottom: '25px' }}>
+                        <h3>Selección de Titular</h3>
+                        <div className="asesor-form-group">
+                            <label>CLIENTE TITULAR</label>
+                            <select
+                                className="asesor-form-control"
+                                name="cliente_id"
+                                value={formData.cliente_id}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Selecciona el cliente responsable</option>
+                                {clientes.map(c => (
+                                    <option key={c.id} value={c.id}>
+                                        {`${c.primer_nombre} ${c.primer_apellido} - CC ${c.documento}`}
+                                    </option>
+                                ))}
+                            </select>
+                            <small style={{ color: '#6f6789' }}>El afiliado se vinculará al contrato activo de este cliente.</small>
+                        </div>
+                    </div>
 
-                        <Row>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>DOCUMENTO</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="documento"
-                                        value={formData.documento}
-                                        onChange={handleChange}
-                                        placeholder="Número de documento"
-                                        required
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>PRIMER NOMBRE</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="primer_nombre"
-                                        value={formData.primer_nombre}
-                                        onChange={handleChange}
-                                        placeholder="Primer nombre"
-                                        required
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>SEGUNDO NOMBRE</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="segundo_nombre"
-                                        value={formData.segundo_nombre}
-                                        onChange={handleChange}
-                                        placeholder="Segundo nombre"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>PRIMER APELLIDO</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="primer_apellido"
-                                        value={formData.primer_apellido}
-                                        onChange={handleChange}
-                                        placeholder="Primer apellido"
-                                        required
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>SEGUNDO APELLIDO</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="segundo_apellido"
-                                        value={formData.segundo_apellido}
-                                        onChange={handleChange}
-                                        placeholder="Segundo apellido"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>CORREO</Form.Label>
-                                    <Form.Control
-                                        type="email"
-                                        name="correo"
-                                        value={formData.correo}
-                                        onChange={handleChange}
-                                        placeholder="Correo electrónico"
-                                        required
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
+                    <div className="asesor-info-card">
+                        <h3>Datos del Afiliado</h3>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div className="asesor-form-group">
+                                <label>CÉDULA / DOCUMENTO (Máx 20 números)</label>
+                                <input
+                                    className="asesor-form-control"
+                                    type="text"
+                                    name="documento"
+                                    value={formData.documento}
+                                    onChange={handleChange}
+                                    placeholder="Ej: 12345678"
+                                    required
+                                />
+                            </div>
 
-                        <Button
-                            style={{ background: "#7856AE", border: "#7856AE" }}
-                            type="submit"
-                            className="w-100"
-                        >
-                            Registrar Afiliado
-                        </Button>
-                    </Form>
-                </Card.Body>
-            </Card>
-        </Container>
+                            <div className="asesor-form-group">
+                                <label>TELÉFONO</label>
+                                <input
+                                    className="asesor-form-control"
+                                    type="text"
+                                    name="telefono"
+                                    value={formData.telefono}
+                                    onChange={handleChange}
+                                    placeholder="Número de contacto"
+                                />
+                            </div>
+
+                            <div className="asesor-form-group">
+                                <label>PRIMER NOMBRE</label>
+                                <input
+                                    className="asesor-form-control"
+                                    type="text"
+                                    name="primer_nombre"
+                                    value={formData.primer_nombre}
+                                    onChange={handleChange}
+                                    placeholder="Nombre"
+                                    required
+                                />
+                            </div>
+
+                            <div className="asesor-form-group">
+                                <label>SEGUNDO NOMBRE</label>
+                                <input
+                                    className="asesor-form-control"
+                                    type="text"
+                                    name="segundo_nombre"
+                                    value={formData.segundo_nombre}
+                                    onChange={handleChange}
+                                    placeholder="Opcional"
+                                />
+                            </div>
+
+                            <div className="asesor-form-group">
+                                <label>PRIMER APELLIDO</label>
+                                <input
+                                    className="asesor-form-control"
+                                    type="text"
+                                    name="primer_apellido"
+                                    value={formData.primer_apellido}
+                                    onChange={handleChange}
+                                    placeholder="Apellido"
+                                    required
+                                />
+                            </div>
+
+                            <div className="asesor-form-group">
+                                <label>SEGUNDO APELLIDO</label>
+                                <input
+                                    className="asesor-form-control"
+                                    type="text"
+                                    name="segundo_apellido"
+                                    value={formData.segundo_apellido}
+                                    onChange={handleChange}
+                                    placeholder="Opcional"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="asesor-form-group">
+                            <label>CORREO ELECTRÓNICO</label>
+                            <input
+                                className="asesor-form-control"
+                                type="email"
+                                name="correo"
+                                value={formData.correo}
+                                onChange={handleChange}
+                                placeholder="correo@ejemplo.com"
+                            />
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '30px' }}>
+                            <button
+                                type="submit"
+                                className="asesor-btn"
+                                style={{ flex: 1 }}
+                                disabled={loading}
+                            >
+                                {loading ? "Registrando..." : "Registrar y Vincular"}
+                            </button>
+                            <button
+                                type="button"
+                                className="asesor-btn asesor-btn-secondary"
+                                onClick={() => navigate("/asesor/afiliados")}
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </AsesorLayout>
     );
 };
 
