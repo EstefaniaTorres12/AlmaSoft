@@ -1,9 +1,11 @@
 import './App.css';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { CartProvider } from './context/CartContext';
 
 /* PÚBLICO */
 import PaginaInicio from './components/pages/PaginaInicio';
+import Carrito from './components/carrito/Carrito';
 import ProductosAtaud from './components/productos/ProductosAtaud';
 import AcercaDeNosotros from './components/pages/AcercaDeNosotros';
 import IniciarSesion from './components/pages/IniciarSesion';
@@ -42,6 +44,7 @@ import AfiliacionesAdmin from './components/admin/AfiliacionesAdmin';
 
 /* CLIENTE */
 import HomeClient from './components/client/pages/HomeClient';
+import Tienda from './components/client/pages/Tienda';
 import TuPlan from './components/client/pages/TuPlan';
 import Afiliados from './components/client/pages/Afiliados';
 import Contrato from './components/client/pages/Contrato';
@@ -77,7 +80,7 @@ function App() {
   const hideHeader = isAuthPage || isAdminPage || isClientPage;
 
   return (
-    <>
+    <CartProvider>
       {!hideHeader && (
         <>
           <BarraPrincipal />
@@ -230,9 +233,15 @@ function App() {
           <RutaProtegida rolPermitido={['Cliente', 'Afiliado']}><Perfil /></RutaProtegida>
         } />
 
+        <Route path='/carrito' element={<Carrito />} />
+
+        <Route path='/client/tienda' element={
+          <RutaProtegida rolPermitido='Cliente'><Tienda /></RutaProtegida>
+        } />
+
         <Route path='*' element={<Navigate to='/' />} />
       </Routes>
-    </>
+    </CartProvider>
   );
 }
 

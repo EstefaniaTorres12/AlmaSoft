@@ -3,14 +3,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/sidebarClient.css";
 
 const NAV_ITEMS = [
-  { label: "Inicio", path: "/client", icon: "Inicio" },
-  { label: "Tu plan", path: "/client/plan", icon: "Plan" },
-  { label: "Afiliados", path: "/client/afiliados", icon: "Grupo" },
-  { label: "Contrato", path: "/client/contrato", icon: "Doc" },
-  { label: "Pagos", path: "/client/pagos", icon: "Pago" },
-  { label: "Sedes", path: "/client/sedes", icon: "Sede" },
-  { label: "Servicios", path: "/client/contacto", icon: "Ayuda" },
-  { label: "Perfil", path: "/client/perfil", icon: "Perfil" },
+  { label: "Inicio",    path: "/client",           icon: "Inicio"  },
+  { label: "Tienda",    path: "/client/tienda",    icon: "Tienda"  },
+  { label: "Tu plan",   path: "/client/plan",      icon: "Plan"    },
+  { label: "Afiliados", path: "/client/afiliados", icon: "Grupo"   },
+  { label: "Contrato",  path: "/client/contrato",  icon: "Doc"     },
+  { label: "Pagos",     path: "/client/pagos",     icon: "Pago"    },
+  { label: "Sedes",     path: "/client/sedes",     icon: "Sede"    },
+  { label: "Servicios", path: "/client/contacto",  icon: "Ayuda"   },
+  { label: "Perfil",    path: "/client/perfil",    icon: "Perfil"  },
 ];
 
 export default function SidebarClient() {

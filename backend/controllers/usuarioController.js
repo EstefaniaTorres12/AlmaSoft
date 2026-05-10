@@ -88,9 +88,15 @@ module.exports = {
                 message: "Login correcto",
                 token,
                 rol: user.rol_nombre,
-                usuario:{
-                    usuario_id: user.usuario_id,
-                    usuario_correo: user.usuario_correo,
+                usuario: {
+                    usuario_id:              user.usuario_id,
+                    usuario_primer_nombre:   user.usuario_primer_nombre,
+                    usuario_segundo_nombre:  user.usuario_segundo_nombre,
+                    usuario_primer_apellido: user.usuario_primer_apellido,
+                    usuario_segundo_apellido:user.usuario_segundo_apellido,
+                    usuario_documento:       user.usuario_documento,
+                    usuario_correo:          user.usuario_correo,
+                    usuario_direccion:       user.usuario_direccion,
                 }
             });
 

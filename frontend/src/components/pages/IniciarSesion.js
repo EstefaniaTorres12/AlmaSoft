@@ -51,9 +51,11 @@ const IniciarSesion = () => {
         return;
       }
 
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token",      data.token);
       localStorage.setItem("usuario_id", String(usuario_id));
-      localStorage.setItem("rol", data.rol);
+      localStorage.setItem("rol",        data.rol);
+      // Guardar objeto completo para que HomeClient y Sidebar muestren el nombre real
+      localStorage.setItem("usuario",    JSON.stringify(data.usuario || {}));
 
       console.log(" localStorage guardado:", {
         token: data.token,
