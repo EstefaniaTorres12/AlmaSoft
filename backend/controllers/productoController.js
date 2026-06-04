@@ -11,7 +11,6 @@ module.exports = {
                 return res.status(500).json({
                     success: false,
                     message: 'Error al crear producto',
-                    error: err
                 });
             }
 
@@ -29,7 +28,6 @@ module.exports = {
                 return res.status(500).json({
                     success: false,
                     message: 'Error al listar productos',
-                    error: err
                 });
             }
 

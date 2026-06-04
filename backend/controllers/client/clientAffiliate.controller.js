@@ -371,7 +371,7 @@ exports.removeAffiliate = async (req, res) => {
 
     return res.json({ success: true, message: "Afiliado eliminado correctamente." });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos eliminar el afiliado.", error });
+    return res.status(500).json({ success: false, message: "No pudimos eliminar el afiliado." });
   }
 };
 

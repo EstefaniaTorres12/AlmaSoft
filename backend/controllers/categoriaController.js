@@ -1,7 +1,4 @@
 const Categoria = require('../models/categoria');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const keys = require('../config/keys');
 
 module.exports = {
 
@@ -10,36 +7,32 @@ module.exports = {
 
         Categoria.create(categoria, (err, data) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: 'Error al crear la Categoria',
-                    error: err
-                });
-            } else {
-                return res.status(201).json({
-                    success: true,
-                    message: 'Categoria creada correctamente',
-                    data: data
+                    message: 'Error al crear la categoria'
                 });
             }
+            return res.status(201).json({
+                success: true,
+                message: 'Categoria creada correctamente',
+                data
+            });
         });
     },
-
 
     getAllCategorias(req, res) {
         Categoria.findAll((err, categoria) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: 'Error al listar Categorias',
-                    error: err
+                    message: 'Error al listar categorias'
                 });
             }
             return res.status(200).json({
                 success: true,
-                message: 'lista de categorias: ',
+                message: 'Lista de categorias',
                 data: categoria
-            })
+            });
         });
     },
 
@@ -47,10 +40,9 @@ module.exports = {
         const id = req.params.id;
         Categoria.findById(id, (err, categoria) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: 'Error al consultar categoria',
-                    error: err
+                    message: 'Error al consultar categoria'
                 });
             }
             if (!categoria) {
@@ -74,34 +66,32 @@ module.exports = {
         };
         Categoria.update(categoria, (err, data) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: 'Error al actualizar categoria',
-                    error: err
+                    message: 'Error al actualizar categoria'
                 });
             }
             return res.status(200).json({
                 success: true,
-                message: 'Categoria Actualizada',
-                data: data
+                message: 'Categoria actualizada',
+                data
             });
         });
     },
 
-
-    getCategoriaDelete(req, res){
+    getCategoriaDelete(req, res) {
         const id = req.params.id;
-        Categoria.delete(id, (err,data) => {
-            if(err){
-                return res.status(501).json({
-                    success:false,
-                    message: 'Error al eliminar Categoria',
-                    error:err
+        Categoria.delete(id, (err, data) => {
+            if (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error al eliminar categoria'
                 });
-            } return res.status(200).json({
+            }
+            return res.status(200).json({
                 success: true,
-                message: 'Categoria Eliminada',
-                data:data
+                message: 'Categoria eliminada',
+                data
             });
         });
     }

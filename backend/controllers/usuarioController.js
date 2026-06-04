@@ -8,19 +8,16 @@ module.exports = {
     async register(req, res) {
         const usuario = req.body;
 
-        
         usuario.usuario_correo = usuario.usuario_correo.toLowerCase();
 
         Usuario.create(usuario, (err, data) => {
-            if (err) return res.status(501).json({ success: false, message: 'Error al crear usuario', error: err });
+            if (err) return res.status(500).json({ success: false, message: 'Error al crear usuario' });
             return res.status(201).json({ success: true, message: 'Usuario creado correctamente', data });
         });
     },
 
  async login(req, res) {
     try {
-
-        console.log("BODY LOGIN:", req.body);
 
         if (!req.body || !req.body.usuario_correo || !req.body.usuario_credencial) {
             return res.status(400).json({
@@ -35,14 +32,12 @@ module.exports = {
         Usuario.findByEmailWithRole(email, async (err, user) => {
 
             if (err) {
-                console.log("ERROR LOGIN DB:", err);
+                console.error("ERROR LOGIN DB:", err);
                 return res.status(500).json({
                     success: false,
                     message: 'Error al consultar usuario'
                 });
             }
-
-            console.log("USER ENCONTRADO:", user);
 
             if (!user) {
                 return res.status(401).json({
@@ -88,16 +83,22 @@ module.exports = {
                 message: "Login correcto",
                 token,
                 rol: user.rol_nombre,
-                usuario:{
-                    usuario_id: user.usuario_id,
-                    usuario_correo: user.usuario_correo,
+                usuario: {
+                    usuario_id:              user.usuario_id,
+                    usuario_primer_nombre:   user.usuario_primer_nombre,
+                    usuario_segundo_nombre:  user.usuario_segundo_nombre,
+                    usuario_primer_apellido: user.usuario_primer_apellido,
+                    usuario_segundo_apellido:user.usuario_segundo_apellido,
+                    usuario_documento:       user.usuario_documento,
+                    usuario_correo:          user.usuario_correo,
+                    usuario_direccion:       user.usuario_direccion,
                 }
             });
 
         });
 
     } catch (error) {
-        console.log("ERROR GENERAL LOGIN:", error);
+        console.error("ERROR GENERAL LOGIN:", error);
         return res.status(500).json({
             success: false,
             message: "Error interno del servidor"
@@ -108,15 +109,14 @@ module.exports = {
     getUsuarioAll(req, res) {
         Usuario.findAll((err, usuario) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: 'Error al consultar',
-                    error: err
+                    message: 'Error al consultar usuarios'
                 });
             }
             return res.status(200).json({
                 success: true,
-                message: 'lista de usuarios',
+                message: 'Lista de usuarios',
                 data: usuario
             });
         });
@@ -125,7 +125,7 @@ module.exports = {
     getUsuarioById(req, res) {
         const id = req.params.id;
         Usuario.findById(id, (err, user) => {
-            if (err) return res.status(501).json({ success: false, message: 'Error al consultar el usuario', error: err });
+            if (err) return res.status(500).json({ success: false, message: 'Error al consultar el usuario' });
             if (!user) return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
             return res.status(200).json({ success: true, message: 'Usuario encontrado', data: user });
         });
@@ -134,7 +134,7 @@ module.exports = {
     getUsuarioByDocument(req, res) {
         const documento = req.params.documento;
         Usuario.findByDocument(documento, (err, doc) => {
-            if (err) return res.status(501).json({ success: false, message: 'Error al consultar usuario', error: err });
+            if (err) return res.status(500).json({ success: false, message: 'Error al consultar usuario' });
             if (!doc) return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
             return res.status(200).json({ success: true, message: 'Usuario encontrado', data: doc });
         });
@@ -148,8 +148,7 @@ module.exports = {
         if (err) {
             return res.status(500).json({
                 success: false,
-                message: 'Error al actualizar usuario',
-                error: err
+                message: 'Error al actualizar usuario'
             });
         }
 
@@ -165,7 +164,7 @@ module.exports = {
     getUsuarioDelete(req, res) {
         const id = req.params.id;
         Usuario.delete(id, (err, data) => {
-            if (err) return res.status(501).json({ success: false, message: 'Error al eliminar usuario', error: err });
+            if (err) return res.status(500).json({ success: false, message: 'Error al eliminar usuario' });
             return res.status(200).json({ success: true, message: 'Usuario eliminado', data });
         });
     }

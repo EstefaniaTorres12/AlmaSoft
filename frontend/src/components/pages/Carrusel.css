@@ -1,0 +1,183 @@
+/* ═══════════════════════════════════════════════════════════════
+   HERO CAROUSEL — custom, sin Bootstrap
+   ═══════════════════════════════════════════════════════════════ */
+
+.hero-car {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  overflow: hidden;
+  background: #1A0A2E;
+  user-select: none;
+}
+
+/* ── Slides ─────────────────────────────────────────────────── */
+.hero-car__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .65s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-car__slide--active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.hero-car__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Overlay gradient ───────────────────────────────────────── */
+.hero-car__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(26, 10, 46, .90) 0%,
+    rgba(26, 10, 46, .50) 55%,
+    rgba(26, 10, 46, .08) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── Caption ────────────────────────────────────────────────── */
+.hero-car__caption {
+  position: absolute;
+  left: 7%;
+  bottom: 18%;
+  z-index: 3;
+  max-width: 50%;
+  color: #fff;
+}
+
+.hero-car__kicker {
+  display: inline-block;
+  background: rgba(232, 169, 22, .90);
+  color: #1A1A2E;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: .3rem .9rem;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+
+.hero-car__title {
+  font-size: clamp(1.55rem, 3.2vw, 2.6rem);
+  font-weight: 800;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, .55);
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+
+.hero-car__text {
+  font-size: clamp(.88rem, 1.5vw, 1.1rem);
+  opacity: .88;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, .4);
+  margin-bottom: 24px;
+  line-height: 1.65;
+}
+
+.hero-car__cta {
+  display: inline-block;
+  background: #E8A916;
+  color: #1A1A2E;
+  padding: .65rem 1.9rem;
+  border-radius: 30px;
+  font-weight: 800;
+  font-size: .95rem;
+  text-decoration: none;
+  box-shadow: 0 6px 22px rgba(232, 169, 22, .42);
+  transition: background .22s, transform .22s, box-shadow .22s;
+}
+.hero-car__cta:hover {
+  background: #D97706;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(217, 119, 6, .38);
+}
+
+/* ── Arrow buttons ──────────────────────────────────────────── */
+.hero-car__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  background: rgba(255, 255, 255, .12);
+  border: 1.5px solid rgba(255, 255, 255, .28);
+  color: #fff;
+  font-size: 2.2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, transform .2s;
+  line-height: 1;
+  padding: 0;
+}
+.hero-car__arrow:hover {
+  background: rgba(255, 255, 255, .28);
+  transform: translateY(-50%) scale(1.08);
+}
+.hero-car__arrow--prev { left: 18px; }
+.hero-car__arrow--next { right: 18px; }
+
+/* ── Dots ───────────────────────────────────────────────────── */
+.hero-car__dots {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  gap: 9px;
+}
+.hero-car__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .38);
+  border: none;
+  cursor: pointer;
+  transition: background .22s, transform .22s;
+  padding: 0;
+}
+.hero-car__dot--active {
+  background: #E8A916;
+  transform: scale(1.3);
+}
+.hero-car__dot:hover:not(.hero-car__dot--active) {
+  background: rgba(255, 255, 255, .65);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hero-car { height: 400px; }
+  .hero-car__caption { max-width: 72%; bottom: 15%; }
+}
+@media (max-width: 768px) {
+  .hero-car { height: 340px; }
+  .hero-car__caption { max-width: 82%; bottom: 13%; left: 5%; }
+  .hero-car__title  { font-size: 1.35rem; }
+  .hero-car__text   { font-size: .85rem; }
+  .hero-car__arrow  { width: 38px; height: 38px; font-size: 1.7rem; }
+}
+@media (max-width: 480px) {
+  .hero-car { height: 250px; }
+  .hero-car__caption { max-width: 90%; bottom: 10%; }
+  .hero-car__title  { font-size: 1.1rem; }
+  .hero-car__text   { display: none; }
+  .hero-car__kicker { display: none; }
+  .hero-car__arrow  { display: none; }
+}

@@ -7,10 +7,9 @@ module.exports = {
 
         PlanFunebre.create(plan, (err, data) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: "Error al crear plan",
-                    error: err
+                    message: "Error al crear plan"
                 });
             }
 
@@ -25,10 +24,9 @@ module.exports = {
     getAllPlanes(req, res) {
         PlanFunebre.findAll((err, data) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: "Error al listar",
-                    error: err
+                    message: "Error al listar planes"
                 });
             }
 
@@ -43,7 +41,7 @@ module.exports = {
         const id = req.params.id;
 
         PlanFunebre.findById(id, (err, data) => {
-            if (err) return res.status(501).json({ success: false });
+            if (err) return res.status(500).json({ success: false, message: 'Error al consultar plan' });
 
             return res.status(200).json({
                 success: true,
@@ -53,10 +51,10 @@ module.exports = {
     },
 
     updatePlan(req, res) {
-        const plan = req.body;
+        const plan = { ...req.body, plan_id: req.params.id };
 
         PlanFunebre.update(plan, (err, data) => {
-            if (err) return res.status(501).json({ success: false });
+            if (err) return res.status(500).json({ success: false, message: 'Error al actualizar plan' });
 
             return res.status(200).json({
                 success: true,
@@ -70,7 +68,7 @@ module.exports = {
         const id = req.params.id;
 
         PlanFunebre.delete(id, (err, data) => {
-            if (err) return res.status(501).json({ success: false });
+            if (err) return res.status(500).json({ success: false, message: 'Error al eliminar plan' });
 
             return res.status(200).json({
                 success: true,
