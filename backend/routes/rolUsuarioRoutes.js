@@ -2,26 +2,28 @@ const express = require("express");
 const router = express.Router();
 const rolUsuarioController = require("../controllers/rolUsuarioController");
 const { verifyToken, authorizeRoles } = require("../middlewares/authMiddleware");
-const db = require("../config/config");
+const { query } = require("../config/db");
 
-// Asignar rol
+// Asignar rol — primer uso sin auth (tabla vacía), resto requiere Admin
 router.post(
   "/asignar",
   async (req, res, next) => {
-    const [rows] = await db.query("SELECT COUNT(*) AS total FROM ROL_USUARIO");
-
-    if (rows[0].total === 0) {
-      return rolUsuarioController.assign(req, res);
+    try {
+      const rows = await query("SELECT COUNT(*) AS total FROM ROL_USUARIO");
+      if (rows[0].total === 0) {
+        return rolUsuarioController.assign(req, res);
+      }
+      verifyToken(req, res, () =>
+        authorizeRoles(["Administrador"])(req, res, next)
+      );
+    } catch (err) {
+      next(err);
     }
-
-    verifyToken(req, res, () =>
-      authorizeRoles(["Administrador"])(req, res, next)
-    );
   },
   rolUsuarioController.assign
 );
 
-// Ver todos
+// Ver todos los roles asignados
 router.get(
   "/all",
   verifyToken,
@@ -29,7 +31,7 @@ router.get(
   rolUsuarioController.getAll
 );
 
-// Ver roles de un usuario
+// Ver roles de un usuario específico
 router.get(
   "/usuario/:usuario_id",
   verifyToken,
@@ -37,7 +39,7 @@ router.get(
   rolUsuarioController.getByUsuario
 );
 
-// Cambiar estado
+// Activar / desactivar credencial
 router.put(
   "/estado/:id",
   verifyToken,
@@ -45,7 +47,7 @@ router.put(
   rolUsuarioController.updateEstado
 );
 
-// Eliminar asignación
+// Eliminar asignación de rol
 router.delete(
   "/delete/:id",
   verifyToken,
@@ -54,5 +56,3 @@ router.delete(
 );
 
 module.exports = router;
-
-

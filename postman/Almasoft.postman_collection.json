@@ -1,0 +1,1025 @@
+{
+  "info": {
+    "name": "AlmaSoft API",
+    "_postman_id": "almasoft-collection-v1",
+    "description": "Colección completa de endpoints para el backend AlmaSoft — Node.js + Express + MySQL",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();",
+                  "if (data.token) {",
+                  "    pm.collectionVariables.set('token', data.token);",
+                  "    console.log('Token guardado:', data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario_correo\": \"admin@almasoft.com\",\n  \"usuario_credencial\": \"Admin1234\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/usuarios/login", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "login"] }
+          }
+        },
+        {
+          "name": "Registrar Usuario",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rol_id\": 1,\n  \"usuario_primer_nombre\": \"Juan\",\n  \"usuario_segundo_nombre\": \"Carlos\",\n  \"usuario_primer_apellido\": \"Pérez\",\n  \"usuario_segundo_apellido\": \"López\",\n  \"usuario_documento\": 123456789,\n  \"usuario_correo\": \"juan@gmail.com\",\n  \"usuario_direccion\": \"Bogotá\",\n  \"usuario_telefono\": \"3001234567\",\n  \"usuario_credencial\": \"Juan1234\",\n  \"cliente_fecha_nacimiento\": \"1990-05-15\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/usuarios/usuarioCreate", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "usuarioCreate"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Todos los Usuarios",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/usuarios/usuariosAll", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "usuariosAll"] }
+          }
+        },
+        {
+          "name": "Usuario por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/usuarios/id/1", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "id", "1"] }
+          }
+        },
+        {
+          "name": "Usuario por Documento",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/usuarios/documento/123456789", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "documento", "123456789"] }
+          }
+        },
+        {
+          "name": "Actualizar Usuario",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario_primer_nombre\": \"Juan\",\n  \"usuario_direccion\": \"Medellín\",\n  \"usuario_correo\": \"nuevo@gmail.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/usuarios/update/1", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "update", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/usuarios/deleteU/1", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "deleteU", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Crear Rol",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rol_nombre\": \"Supervisor\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/rol/createRol", "host": ["{{baseUrl}}"], "path": ["api", "rol", "createRol"] }
+          }
+        },
+        {
+          "name": "Todos los Roles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/rol/Roles", "host": ["{{baseUrl}}"], "path": ["api", "rol", "Roles"] }
+          }
+        },
+        {
+          "name": "Rol por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/rol/rol/1", "host": ["{{baseUrl}}"], "path": ["api", "rol", "rol", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Rol",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/rol/delete/1", "host": ["{{baseUrl}}"], "path": ["api", "rol", "delete", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RolUsuario",
+      "item": [
+        {
+          "name": "Asignar Rol a Usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario_id\": 5,\n  \"rol_id\": 2,\n  \"estado_cred\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/rol-usuario/asignar", "host": ["{{baseUrl}}"], "path": ["api", "rol-usuario", "asignar"] }
+          }
+        },
+        {
+          "name": "Todas las Asignaciones",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/rol-usuario/all", "host": ["{{baseUrl}}"], "path": ["api", "rol-usuario", "all"] }
+          }
+        },
+        {
+          "name": "Roles de un Usuario",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/rol-usuario/usuario/5", "host": ["{{baseUrl}}"], "path": ["api", "rol-usuario", "usuario", "5"] }
+          }
+        },
+        {
+          "name": "Cambiar Estado de Credencial",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado_cred\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/rol-usuario/estado/3", "host": ["{{baseUrl}}"], "path": ["api", "rol-usuario", "estado", "3"] }
+          }
+        },
+        {
+          "name": "Eliminar Asignación de Rol",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/rol-usuario/delete/3", "host": ["{{baseUrl}}"], "path": ["api", "rol-usuario", "delete", "3"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Crear Cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario_primer_nombre\": \"María\",\n  \"usuario_segundo_nombre\": \"Isabel\",\n  \"usuario_primer_apellido\": \"García\",\n  \"usuario_segundo_apellido\": \"Ruiz\",\n  \"usuario_documento\": 987654321,\n  \"usuario_correo\": \"maria@gmail.com\",\n  \"usuario_direccion\": \"Cali\",\n  \"usuario_telefono\": \"3109876543\",\n  \"usuario_credencial\": \"Maria1234\",\n  \"cliente_fecha_nacimiento\": \"1985-08-20\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/clientes", "host": ["{{baseUrl}}"], "path": ["api", "clientes"] }
+          }
+        },
+        {
+          "name": "Todos los Clientes",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/clientes/clientesAll", "host": ["{{baseUrl}}"], "path": ["api", "clientes", "clientesAll"] }
+          }
+        },
+        {
+          "name": "Cliente por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/clientes/id/1", "host": ["{{baseUrl}}"], "path": ["api", "clientes", "id", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar Cliente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario_primer_nombre\": \"María\",\n  \"usuario_direccion\": \"Barranquilla\",\n  \"cliente_fecha_nacimiento\": \"1985-08-20\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/clientes/1", "host": ["{{baseUrl}}"], "path": ["api", "clientes", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Cliente",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/clientes/1", "host": ["{{baseUrl}}"], "path": ["api", "clientes", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorias",
+      "item": [
+        {
+          "name": "Crear Categoría",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoria_nombre\": \"Ataúdes\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/categorias/crear", "host": ["{{baseUrl}}"], "path": ["api", "categorias", "crear"] }
+          }
+        },
+        {
+          "name": "Categorías Público",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/categorias/public", "host": ["{{baseUrl}}"], "path": ["api", "categorias", "public"] }
+          }
+        },
+        {
+          "name": "Todas las Categorías",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/categorias", "host": ["{{baseUrl}}"], "path": ["api", "categorias"] }
+          }
+        },
+        {
+          "name": "Categoría por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/categorias/1", "host": ["{{baseUrl}}"], "path": ["api", "categorias", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar Categoría",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoria_nombre\": \"Ataúdes Premium\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/categorias/update/1", "host": ["{{baseUrl}}"], "path": ["api", "categorias", "update", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Categoría",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/categorias/delete/1", "host": ["{{baseUrl}}"], "path": ["api", "categorias", "delete", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subcategorias",
+      "item": [
+        {
+          "name": "Crear Subcategoría",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subcategoria_nombre\": \"Madera\",\n  \"categoria_id\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/subcategorias/createSubC", "host": ["{{baseUrl}}"], "path": ["api", "subcategorias", "createSubC"] }
+          }
+        },
+        {
+          "name": "Todas las Subcategorías",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/subcategorias/subCAll", "host": ["{{baseUrl}}"], "path": ["api", "subcategorias", "subCAll"] }
+          }
+        },
+        {
+          "name": "Subcategoría por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/subcategorias/subCId/1", "host": ["{{baseUrl}}"], "path": ["api", "subcategorias", "subCId", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar Subcategoría",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subcategoria_nombre\": \"Madera Fina\",\n  \"categoria_id\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/subcategorias/updateSubC/1", "host": ["{{baseUrl}}"], "path": ["api", "subcategorias", "updateSubC", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Subcategoría",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/subcategorias/deleteSubC/1", "host": ["{{baseUrl}}"], "path": ["api", "subcategorias", "deleteSubC", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Crear Producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_nombre\": \"Ataúd Roble\",\n  \"producto_descripcion\": \"Ataúd en madera de roble\",\n  \"producto_precio\": 2500000,\n  \"producto_stock\": 10,\n  \"producto_estado\": true,\n  \"subcategoria_id\": 1,\n  \"producto_imagen\": \"/uploads/ataud.jpg\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/productos/createProducto", "host": ["{{baseUrl}}"], "path": ["api", "productos", "createProducto"] }
+          }
+        },
+        {
+          "name": "Todos los Productos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/productos/productosAll", "host": ["{{baseUrl}}"], "path": ["api", "productos", "productosAll"] }
+          }
+        },
+        {
+          "name": "Producto por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/productos/producto/1", "host": ["{{baseUrl}}"], "path": ["api", "productos", "producto", "1"] }
+          }
+        },
+        {
+          "name": "Filtrar Productos por Nombre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/filtrar?nombre=ataúd",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos", "filtrar"],
+              "query": [{ "key": "nombre", "value": "ataúd" }]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Producto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_nombre\": \"Ataúd Roble Premium\",\n  \"producto_precio\": 2800000,\n  \"producto_stock\": 8,\n  \"producto_estado\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/productos/updateProducto/1", "host": ["{{baseUrl}}"], "path": ["api", "productos", "updateProducto", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Producto",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/productos/deleteProducto/1", "host": ["{{baseUrl}}"], "path": ["api", "productos", "deleteProducto", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Planes",
+      "item": [
+        {
+          "name": "Crear Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plan_nombre\": \"Plan Básico\",\n  \"plan_precio\": 500000,\n  \"plan_estado\": true,\n  \"plan_descripcion\": \"Incluye servicio básico de velación\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/planes/crear", "host": ["{{baseUrl}}"], "path": ["api", "planes", "crear"] }
+          }
+        },
+        {
+          "name": "Planes Público",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/planes/public", "host": ["{{baseUrl}}"], "path": ["api", "planes", "public"] }
+          }
+        },
+        {
+          "name": "Todos los Planes",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/planes", "host": ["{{baseUrl}}"], "path": ["api", "planes"] }
+          }
+        },
+        {
+          "name": "Plan por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/planes/1", "host": ["{{baseUrl}}"], "path": ["api", "planes", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar Plan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plan_nombre\": \"Plan Básico Plus\",\n  \"plan_precio\": 650000,\n  \"plan_estado\": true,\n  \"plan_descripcion\": \"Incluye velación y traslado\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/planes/update/1", "host": ["{{baseUrl}}"], "path": ["api", "planes", "update", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Plan",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/planes/delete/1", "host": ["{{baseUrl}}"], "path": ["api", "planes", "delete", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Servicios",
+      "item": [
+        {
+          "name": "Crear Servicio",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"servicio_nombre\": \"Velación 24h\",\n  \"servicio_descripcion\": \"Servicio de velación por 24 horas\",\n  \"servicio_precio\": 300000\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/servicios/create", "host": ["{{baseUrl}}"], "path": ["api", "servicios", "create"] }
+          }
+        },
+        {
+          "name": "Todos los Servicios",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/servicios/all", "host": ["{{baseUrl}}"], "path": ["api", "servicios", "all"] }
+          }
+        },
+        {
+          "name": "Servicio por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/servicios/byId/1", "host": ["{{baseUrl}}"], "path": ["api", "servicios", "byId", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar Servicio",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"servicio_nombre\": \"Velación 48h\",\n  \"servicio_descripcion\": \"Servicio de velación por 48 horas\",\n  \"servicio_precio\": 500000\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/servicios/update/1", "host": ["{{baseUrl}}"], "path": ["api", "servicios", "update", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Servicio",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/servicios/delete/1", "host": ["{{baseUrl}}"], "path": ["api", "servicios", "delete", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ServicioPlan",
+      "item": [
+        {
+          "name": "Vincular Servicio a Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"servicio_id\": 1,\n  \"plan_id\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/servicio-plan/create", "host": ["{{baseUrl}}"], "path": ["api", "servicio-plan", "create"] }
+          }
+        },
+        {
+          "name": "Todas las Relaciones",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/servicio-plan/all", "host": ["{{baseUrl}}"], "path": ["api", "servicio-plan", "all"] }
+          }
+        },
+        {
+          "name": "Servicios de un Plan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/servicio-plan/plan/1", "host": ["{{baseUrl}}"], "path": ["api", "servicio-plan", "plan", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar Relación",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"new_servicio_id\": 2,\n  \"new_plan_id\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/servicio-plan/update/1/1", "host": ["{{baseUrl}}"], "path": ["api", "servicio-plan", "update", "1", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Relación",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/servicio-plan/delete/1/1", "host": ["{{baseUrl}}"], "path": ["api", "servicio-plan", "delete", "1", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ContratoPlan",
+      "item": [
+        {
+          "name": "Vincular Contrato a Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contrato_id\": 1,\n  \"plan_id\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/contrato-plan/create", "host": ["{{baseUrl}}"], "path": ["api", "contrato-plan", "create"] }
+          }
+        },
+        {
+          "name": "Todas las Relaciones",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/contrato-plan/all", "host": ["{{baseUrl}}"], "path": ["api", "contrato-plan", "all"] }
+          }
+        },
+        {
+          "name": "Planes de un Contrato",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/contrato-plan/contrato/1", "host": ["{{baseUrl}}"], "path": ["api", "contrato-plan", "contrato", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Relación",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/contrato-plan/delete/1/1", "host": ["{{baseUrl}}"], "path": ["api", "contrato-plan", "delete", "1", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Telefonos",
+      "item": [
+        {
+          "name": "Agregar Teléfono",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": 3001234567,\n  \"usuario_id\": 5\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/telefonos/create", "host": ["{{baseUrl}}"], "path": ["api", "telefonos", "create"] }
+          }
+        },
+        {
+          "name": "Todos los Teléfonos",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/telefonos/all", "host": ["{{baseUrl}}"], "path": ["api", "telefonos", "all"] }
+          }
+        },
+        {
+          "name": "Teléfonos de un Usuario",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/telefonos/usuario/5", "host": ["{{baseUrl}}"], "path": ["api", "telefonos", "usuario", "5"] }
+          }
+        },
+        {
+          "name": "Actualizar Teléfono",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": 3109999999\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/telefonos/update/5", "host": ["{{baseUrl}}"], "path": ["api", "telefonos", "update", "5"] }
+          }
+        },
+        {
+          "name": "Eliminar Teléfono",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/telefonos/delete/5/3001234567", "host": ["{{baseUrl}}"], "path": ["api", "telefonos", "delete", "5", "3001234567"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upload",
+      "item": [
+        {
+          "name": "Subir Imagen",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "image", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/api/upload", "host": ["{{baseUrl}}"], "path": ["api", "upload"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Client Plans",
+      "item": [
+        {
+          "name": "Planes con Servicios (Público)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/client/plans", "host": ["{{baseUrl}}"], "path": ["api", "client", "plans"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Client Contrato",
+      "item": [
+        {
+          "name": "Adquirir Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente_id\": 5,\n  \"plan_id\": 1,\n  \"metodo_pago\": \"Efectivo\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/client/contrato", "host": ["{{baseUrl}}"], "path": ["api", "client", "contrato"] }
+          }
+        },
+        {
+          "name": "Ver Mi Plan Activo",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/client/contrato/mine", "host": ["{{baseUrl}}"], "path": ["api", "client", "contrato", "mine"] }
+          }
+        },
+        {
+          "name": "Ver Planes Disponibles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/client/contrato/planes", "host": ["{{baseUrl}}"], "path": ["api", "client", "contrato", "planes"] }
+          }
+        },
+        {
+          "name": "Mejorar Plan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plan_id\": 2,\n  \"metodo_pago\": \"Transferencia\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/client/contrato/mejorar", "host": ["{{baseUrl}}"], "path": ["api", "client", "contrato", "mejorar"] }
+          }
+        },
+        {
+          "name": "Cancelar Plan",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/client/contrato/cancelar", "host": ["{{baseUrl}}"], "path": ["api", "client", "contrato", "cancelar"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Client Store",
+      "item": [
+        {
+          "name": "Productos Activos (Público)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/client/store/productos", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "productos"] }
+          }
+        },
+        {
+          "name": "Ver Carrito",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/client/store/carrito", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "carrito"] }
+          }
+        },
+        {
+          "name": "Agregar al Carrito",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto_id\": 1,\n  \"cantidad\": 2\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/client/store/carrito", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "carrito"] }
+          }
+        },
+        {
+          "name": "Checkout - Pagar Carrito",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodo_pago\": \"Efectivo\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/client/store/carrito/checkout", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "carrito", "checkout"] }
+          }
+        },
+        {
+          "name": "Quitar del Carrito",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/client/store/carrito/3", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "carrito", "3"] }
+          }
+        },
+        {
+          "name": "Servicios Disponibles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/client/store/servicios", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "servicios"] }
+          }
+        },
+        {
+          "name": "Solicitar Servicio Adicional",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"servicio_id\": 1,\n  \"metodo_pago\": \"Efectivo\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/client/store/servicios/solicitar", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "servicios", "solicitar"] }
+          }
+        },
+        {
+          "name": "Historial de Pagos",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/client/store/pagos/historial", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "pagos", "historial"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Client Affiliates",
+      "item": [
+        {
+          "name": "Dashboard de Afiliados",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/client/affiliates/dashboard", "host": ["{{baseUrl}}"], "path": ["api", "client", "affiliates", "dashboard"] }
+          }
+        },
+        {
+          "name": "Buscar Candidatos",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/client/affiliates/candidates?q=123456",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "affiliates", "candidates"],
+              "query": [{ "key": "q", "value": "123456" }]
+            }
+          }
+        },
+        {
+          "name": "Solicitar Afiliación",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"afiliado_id\": 7\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/client/affiliates/request", "host": ["{{baseUrl}}"], "path": ["api", "client", "affiliates", "request"] }
+          }
+        },
+        {
+          "name": "Remover Afiliado",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/client/affiliates/remove/7", "host": ["{{baseUrl}}"], "path": ["api", "client", "affiliates", "remove", "7"] }
+          }
+        }
+      ]
+    }
+  ]
+}

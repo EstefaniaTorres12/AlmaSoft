@@ -1,66 +1,100 @@
-const db = require('../config/config');
+const pool = require('../config/config');
+const { getConnection, queryConn, beginTx, commitTx, rollbackTx } = require('../config/db');
 const bcrypt = require('bcryptjs');
 const Usuario = {};
-const RolUsuario = require('./rolUsuario');
 const dayjs = require('dayjs');
 
-
-
-// Crear usuario
+// Crear usuario con transacción completa
 Usuario.create = async (user, result) => {
-    const hash = await bcrypt.hash(user.usuario_credencial, 10);
+    let conn;
+    try {
+        const hash = await bcrypt.hash(user.usuario_credencial, 10);
+        conn = await getConnection();
+        await beginTx(conn);
 
-    const sql = `INSERT INTO USUARIO(
-                    usuario_primer_nombre,
-                    usuario_segundo_nombre,
-                    usuario_primer_apellido,
-                    usuario_segundo_apellido,
-                    usuario_documento,
-                    usuario_correo,
-                    usuario_direccion,
-                    usuario_credencial
-                    ) VALUES (?,?,?,?,?,?,?,?)`;
+        const resUsuario = await queryConn(conn, `
+            INSERT INTO USUARIO (
+                usuario_primer_nombre,
+                usuario_segundo_nombre,
+                usuario_primer_apellido,
+                usuario_segundo_apellido,
+                usuario_documento,
+                usuario_correo,
+                usuario_direccion,
+                usuario_credencial
+            ) VALUES (?,?,?,?,?,?,?,?)
+        `, [
+            user.usuario_primer_nombre,
+            user.usuario_segundo_nombre,
+            user.usuario_primer_apellido,
+            user.usuario_segundo_apellido,
+            user.usuario_documento,
+            user.usuario_correo,
+            user.usuario_direccion,
+            hash
+        ]);
 
-    db.query(sql, [
-        user.usuario_primer_nombre,
-        user.usuario_segundo_nombre,
-        user.usuario_primer_apellido,
-        user.usuario_segundo_apellido,
-        user.usuario_documento,
-        user.usuario_correo,
-        user.usuario_direccion,
-        hash
-    ], (err, res) => {
-        if (err) {
-            console.log('Error al crear al Usuario: ', err);
-            result(err, null);
-        } else {
-            console.log('Usuario creado: ', { usuario_id: res.insertId, ...user });
-            asignarRolUsuario(user, res.insertId, result);
+        const insertId = resUsuario.insertId;
+
+        await queryConn(conn,
+            `INSERT INTO ROL_USUARIO (rol_id, usuario_id, estado_cred) VALUES (?,?,?)`,
+            [user.rol_id, insertId, true]
+        );
+
+        await queryConn(conn,
+            `INSERT INTO TELEFONO (telefono, usuario_id) VALUES (?,?)`,
+            [user.usuario_telefono, insertId]
+        );
+
+        if (Number(user.rol_id) === 1) {
+            if (!user.cliente_fecha_nacimiento) {
+                await rollbackTx(conn);
+                conn.release();
+                return result({ message: 'Falta la fecha de nacimiento del cliente' }, null);
+            }
+            const años = dayjs().diff(dayjs(user.cliente_fecha_nacimiento), 'year');
+            await queryConn(conn,
+                `INSERT INTO CLIENTE (cliente_id, cliente_fecha_nacimiento, cliente_edad) VALUES (?,?,?)`,
+                [insertId, user.cliente_fecha_nacimiento, años]
+            );
         }
-    });
+
+        await commitTx(conn);
+        conn.release();
+        result(null, { usuario_id: insertId, ...user });
+
+    } catch (err) {
+        if (conn) {
+            await rollbackTx(conn);
+            conn.release();
+        }
+        console.error('Error al crear usuario (rollback):', err);
+        result(err, null);
+    }
 };
 
 Usuario.findAll = (result) => {
     const sql = `
-       SELECT 
-    us.usuario_id,
-    r.rol_nombre,
-    us.usuario_documento,
-    us.usuario_primer_nombre,
-    us.usuario_segundo_nombre,
-    us.usuario_primer_apellido,
-    us.usuario_segundo_apellido,
-    us.usuario_correo,
-    us.usuario_direccion,
-    GROUP_CONCAT(t.telefono) AS telefonos
-FROM usuario us
-INNER JOIN rol_usuario ru ON us.usuario_id = ru.usuario_id
-INNER JOIN rol r ON ru.rol_id = r.rol_id
-LEFT JOIN telefono t ON us.usuario_id = t.usuario_id
-GROUP BY us.usuario_id;
+        SELECT
+            us.usuario_id,
+            r.rol_id,
+            r.rol_nombre,
+            us.usuario_documento,
+            us.usuario_primer_nombre,
+            us.usuario_segundo_nombre,
+            us.usuario_primer_apellido,
+            us.usuario_segundo_apellido,
+            us.usuario_correo,
+            us.usuario_direccion,
+            GROUP_CONCAT(t.telefono) AS telefonos
+        FROM USUARIO us
+        INNER JOIN ROL_USUARIO ru ON us.usuario_id = ru.usuario_id AND ru.estado_cred = 1
+        INNER JOIN ROL r ON ru.rol_id = r.rol_id
+        LEFT JOIN TELEFONO t ON us.usuario_id = t.usuario_id
+        GROUP BY us.usuario_id, r.rol_id, r.rol_nombre
+        ORDER BY us.usuario_id DESC
     `;
-    db.query(sql, (err, usuario) => {
+    pool.query(sql, (err, usuario) => {
         if (err) {
             console.log('Error al consultar usuarios:', err);
             result(err, null);
@@ -70,74 +104,6 @@ GROUP BY us.usuario_id;
         }
     });
 };
-
-// Asignar rol al usuario
-function asignarRolUsuario(user, insertId, result) {
-    let rolUsuario = {
-        rol_id: user.rol_id,
-        usuario_id: insertId,
-        estado_cred: true
-    };
-
-    RolUsuario.create(rolUsuario, (error, datos) => {
-        if (error) {
-            return result(error, null);
-        }
-
-        if (user.rol_id === 1) {
-            datosCliente(user, insertId, result);
-        } else {
-            result(null, { usuario_id: insertId, ...user });
-        }
-    });
-}
-
-// Crear datos de cliente
-function datosCliente(user, insertId, result) {
-    if (!user.cliente_fecha_nacimiento) {
-        return result({ message: 'Falta la fecha de nacimiento del cliente' }, null);
-    }
-
-    const años = dayjs().diff(dayjs(user.cliente_fecha_nacimiento), 'year');
-
-    const sqlCliente = `
-        INSERT INTO CLIENTE(
-            cliente_id,
-            cliente_fecha_nacimiento,
-            cliente_edad
-        ) VALUES (?,?,?)
-    `;
-
-    db.query(sqlCliente, [
-        insertId,
-        user.cliente_fecha_nacimiento,
-        años
-    ], (err) => {
-        if (err) {
-            console.log('Error creando cliente:', err);
-            return result(err, null);
-        }
-
-        const sqlTelefono = `
-            INSERT INTO TELEFONO(
-                telefono,
-                usuario_id
-            ) VALUES (?,?)
-        `;
-
-        db.query(sqlTelefono, [
-            user.usuario_telefono,
-            insertId
-        ], (err2) => {
-            if (err2) {
-                console.log('Error insertando telefono:', err2);
-                return result(err2, null);
-            }
-
-            result(null, { usuario_id: insertId, ...user });
-        });
-    });
-}
 
 // Obtener usuario por ID
 Usuario.findById = (id, result) => {
@@ -151,7 +117,7 @@ Usuario.findById = (id, result) => {
                         usuario_direccion
                  FROM USUARIO
                  WHERE usuario_id = ?`;
-    db.query(sql, [id], (err, user) => {
+    pool.query(sql, [id], (err, user) => {
         if (err) {
             console.log('Error al consultar : ', err);
             result(err, null);
@@ -173,7 +139,7 @@ Usuario.findByDocument = (documento, result) => {
                         usuario_direccion
                  FROM USUARIO
                  WHERE usuario_documento = ?`;
-    db.query(sql, [documento], (err, doc) => {
+    pool.query(sql, [documento], (err, doc) => {
         if (err) {
             console.log('Error al consultar : ', err);
             result(err, null);
@@ -231,7 +197,7 @@ Usuario.update = async (id, usuario, result) => {
     const sql = `UPDATE usuario SET ${fields.join(", ")} WHERE usuario_id = ?`;
     values.push(id);
 
-    db.query(sql, values, (err, res) => {
+    pool.query(sql, values, (err, res) => {
         if (err) {
             console.log('Error al actualizar usuario: ', err);
             result(err, null);
@@ -243,8 +209,8 @@ Usuario.update = async (id, usuario, result) => {
 
 // Eliminar usuario
 Usuario.delete = (id, result) => {
-    const sql = `DELETE FROM usuario WHERE usuario_id = ?`;
-    db.query(sql, [id], (err, res) => {
+    const sql = `DELETE FROM USUARIO WHERE usuario_id = ?`;
+    pool.query(sql, [id], (err, res) => {
         if (err) {
             console.log('Error al eliminar usuario: ', err);
             result(err, null);
@@ -254,10 +220,12 @@ Usuario.delete = (id, result) => {
     });
 };
 
-// Buscar usuario por email con rol (para login con JWT)
+// Buscar usuario por email con rol activo (para login con JWT)
+// Filtro estado_cred = 1 garantiza que solo roles activos acceden.
+// ORDER BY + LIMIT 1 garantiza que si hay duplicados, toma el rol más reciente.
 Usuario.findByEmailWithRole = (email, result) => {
     const sql = `
-        SELECT 
+        SELECT
             USUARIO.usuario_id,
             USUARIO.usuario_primer_nombre,
             USUARIO.usuario_segundo_nombre,
@@ -267,18 +235,22 @@ Usuario.findByEmailWithRole = (email, result) => {
             USUARIO.usuario_correo,
             USUARIO.usuario_direccion,
             USUARIO.usuario_credencial,
+            ROL.rol_id,
             ROL.rol_nombre
         FROM USUARIO
-        INNER JOIN ROL_USUARIO 
+        INNER JOIN ROL_USUARIO
             ON USUARIO.usuario_id = ROL_USUARIO.usuario_id
-        INNER JOIN ROL 
+        INNER JOIN ROL
             ON ROL_USUARIO.rol_id = ROL.rol_id
         WHERE USUARIO.usuario_correo = ?
+          AND ROL_USUARIO.estado_cred = 1
+        ORDER BY ROL_USUARIO.cred_id DESC
+        LIMIT 1
     `;
 
-    db.query(sql, [email], (err, res) => {
+    pool.query(sql, [email], (err, res) => {
         if (err) {
-            console.log("Error en findByEmailWithRole:", err);
+            console.error('Error en findByEmailWithRole:', err);
             return result(err, null);
         }
         return result(null, res[0]);
