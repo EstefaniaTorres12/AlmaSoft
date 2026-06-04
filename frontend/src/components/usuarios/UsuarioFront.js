@@ -65,6 +65,7 @@ const UsuarioFront = () => {
   return (
     <Container className="my-0">
       <Row className="mb-4">
+        <h1>Logged In Successfully</h1>
         <Col>
           <h2 className="mt-5 mx-5">Lista de Usuarios</h2>
         </Col>

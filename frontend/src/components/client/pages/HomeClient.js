@@ -121,7 +121,8 @@ export default function HomeClient() {
       <section className="client-hero">
         <div className="client-hero-copy">
           <p className="client-kicker">Experiencia cliente</p>
-          <h1>Bienvenido, {clientSession.nombre}</h1>
+          <h1>Logged In Successfully</h1>
+          <h2>Bienvenido, {clientSession.nombre}</h2>
           <p className="client-hero-email">{clientSession.correo}</p>
           <p className="client-hero-text">
             Consulta tus planes disponibles, revisa coberturas y gestiona tu

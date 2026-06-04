@@ -74,7 +74,7 @@ const AgregarCategoria = () => {
                             onClose={() => setMostrarAlerta(false)}
                             dismissible
                         >
-                            Categoría creada correctamente ✅
+                            Categoría creada correctamente 
                         </Alert>
                     )}
                 </Card.Header>

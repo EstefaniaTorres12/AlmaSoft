@@ -207,6 +207,13 @@ Cliente.update = (id, cliente, result) => {
         WHERE cliente_id = ?
     `;
 
+    const sqlTelefono = `
+        UPDATE TELEFONO SET
+            telefono = ?
+        WHERE usuario_id = ?
+    `;
+
+    // 🔹 Actualizar USUARIO
     db.query(sqlUsuario, [
         cliente.primer_nombre,
         cliente.segundo_nombre,
@@ -222,19 +229,32 @@ Cliente.update = (id, cliente, result) => {
             return result(err, null);
         }
 
+        // 🔹 Actualizar CLIENTE
         db.query(sqlCliente, [
             dayjs(cliente.fecha_nacimiento, "DD/MM/YYYY").toDate(),
             cliente.edad,
             id
-        ], (err2, res) => {
+        ], (err2) => {
 
             if (err2) {
                 console.log('Error actualizando cliente:', err2);
                 return result(err2, null);
             }
 
-            console.log('Cliente completo actualizado');
-            result(null, res);
+            // 🔹 Actualizar TELEFONO
+            db.query(sqlTelefono, [
+                cliente.telefono,
+                id
+            ], (err3, res) => {
+
+                if (err3) {
+                    console.log('Error actualizando telefono:', err3);
+                    return result(err3, null);
+                }
+
+                console.log('Cliente completo actualizado');
+                result(null, res);
+            });
         });
     });
 };
