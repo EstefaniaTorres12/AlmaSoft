@@ -1,42 +1,36 @@
 const Rol = require('../models/rol');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const keys = require('../config/keys');
 
 module.exports = {
+
     register(req, res) {
         const rol = req.body;
 
         Rol.create(rol, (err, data) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: 'Error al crear rol',
-                    error: err
-                });
-            } else {
-                return res.status(201).json({
-                    success: true,
-                    message: 'Rol creado Correctamente',
-                    data: data
+                    message: 'Error al crear rol'
                 });
             }
+            return res.status(201).json({
+                success: true,
+                message: 'Rol creado correctamente',
+                data
+            });
         });
-
     },
 
     getAllRoles(req, res) {
         Rol.findAll((err, rol) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: 'Error al listar Usuarios',
-                    error: err
+                    message: 'Error al listar roles'
                 });
             }
             return res.status(200).json({
                 success: true,
-                message: 'Lista de roles: ',
+                message: 'Lista de roles',
                 data: rol
             });
         });
@@ -46,10 +40,9 @@ module.exports = {
         const id = req.params.id;
         Rol.findById(id, (err, rol) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: 'Error al consutar el Rol',
-                    error: err
+                    message: 'Error al consultar el rol'
                 });
             }
             if (!rol) {
@@ -70,17 +63,16 @@ module.exports = {
         const id = req.params.id;
         Rol.delete(id, (err, data) => {
             if (err) {
-                return res.status(501).json({
+                return res.status(500).json({
                     success: false,
-                    message: 'Error al eliminar el rol',
-                    error: err
+                    message: 'Error al eliminar el rol'
                 });
-            } return res.status(200).json({
+            }
+            return res.status(200).json({
                 success: true,
                 message: 'Rol eliminado correctamente',
-                data: data
+                data
             });
         });
     }
-
 };

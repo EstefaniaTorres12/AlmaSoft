@@ -1,80 +1,67 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Alert, Button } from "react-bootstrap";
+import { DESTINO_POR_ROL } from "../../utils/auth";
 
 const IniciarSesion = () => {
-
   const [formData, setFormData] = useState({
-    usuario_correo: "",
-    usuario_credencial: ""
+    usuario_correo:    "",
+    usuario_credencial: "",
   });
-
   const [mensajeError, setMensajeError] = useState("");
+  const [cargando, setCargando] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const enviarDatos = async (e) => {
     e.preventDefault();
     setMensajeError("");
+    setCargando(true);
 
     try {
       const response = await fetch("http://localhost:3001/api/usuarios/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
-      console.log("🔵 RESPUESTA BACKEND:", data);
 
       if (!data.success) {
         setMensajeError(data.message || "Credenciales incorrectas");
         return;
       }
 
-   
       const usuario_id =
         data.usuario?.usuario_id ||
         data.data?.usuario_id ||
         data.usuario_id;
 
-      console.log(" usuario_id detectado:", usuario_id);
-
       if (!usuario_id) {
-        alert(" Error: el backend no envió el usuario_id");
+        setMensajeError("Error interno: el servidor no devolvió el ID de usuario.");
         return;
       }
 
+      // Persistir sesión
       localStorage.setItem("token",      data.token);
       localStorage.setItem("usuario_id", String(usuario_id));
       localStorage.setItem("rol",        data.rol);
-      // Guardar objeto completo para que HomeClient y Sidebar muestren el nombre real
       localStorage.setItem("usuario",    JSON.stringify(data.usuario || {}));
 
-      console.log(" localStorage guardado:", {
-        token: data.token,
-        usuario_id: String(usuario_id),
-        rol: data.rol
-      });
-
-      
-      if (data.rol === "Administrador") {
-        window.location.href = "/usuarios";
-      } else if (data.rol === "Cliente") {
-        window.location.href = "/client";
-      } else {
-        window.location.href = "/";
+      // Redirigir según rol — cada rol tiene un destino definido en DESTINO_POR_ROL
+      const destino = DESTINO_POR_ROL[data.rol];
+      if (!destino) {
+        setMensajeError(`Rol desconocido (${data.rol}). Contacta al administrador.`);
+        return;
       }
 
-    } catch (error) {
-      console.error(" Error al iniciar sesión:", error);
+      window.location.href = destino;
+
+    } catch {
       setMensajeError("Error de conexión con el servidor");
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -87,7 +74,7 @@ const IniciarSesion = () => {
         backgroundPosition: "center",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       <Container style={{ maxWidth: "600px" }}>
@@ -98,9 +85,7 @@ const IniciarSesion = () => {
             </h1>
 
             {mensajeError && (
-              <Alert variant="danger">
-                {mensajeError}
-              </Alert>
+              <Alert variant="danger">{mensajeError}</Alert>
             )}
           </Card.Header>
 
@@ -132,8 +117,9 @@ const IniciarSesion = () => {
                 type="submit"
                 style={{ background: "#5660AE", borderColor: "#36264F" }}
                 className="w-100"
+                disabled={cargando}
               >
-                Iniciar Sesión
+                {cargando ? "Verificando..." : "Iniciar Sesión"}
               </Button>
             </Form>
           </Card.Body>

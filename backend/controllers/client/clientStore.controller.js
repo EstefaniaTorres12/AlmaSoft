@@ -20,14 +20,14 @@ exports.getProductos = (req, res) => {
     ORDER BY c.categoria_nombre ASC
   `;
   db.query(sql, (err, rows) => {
-    if (err) return res.status(500).json({ success: false, error: err.message || err });
+    if (err) return res.status(500).json({ success: false, message: "Error al consultar productos" });
     res.json({ success: true, data: rows });
   });
 };
 
 // ─── CARRITO: Obtener ─────────────────────────────────────────────────────────
 exports.getCarrito = (req, res) => {
-  const usuario_id = req.user.usuario_id || req.user.id;
+  const usuario_id = req.user.usuario_id;
   const sql = `
     SELECT ca.carrito_id, ca.producto_id, ca.cantidad,
            p.producto_nombre, p.producto_precio, p.producto_imagen
@@ -36,14 +36,14 @@ exports.getCarrito = (req, res) => {
     WHERE ca.usuario_id = ?
   `;
   db.query(sql, [usuario_id], (err, rows) => {
-    if (err) return res.status(500).json({ success: false, error: err });
+    if (err) return res.status(500).json({ success: false, message: "Error al consultar el carrito" });
     res.json({ success: true, data: rows });
   });
 };
 
 // ─── CARRITO: Agregar ─────────────────────────────────────────────────────────
 exports.addCarrito = (req, res) => {
-  const usuario_id = req.user.usuario_id || req.user.id;
+  const usuario_id = req.user.usuario_id;
   const { producto_id, cantidad = 1 } = req.body;
 
   if (!producto_id) {
@@ -52,14 +52,14 @@ exports.addCarrito = (req, res) => {
 
   const checkSql = `SELECT carrito_id, cantidad FROM CARRITO WHERE usuario_id = ? AND producto_id = ?`;
   db.query(checkSql, [usuario_id, producto_id], (err, rows) => {
-    if (err) return res.status(500).json({ success: false, error: err });
+    if (err) return res.status(500).json({ success: false, message: "Error al consultar el carrito" });
 
     if (rows.length > 0) {
       db.query(
         `UPDATE CARRITO SET cantidad = cantidad + ? WHERE carrito_id = ?`,
         [cantidad, rows[0].carrito_id],
         (err2) => {
-          if (err2) return res.status(500).json({ success: false, error: err2 });
+          if (err2) return res.status(500).json({ success: false, message: "Error al actualizar el carrito" });
           res.json({ success: true, message: "Cantidad actualizada" });
         }
       );
@@ -68,7 +68,7 @@ exports.addCarrito = (req, res) => {
         `INSERT INTO CARRITO (usuario_id, producto_id, cantidad) VALUES (?, ?, ?)`,
         [usuario_id, producto_id, cantidad],
         (err2) => {
-          if (err2) return res.status(500).json({ success: false, error: err2 });
+          if (err2) return res.status(500).json({ success: false, message: "Error al agregar al carrito" });
           res.json({ success: true, message: "Producto agregado al carrito" });
         }
       );
@@ -78,14 +78,14 @@ exports.addCarrito = (req, res) => {
 
 // ─── CARRITO: Eliminar ────────────────────────────────────────────────────────
 exports.removeCarrito = (req, res) => {
-  const usuario_id = req.user.usuario_id || req.user.id;
+  const usuario_id = req.user.usuario_id;
   const { id } = req.params;
 
   db.query(
     `DELETE FROM CARRITO WHERE carrito_id = ? AND usuario_id = ?`,
     [id, usuario_id],
     (err) => {
-      if (err) return res.status(500).json({ success: false, error: err });
+      if (err) return res.status(500).json({ success: false, message: "Error al eliminar del carrito" });
       res.json({ success: true, message: "Producto eliminado del carrito" });
     }
   );
@@ -93,7 +93,7 @@ exports.removeCarrito = (req, res) => {
 
 // ─── CARRITO: Pagar ───────────────────────────────────────────────────────────
 exports.checkoutCarrito = (req, res) => {
-  const usuario_id = req.user.usuario_id || req.user.id;
+  const usuario_id = req.user.usuario_id;
   const { metodo_pago } = req.body;
 
   if (!metodo_pago) {
@@ -104,7 +104,7 @@ exports.checkoutCarrito = (req, res) => {
     `SELECT contrato_id FROM CONTRATO WHERE cliente_id = ? AND contrato_estado = 1 ORDER BY contrato_id DESC LIMIT 1`,
     [usuario_id],
     (err, contratos) => {
-      if (err) return res.status(500).json({ success: false, error: err });
+      if (err) return res.status(500).json({ success: false, message: "Error al consultar contrato" });
       if (contratos.length === 0) {
         return res.status(400).json({
           success: false,
@@ -121,7 +121,7 @@ exports.checkoutCarrito = (req, res) => {
          WHERE ca.usuario_id = ?`,
         [usuario_id],
         (err2, items) => {
-          if (err2) return res.status(500).json({ success: false, error: err2 });
+          if (err2) return res.status(500).json({ success: false, message: "Error al consultar el carrito" });
           if (items.length === 0) {
             return res.status(400).json({ success: false, message: "El carrito esta vacio." });
           }
@@ -135,10 +135,10 @@ exports.checkoutCarrito = (req, res) => {
             `INSERT INTO PAGO (pago_metodo, pago_fecha, contrato_id) VALUES (?, ?, ?)`,
             [pago_metodo, fecha, contrato_id],
             (err3) => {
-              if (err3) return res.status(500).json({ success: false, error: err3 });
+              if (err3) return res.status(500).json({ success: false, message: "Error al registrar el pago" });
 
               db.query(`DELETE FROM CARRITO WHERE usuario_id = ?`, [usuario_id], (err4) => {
-                if (err4) return res.status(500).json({ success: false, error: err4 });
+                if (err4) return res.status(500).json({ success: false, message: "Error al limpiar el carrito" });
                 res.json({ success: true, message: "Compra registrada correctamente.", total });
               });
             }
@@ -154,7 +154,7 @@ exports.getServicios = (req, res) => {
   db.query(
     `SELECT servicio_id, servicio_nombre, servicio_descripcion, servicio_precio FROM SERVICIO ORDER BY servicio_nombre`,
     (err, rows) => {
-      if (err) return res.status(500).json({ success: false, error: err });
+      if (err) return res.status(500).json({ success: false, message: "Error al consultar servicios" });
       res.json({ success: true, data: rows });
     }
   );
@@ -162,7 +162,7 @@ exports.getServicios = (req, res) => {
 
 // ─── SERVICIOS: Solicitar ─────────────────────────────────────────────────────
 exports.solicitarServicio = (req, res) => {
-  const usuario_id = req.user.usuario_id || req.user.id;
+  const usuario_id = req.user.usuario_id;
   const { servicio_id, metodo_pago } = req.body;
 
   if (!servicio_id || !metodo_pago) {
@@ -173,7 +173,7 @@ exports.solicitarServicio = (req, res) => {
     `SELECT contrato_id FROM CONTRATO WHERE cliente_id = ? AND contrato_estado = 1 ORDER BY contrato_id DESC LIMIT 1`,
     [usuario_id],
     (err, contratos) => {
-      if (err) return res.status(500).json({ success: false, error: err });
+      if (err) return res.status(500).json({ success: false, message: "Error al consultar contrato" });
       if (contratos.length === 0) {
         return res.status(400).json({
           success: false,
@@ -187,7 +187,7 @@ exports.solicitarServicio = (req, res) => {
         `SELECT servicio_nombre, servicio_precio FROM SERVICIO WHERE servicio_id = ?`,
         [servicio_id],
         (err2, servicios) => {
-          if (err2) return res.status(500).json({ success: false, error: err2 });
+          if (err2) return res.status(500).json({ success: false, message: "Error al consultar el servicio" });
           if (servicios.length === 0) {
             return res.status(404).json({ success: false, message: "Servicio no encontrado." });
           }
@@ -200,7 +200,7 @@ exports.solicitarServicio = (req, res) => {
             `INSERT INTO PAGO (pago_metodo, pago_fecha, contrato_id) VALUES (?, ?, ?)`,
             [pago_metodo, fecha, contrato_id],
             (err3) => {
-              if (err3) return res.status(500).json({ success: false, error: err3 });
+              if (err3) return res.status(500).json({ success: false, message: "Error al registrar la solicitud" });
               res.status(201).json({ success: true, message: "Servicio solicitado correctamente." });
             }
           );
@@ -212,7 +212,7 @@ exports.solicitarServicio = (req, res) => {
 
 // ─── PAGOS: Historial completo (plan + tienda + servicios) ────────────────────
 exports.getHistorialPagos = (req, res) => {
-  const usuario_id = req.user.usuario_id || req.user.id;
+  const usuario_id = req.user.usuario_id;
   const sql = `
     SELECT
       p.pago_id,
@@ -229,7 +229,7 @@ exports.getHistorialPagos = (req, res) => {
     ORDER BY p.pago_fecha DESC, p.pago_id DESC
   `;
   db.query(sql, [usuario_id], (err, rows) => {
-    if (err) return res.status(500).json({ success: false, error: err });
+    if (err) return res.status(500).json({ success: false, message: "Error al consultar historial de pagos" });
     res.json({ success: true, data: rows });
   });
 };

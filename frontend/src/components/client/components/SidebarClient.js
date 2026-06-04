@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { logout } from "../../../utils/auth";
 import "../styles/sidebarClient.css";
 
 const NAV_ITEMS = [
@@ -63,8 +64,7 @@ export default function SidebarClient() {
     .join(" ") || usuario.usuario_correo || "Cliente";
 
   const cerrarSesion = () => {
-    localStorage.clear();
-    navigate("/");
+    logout();
   };
 
   const items = rol === "Afiliado"

@@ -331,7 +331,7 @@ exports.getContractDocument = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos cargar tu contrato.", error });
+    return res.status(500).json({ success: false, message: "No pudimos cargar tu contrato." });
   }
 };
 
@@ -363,7 +363,7 @@ exports.getStoreProducts = async (req, res) => {
 
     return res.json({ success: true, data: rows });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos cargar la tienda.", error });
+    return res.status(500).json({ success: false, message: "No pudimos cargar la tienda." });
   }
 };
 
@@ -406,7 +406,7 @@ exports.getCart = async (req, res) => {
 
     return res.json({ success: true, data: { items: rows, total } });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos cargar tu carrito.", error });
+    return res.status(500).json({ success: false, message: "No pudimos cargar tu carrito." });
   }
 };
 
@@ -483,7 +483,7 @@ exports.addToCart = async (req, res) => {
 
     return res.status(201).json({ success: true, message: "Producto agregado al carrito." });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos actualizar el carrito.", error });
+    return res.status(500).json({ success: false, message: "No pudimos actualizar el carrito." });
   }
 };
 
@@ -534,7 +534,7 @@ exports.updateCartItem = async (req, res) => {
 
     return res.json({ success: true, message: "Cantidad actualizada correctamente." });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos actualizar el carrito.", error });
+    return res.status(500).json({ success: false, message: "No pudimos actualizar el carrito." });
   }
 };
 
@@ -558,7 +558,7 @@ exports.removeCartItem = async (req, res) => {
 
     return res.json({ success: true, message: "Producto retirado del carrito." });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos retirar el producto.", error });
+    return res.status(500).json({ success: false, message: "No pudimos retirar el producto." });
   }
 };
 
@@ -711,7 +711,7 @@ exports.checkoutCart = async (req, res) => {
         }
       }
 
-      await ejecutarConsulta("DELETE FROM CARRITO WHERE usuario_id = ?", [usuarioId]);
+      await ejecutarConsulta(db, "DELETE FROM CARRITO WHERE usuario_id = ?", [usuarioId]);
       await confirmarTransaccion(db);
 
       return res.status(201).json({
@@ -723,7 +723,7 @@ exports.checkoutCart = async (req, res) => {
       throw transactionError;
     }
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos completar la compra.", error });
+    return res.status(500).json({ success: false, message: "No pudimos completar la compra." });
   }
 };
 
@@ -746,7 +746,7 @@ exports.getServiceCatalog = async (req, res) => {
 
     return res.json({ success: true, data: rows });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos cargar los servicios.", error });
+    return res.status(500).json({ success: false, message: "No pudimos cargar los servicios." });
   }
 };
 
@@ -857,7 +857,7 @@ exports.requestAdditionalService = async (req, res) => {
       throw transactionError;
     }
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos registrar la solicitud del servicio.", error });
+    return res.status(500).json({ success: false, message: "No pudimos registrar la solicitud del servicio." });
   }
 };
 
@@ -986,6 +986,6 @@ exports.getGeneralPaymentHistory = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "No pudimos cargar el historial de pagos.", error });
+    return res.status(500).json({ success: false, message: "No pudimos cargar el historial de pagos." });
   }
 };

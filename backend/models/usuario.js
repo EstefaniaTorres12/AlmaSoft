@@ -148,9 +148,8 @@ Usuario.findById = (id, result) => {
                         usuario_segundo_apellido,
                         usuario_documento,
                         usuario_correo,
-                        usuario_direccion,
-                        usuario_credencial 
-                 FROM USUARIO 
+                        usuario_direccion
+                 FROM USUARIO
                  WHERE usuario_id = ?`;
     db.query(sql, [id], (err, user) => {
         if (err) {
@@ -171,9 +170,8 @@ Usuario.findByDocument = (documento, result) => {
                         usuario_segundo_apellido,
                         usuario_documento,
                         usuario_correo,
-                        usuario_direccion,
-                        usuario_credencial 
-                 FROM USUARIO 
+                        usuario_direccion
+                 FROM USUARIO
                  WHERE usuario_documento = ?`;
     db.query(sql, [documento], (err, doc) => {
         if (err) {

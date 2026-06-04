@@ -9,7 +9,6 @@ module.exports = {
                 return res.status(500).json({
                     success: false,
                     message: 'Error al consultar clientes',
-                    error: err
                 });
             }
 
@@ -30,7 +29,6 @@ module.exports = {
                 return res.status(500).json({
                     success: false,
                     message: 'Error al obtener cliente',
-                    error: err
                 });
             }
 
@@ -65,7 +63,6 @@ module.exports = {
                 return res.status(500).json({
                     success: false,
                     message: err.message || 'Error al crear cliente',
-                    error: err
                 });
             }
 
@@ -87,7 +84,6 @@ module.exports = {
                 return res.status(500).json({
                     success: false,
                     message: 'Error al actualizar cliente',
-                    error: err
                 });
             }
 
@@ -108,7 +104,6 @@ module.exports = {
                 return res.status(500).json({
                     success: false,
                     message: 'Error al eliminar cliente',
-                    error: err
                 });
             }
 

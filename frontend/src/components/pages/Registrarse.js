@@ -72,8 +72,7 @@ const Registrarse = () => {
                     FechaNacimiento: ''
                 });
             } else {
-                const backendError = data?.error?.sqlMessage || data?.error?.message;
-                alert("Error: " + (data.message || backendError || "No fue posible registrar el usuario"));
+                alert("Error: " + (data.message || "No fue posible registrar el usuario"));
             }
 
         } catch (error) {
