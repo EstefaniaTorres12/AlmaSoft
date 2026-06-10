@@ -239,12 +239,3 @@ ON UPDATE CASCADE
 
 ) ENGINE=InnoDB;
 
--- ============================================================
--- DIAGNÓSTICO: Usuarios con rol Cliente sin registro en CLIENTE
--- Ejecutar para detectar cuentas incompletas antes de probar
--- ============================================================
--- SELECT u.usuario_id, u.usuario_primer_nombre, u.usuario_correo
--- FROM USUARIO u
--- INNER JOIN ROL_USUARIO ru ON ru.usuario_id = u.usuario_id
--- LEFT JOIN CLIENTE c ON c.cliente_id = u.usuario_id
--- WHERE ru.rol_id = 1 AND c.cliente_id IS NULL;

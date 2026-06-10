@@ -70,9 +70,10 @@ module.exports = {
 
             const token = jwt.sign(
                 {
-                    id: user.usuario_id,
-                    email: user.usuario_correo,
-                    role: user.rol_nombre
+                    id:      user.usuario_id,
+                    email:   user.usuario_correo,
+                    role:    user.rol_nombre,
+                    rol_id:  user.rol_id
                 },
                 keys.secretOrKey,
                 { expiresIn: '1h' }
@@ -82,16 +83,19 @@ module.exports = {
                 success: true,
                 message: "Login correcto",
                 token,
-                rol: user.rol_nombre,
+                rol:    user.rol_nombre,
+                rol_id: user.rol_id,
                 usuario: {
-                    usuario_id:              user.usuario_id,
-                    usuario_primer_nombre:   user.usuario_primer_nombre,
-                    usuario_segundo_nombre:  user.usuario_segundo_nombre,
-                    usuario_primer_apellido: user.usuario_primer_apellido,
-                    usuario_segundo_apellido:user.usuario_segundo_apellido,
-                    usuario_documento:       user.usuario_documento,
-                    usuario_correo:          user.usuario_correo,
-                    usuario_direccion:       user.usuario_direccion,
+                    usuario_id:               user.usuario_id,
+                    rol_id:                   user.rol_id,
+                    rol_nombre:               user.rol_nombre,
+                    usuario_primer_nombre:    user.usuario_primer_nombre,
+                    usuario_segundo_nombre:   user.usuario_segundo_nombre,
+                    usuario_primer_apellido:  user.usuario_primer_apellido,
+                    usuario_segundo_apellido: user.usuario_segundo_apellido,
+                    usuario_documento:        user.usuario_documento,
+                    usuario_correo:           user.usuario_correo,
+                    usuario_direccion:        user.usuario_direccion,
                 }
             });
 

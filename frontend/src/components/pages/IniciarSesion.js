@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Alert, Button } from "react-bootstrap";
-import { DESTINO_POR_ROL } from "../../utils/auth";
+import { DESTINO_POR_ROL_ID } from "../../utils/auth";
 
 const IniciarSesion = () => {
   const [formData, setFormData] = useState({
-    usuario_correo:    "",
+    usuario_correo:     "",
     usuario_credencial: "",
   });
   const [mensajeError, setMensajeError] = useState("");
@@ -33,26 +33,30 @@ const IniciarSesion = () => {
         return;
       }
 
-      const usuario_id =
-        data.usuario?.usuario_id ||
-        data.data?.usuario_id ||
-        data.usuario_id;
-
+      const usuario_id = data.usuario?.usuario_id || data.usuario_id;
       if (!usuario_id) {
         setMensajeError("Error interno: el servidor no devolvió el ID de usuario.");
+        return;
+      }
+
+      // rol_id numérico — fuente principal para la redirección
+      const rol_id = data.usuario?.rol_id ?? data.rol_id ?? null;
+      if (rol_id === null) {
+        setMensajeError("Error interno: el servidor no devolvió el rol del usuario.");
         return;
       }
 
       // Persistir sesión
       localStorage.setItem("token",      data.token);
       localStorage.setItem("usuario_id", String(usuario_id));
-      localStorage.setItem("rol",        data.rol);
+      localStorage.setItem("rol",        data.rol);          // nombre de rol para RutaProtegida
+      localStorage.setItem("rol_id",     String(rol_id));    // id numérico para consultas
       localStorage.setItem("usuario",    JSON.stringify(data.usuario || {}));
 
-      // Redirigir según rol — cada rol tiene un destino definido en DESTINO_POR_ROL
-      const destino = DESTINO_POR_ROL[data.rol];
+      // Redirigir usando rol_id numérico — evita dependencia de strings de rol
+      const destino = DESTINO_POR_ROL_ID[rol_id];
       if (!destino) {
-        setMensajeError(`Rol desconocido (${data.rol}). Contacta al administrador.`);
+        setMensajeError(`Rol desconocido (id=${rol_id}). Contacta al administrador.`);
         return;
       }
 

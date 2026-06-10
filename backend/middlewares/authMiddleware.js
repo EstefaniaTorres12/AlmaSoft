@@ -28,7 +28,8 @@ function verifyToken(req, res, next) {
         }
         req.user = {
             ...decoded,
-            usuario_id: decoded.usuario_id || decoded.id
+            usuario_id: decoded.usuario_id || decoded.id,
+            rol_id:     decoded.rol_id
         };
         next();
     });

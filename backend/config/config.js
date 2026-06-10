@@ -18,7 +18,7 @@ db.getConnection((err, conn) => {
         console.error('Error al conectar la base de datos:', err.message);
         return;
     }
-    console.log('Pool de base de datos listo');
+    console.log('Base de datos conectada');
     conn.release();
 });
 
