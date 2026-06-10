@@ -19,11 +19,8 @@ const Carrito = () => {
   const isLoggedIn = !!localStorage.getItem('token');
   const rol        = localStorage.getItem('rol') || '';
 
-  /* Para clientes autenticados: usa la API del backend */
   const confirmarPedido = async () => {
     setProcesando(true);
-
-    /* Si es cliente autenticado, intenta usar la API real */
     if (isLoggedIn && rol === 'Cliente') {
       try {
         const { authFetch } = await import('../../utils/authFetch');
