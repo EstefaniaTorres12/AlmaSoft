@@ -1,9 +1,5 @@
 const pool = require('./config');
 
-// Wrapper que convierte las callbacks de mysql v1 en Promises.
-// Todos los modelos async deben importar { query } desde aquí
-// en lugar de usar await pool.query() directamente.
-
 function query(sql, params = []) {
   return new Promise((resolve, reject) => {
     pool.query(sql, params, (err, result) => {
