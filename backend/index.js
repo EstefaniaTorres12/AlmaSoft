@@ -3,7 +3,7 @@ const app = require('./server');
 
 
 const port = process.env.PORT || 3001;
-const host = process.env.HOST || 'localhost';
+const host = process.env.HOST || '0.0.0.0';
 
 app.set('port', port);
 
