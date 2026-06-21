@@ -10,7 +10,7 @@ Cliente.create = async (cliente, result) => {
         const correo = cliente.correo.toLowerCase();
         const hash = await bcrypt.hash(cliente.credencial, 10);
 
-        const checkSql = "SELECT * FROM USUARIO WHERE usuario_documento = ?";
+        const checkSql = "SELECT * FROM usuario WHERE usuario_documento = ?";
         db.query(checkSql, [cliente.documento], (err, rows) => {
 
             if (err) {
@@ -22,9 +22,9 @@ Cliente.create = async (cliente, result) => {
                 return result({ message: "El documento ya existe" }, null);
             }
 
-            // 🔹 1. INSERT USUARIO
+            // 🔹 1. INSERT usuario
             const sqlUsuario = `
-                INSERT INTO USUARIO(
+                INSERT INTO usuario(
                     usuario_documento,
                     usuario_primer_nombre,
                     usuario_segundo_nombre,
@@ -54,9 +54,9 @@ Cliente.create = async (cliente, result) => {
 
                 const usuario_id = resUsuario.insertId;
 
-                // 🔥 1.5 INSERT ROL_USUARIO (CLIENTE = 1)
+                // 🔥 1.5 INSERT rol_usuario (CLIENTE = 1)
                 const sqlRolUsuario = `
-                    INSERT INTO ROL_USUARIO(
+                    INSERT INTO rol_usuario(
                         rol_id,
                         usuario_id,
                         estado_cred
@@ -76,7 +76,7 @@ Cliente.create = async (cliente, result) => {
 
                     // 🔹 2. INSERT CLIENTE
                     const sqlCliente = `
-                        INSERT INTO CLIENTE(
+                        INSERT INTO cliente(
                             cliente_id,
                             cliente_fecha_nacimiento,
                             cliente_edad
@@ -94,9 +94,9 @@ Cliente.create = async (cliente, result) => {
                             return result(err3, null);
                         }
 
-                        // 🔹 3. INSERT TELEFONO
+                        // 🔹 3. INSERT telefono
                         const sqlTelefono = `
-                            INSERT INTO TELEFONO(
+                            INSERT INTO telefono(
                                 usuario_id,
                                 telefono
                             ) VALUES (?,?)
@@ -139,9 +139,9 @@ Cliente.findAll = (result) => {
     GROUP_CONCAT(DISTINCT t.telefono) AS telefono,
     c.cliente_fecha_nacimiento AS fecha_nacimiento,
     c.cliente_edad AS edad
-FROM CLIENTE c
-INNER JOIN USUARIO u ON u.usuario_id = c.cliente_id
-LEFT JOIN TELEFONO t ON t.usuario_id = u.usuario_id
+FROM cliente c
+INNER JOIN usuario u ON u.usuario_id = c.cliente_id
+LEFT JOIN telefono t ON t.usuario_id = u.usuario_id
 GROUP BY u.usuario_id`;
 
     db.query(sql, (err, cliente) => {
@@ -170,9 +170,9 @@ Cliente.findById = (id, result) => {
         GROUP_CONCAT(DISTINCT t.telefono) AS telefono,
         c.cliente_fecha_nacimiento AS fecha_nacimiento,
         c.cliente_edad AS edad
-    FROM CLIENTE c
-    INNER JOIN USUARIO u ON u.usuario_id = c.cliente_id
-    LEFT JOIN TELEFONO t ON t.usuario_id = u.usuario_id
+    FROM cliente c
+    INNER JOIN usuario u ON u.usuario_id = c.cliente_id
+    LEFT JOIN telefono t ON t.usuario_id = u.usuario_id
     WHERE u.usuario_id = ?
     GROUP BY u.usuario_id`;
 
@@ -190,7 +190,7 @@ Cliente.findById = (id, result) => {
 Cliente.update = (id, cliente, result) => {
 
     const sqlUsuario = `
-        UPDATE USUARIO SET
+        UPDATE usuario SET
             usuario_primer_nombre = ?,
             usuario_segundo_nombre = ?,
             usuario_primer_apellido = ?,
@@ -201,19 +201,19 @@ Cliente.update = (id, cliente, result) => {
     `;
 
     const sqlCliente = `
-        UPDATE CLIENTE SET
+        UPDATE cliente SET
             cliente_fecha_nacimiento = ?,
             cliente_edad = ?
         WHERE cliente_id = ?
     `;
 
     const sqlTelefono = `
-        UPDATE TELEFONO SET
+        UPDATE telefono SET
             telefono = ?
         WHERE usuario_id = ?
     `;
 
-    // 🔹 Actualizar USUARIO
+    // 🔹 Actualizar usuario
     db.query(sqlUsuario, [
         cliente.primer_nombre,
         cliente.segundo_nombre,
@@ -241,7 +241,7 @@ Cliente.update = (id, cliente, result) => {
                 return result(err2, null);
             }
 
-            // 🔹 Actualizar TELEFONO
+            // 🔹 Actualizar telefono
             db.query(sqlTelefono, [
                 cliente.telefono,
                 id
@@ -260,15 +260,15 @@ Cliente.update = (id, cliente, result) => {
 };
 
 Cliente.delete = (id, result) => {
-    const sqlTelefono = `DELETE FROM TELEFONO WHERE usuario_id = ?`;
+    const sqlTelefono = `DELETE FROM telefono WHERE usuario_id = ?`;
     db.query(sqlTelefono, [id], (err) => {
         if (err) return result(err, null);
 
-        const sqlCliente = `DELETE FROM CLIENTE WHERE cliente_id = ?`;
+        const sqlCliente = `DELETE FROM cliente WHERE cliente_id = ?`;
         db.query(sqlCliente, [id], (err2) => {
             if (err2) return result(err2, null);
 
-            const sqlUsuario = `DELETE FROM USUARIO WHERE usuario_id = ?`;
+            const sqlUsuario = `DELETE FROM usuario WHERE usuario_id = ?`;
             db.query(sqlUsuario, [id], (err3, res) => {
                 if (err3) return result(err3, null);
                 result(null, res);

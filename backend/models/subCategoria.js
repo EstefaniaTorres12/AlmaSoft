@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const SubCategoria = {};
 
 SubCategoria.create = async (subCategoria, result) => {
-    const sql = `INSERT INTO SUBCATEGORIA (
+    const sql = `INSERT INTO subcategoria (
     subcategoria_id,
     subcategoria_nombre,
     categoria_id
@@ -27,7 +27,7 @@ SubCategoria.create = async (subCategoria, result) => {
 SubCategoria.findAll = (result) => {
     const sql = `SELECT subcategoria_id,
                  subcategoria_nombre,
-                 categoria_id FROM SUBCATEGORIA`;
+                 categoria_id FROM subcategoria`;
     db.query(sql, (err, subcategoria) => {
         if (err) {
             console.log('Error al listar SubCategorias: ', err);

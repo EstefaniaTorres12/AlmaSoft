@@ -3,7 +3,7 @@ const Producto = {};
 
 // 🔹 CREAR
 Producto.create = (producto, result) => {
-    const sql = `INSERT INTO PRODUCTO(
+    const sql = `INSERT INTO producto(
     producto_nombre,
     producto_descripcion,
     producto_precio,
@@ -62,7 +62,7 @@ Producto.findAll = (result) => {
 // 🔹 FILTRAR
 Producto.findByName = (nombre, result) => {
     const sql = `
-        SELECT * FROM PRODUCTO
+        SELECT * FROM producto
         WHERE producto_nombre LIKE ?
     `;
 
@@ -74,7 +74,7 @@ Producto.findByName = (nombre, result) => {
 
 // 🔹 POR ID
 Producto.findById = (id, result) => {
-    const sql = `SELECT * FROM PRODUCTO WHERE producto_id = ?`;
+    const sql = `SELECT * FROM producto WHERE producto_id = ?`;
 
     db.query(sql, [id], (err, data) => {
         if (err) return result(err, null);
@@ -123,7 +123,7 @@ Producto.update = (producto, result) => {
         values.push(producto.producto_imagen);
     }
 
-    const sql = `UPDATE PRODUCTO SET ${fields.join(', ')} WHERE producto_id = ?`;
+    const sql = `UPDATE producto SET ${fields.join(', ')} WHERE producto_id = ?`;
     values.push(producto.producto_id);
 
     db.query(sql, values, (err, res) => {
@@ -137,7 +137,7 @@ Producto.update = (producto, result) => {
 
 // 🔹 DELETE
 Producto.delete = (id, result) => {
-    const sql = `DELETE FROM PRODUCTO WHERE producto_id = ?`;
+    const sql = `DELETE FROM producto WHERE producto_id = ?`;
 
     db.query(sql, [id], (err, res) => {
         if (err) return result(err, null);
