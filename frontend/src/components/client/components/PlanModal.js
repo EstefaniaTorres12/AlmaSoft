@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/PlanModal.css";
+import { API_URL } from "../../../config/api";
 
 const PSE_ENTITIES = [
   "Bancolombia",
@@ -189,7 +190,7 @@ export default function PlanModal({ plan, onClose, onPurchaseSuccess, hasActiveP
     setError("");
 
     try {
-      const response = await authFetch("http://localhost:3001/api/client/contrato", {
+      const response = await authFetch(`${API_URL}/api/client/contrato`, {
         method: "POST",
         body: JSON.stringify({
           cliente_id,

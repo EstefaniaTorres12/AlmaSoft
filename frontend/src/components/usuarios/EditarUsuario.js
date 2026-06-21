@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Button, Form, Card } from "react-bootstrap";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const EditarUsuario = () => {
     const { id } = useParams();
@@ -23,7 +24,7 @@ const EditarUsuario = () => {
         const fetchUsuario = async () => {
             try {
                 const response = await authFetch(
-                    `http://localhost:3001/api/usuarios/id/${id}`
+                    `${API_URL}/api/usuarios/id/${id}`
                 );
                 const data = await response.json();
 
@@ -74,7 +75,7 @@ const EditarUsuario = () => {
 
         try {
             const response = await authFetch(
-                `http://localhost:3001/api/usuarios/update/${id}`,
+                `${API_URL}/api/usuarios/update/${id}`,
                 {
                     method: "PUT",
                     body: JSON.stringify(usuarioActualizado)

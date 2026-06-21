@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const EditarPlan = () => {
 
@@ -22,7 +23,7 @@ const EditarPlan = () => {
     const fetchPlan = async () => {
       try {
         const response = await authFetch(
-          `http://localhost:3001/api/planes/${id}`
+          `${API_URL}/api/planes/${id}`
         );
 
         const data = await response.json();
@@ -55,7 +56,7 @@ const EditarPlan = () => {
 
     try {
       const response = await authFetch(
-        `http://localhost:3001/api/planes/update/${id}`,
+        `${API_URL}/api/planes/update/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

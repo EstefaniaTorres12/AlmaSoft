@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Table, Row, Col, Form, Button, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const PlanFront = () => {
 
@@ -11,7 +12,7 @@ const PlanFront = () => {
   useEffect(() => {
     const fetchPlanes = async () => {
       try {
-        const response = await authFetch("http://localhost:3001/api/planes");
+        const response = await authFetch(`${API_URL}/api/planes`);
 
         const data = await response.json();
 
@@ -34,7 +35,7 @@ const PlanFront = () => {
 
     try {
       const response = await authFetch(
-        `http://localhost:3001/api/planes/delete/${id}`,
+        `${API_URL}/api/planes/delete/${id}`,
         { method: "DELETE" }
       );
 

@@ -5,8 +5,9 @@ import { useCart } from '../../context/CartContext';
 import Carrusel from './Carrusel';
 import ContactenosFooter from './ContactenosFooter';
 import './PaginaInicio.css';
+import { API_URL } from '../../config/api';
 
-const API = 'http://localhost:3001/api';
+const API = `${API_URL}/api`;
 
 /* ── Datos estáticos que NO dependen de la DB ──────────────── */
 const TRUST = [

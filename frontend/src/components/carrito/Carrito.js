@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { API_URL } from '../../config/api';
 import './Carrito.css';
 
 const precioCOP = (v) =>
@@ -26,12 +27,12 @@ const Carrito = () => {
         const { authFetch } = await import('../../utils/authFetch');
         /* Agrega items al carrito del backend y luego hace checkout */
         for (const item of items) {
-          await authFetch('http://localhost:3001/api/client/store/carrito', {
+          await authFetch(`${API_URL}/api/client/store/carrito`, {
             method: 'POST',
             body: JSON.stringify({ producto_id: item.producto_id, cantidad: item.cantidad }),
           });
         }
-        const res  = await authFetch('http://localhost:3001/api/client/store/carrito/checkout', {
+        const res  = await authFetch(`${API_URL}/api/client/store/carrito/checkout`, {
           method: 'POST',
           body: JSON.stringify({ metodo_pago: metodo }),
         });

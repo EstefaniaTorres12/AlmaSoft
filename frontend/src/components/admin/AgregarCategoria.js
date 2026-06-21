@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const AgregarCategoria = () => {
 
@@ -29,7 +30,7 @@ const AgregarCategoria = () => {
 
         try {
             const response = await authFetch(
-                "http://localhost:3001/api/categorias/crear",
+                `${API_URL}/api/categorias/crear`,
                 {
                     method: "POST",
                     headers: {

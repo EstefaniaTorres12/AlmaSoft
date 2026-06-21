@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
+import { API_URL } from "../../config/api";
 
 const AgregarPlan = () => {
 
@@ -26,7 +27,7 @@ const AgregarPlan = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:3001/api/planes/crear", {
+            const response = await fetch(`${API_URL}/api/planes/crear`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
