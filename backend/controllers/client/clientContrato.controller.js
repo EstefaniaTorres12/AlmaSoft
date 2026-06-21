@@ -51,10 +51,10 @@ exports.obtenerMiPlan = (req, res) => {
       u.usuario_documento,
       u.usuario_correo,
       u.usuario_direccion
-    FROM CONTRATO c
-    INNER JOIN CONTRATO_PLAN cp ON cp.contrato_id = c.contrato_id
-    INNER JOIN PLAN_FUNEBRE p ON p.plan_id = cp.plan_id
-    INNER JOIN USUARIO u ON u.usuario_id = c.cliente_id
+    FROM contrato c
+    INNER JOIN contrato_plan cp ON cp.contrato_id = c.contrato_id
+    INNER JOIN plan_funebre p ON p.plan_id = cp.plan_id
+    INNER JOIN usuario u ON u.usuario_id = c.cliente_id
     WHERE c.cliente_id = ? AND c.contrato_estado = 1
     ORDER BY c.contrato_id DESC
     LIMIT 1
@@ -68,8 +68,8 @@ exports.obtenerMiPlan = (req, res) => {
 
     const sqlServicios = `
       SELECT s.servicio_id, s.servicio_nombre
-      FROM SERVICIO_PLAN sp
-      INNER JOIN SERVICIO s ON s.servicio_id = sp.servicio_id
+      FROM servicio_plan sp
+      INNER JOIN servicio s ON s.servicio_id = sp.servicio_id
       WHERE sp.plan_id = ?
       ORDER BY s.servicio_nombre
     `;
@@ -79,7 +79,7 @@ exports.obtenerMiPlan = (req, res) => {
 
       const sqlPagos = `
         SELECT pago_id, pago_metodo, pago_fecha
-        FROM PAGO
+        FROM pago
         WHERE contrato_id = ?
         ORDER BY pago_fecha DESC, pago_id DESC
       `;
@@ -114,7 +114,7 @@ exports.obtenerMiPlan = (req, res) => {
 };
 
 exports.obtenerPlanesDisponibles = (req, res) => {
-  const sql = `SELECT plan_id, plan_nombre, plan_precio, plan_descripcion FROM PLAN_FUNEBRE WHERE plan_estado = 1 ORDER BY plan_precio ASC`;
+  const sql = `SELECT plan_id, plan_nombre, plan_precio, plan_descripcion FROM plan_funebre WHERE plan_estado = 1 ORDER BY plan_precio ASC`;
   db.query(sql, (err, rows) => {
     if (err) return res.status(500).json({ success: false, message: "Error al consultar planes" });
     res.json({ success: true, data: rows || [] });
@@ -134,8 +134,8 @@ exports.mejorarPlan = async (req, res) => {
 
     const contratoRows = await queryConn(conn, `
       SELECT c.contrato_id, c.contrato_valor, cp.plan_id AS plan_actual_id
-      FROM CONTRATO c
-      INNER JOIN CONTRATO_PLAN cp ON cp.contrato_id = c.contrato_id
+      FROM contrato c
+      INNER JOIN contrato_plan cp ON cp.contrato_id = c.contrato_id
       WHERE c.cliente_id = ? AND c.contrato_estado = 1
       ORDER BY c.contrato_id DESC LIMIT 1
     `, [usuario_id]);
@@ -153,7 +153,7 @@ exports.mejorarPlan = async (req, res) => {
     }
 
     const planRows = await queryConn(conn,
-      `SELECT plan_precio FROM PLAN_FUNEBRE WHERE plan_id = ? AND plan_estado = 1`,
+      `SELECT plan_precio FROM plan_funebre WHERE plan_id = ? AND plan_estado = 1`,
       [plan_id]
     );
 
@@ -172,17 +172,17 @@ exports.mejorarPlan = async (req, res) => {
     await beginTx(conn);
 
     await queryConn(conn,
-      `INSERT INTO PAGO (pago_metodo, pago_fecha, contrato_id) VALUES (?, NOW(), ?)`,
+      `INSERT INTO pago (pago_metodo, pago_fecha, contrato_id) VALUES (?, NOW(), ?)`,
       [metodo_pago, contrato_id]
     );
 
     await queryConn(conn,
-      `UPDATE CONTRATO_PLAN SET plan_id = ? WHERE contrato_id = ?`,
+      `UPDATE contrato_plan SET plan_id = ? WHERE contrato_id = ?`,
       [plan_id, contrato_id]
     );
 
     await queryConn(conn,
-      `UPDATE CONTRATO SET contrato_valor = ? WHERE contrato_id = ?`,
+      `UPDATE contrato SET contrato_valor = ? WHERE contrato_id = ?`,
       [nuevo_precio, contrato_id]
     );
 
@@ -204,14 +204,14 @@ exports.mejorarPlan = async (req, res) => {
 exports.cancelarPlan = (req, res) => {
   const usuario_id = req.user.usuario_id;
 
-  const sqlContrato = `SELECT contrato_id FROM CONTRATO WHERE cliente_id = ? AND contrato_estado = 1 ORDER BY contrato_id DESC LIMIT 1`;
+  const sqlContrato = `SELECT contrato_id FROM contrato WHERE cliente_id = ? AND contrato_estado = 1 ORDER BY contrato_id DESC LIMIT 1`;
   db.query(sqlContrato, [usuario_id], (err, rows) => {
     if (err) return res.status(500).json({ success: false, message: "Error al consultar contrato" });
     if (rows.length === 0) return res.status(404).json({ success: false, message: "No tienes un contrato activo" });
 
     const contrato_id = rows[0].contrato_id;
 
-    const sqlPagos = `SELECT COUNT(*) as total FROM PAGO WHERE contrato_id = ?`;
+    const sqlPagos = `SELECT COUNT(*) as total FROM pago WHERE contrato_id = ?`;
     db.query(sqlPagos, [contrato_id], (err2, countRows) => {
       if (err2) return res.status(500).json({ success: false, message: "Error al verificar pagos" });
 
@@ -219,7 +219,7 @@ exports.cancelarPlan = (req, res) => {
         return res.status(400).json({ success: false, message: "Tienes un saldo pendiente. No puedes cancelar el plan hasta estar a paz y salvo." });
       }
 
-      const sqlCancel = `UPDATE CONTRATO SET contrato_estado = 0 WHERE contrato_id = ?`;
+      const sqlCancel = `UPDATE contrato SET contrato_estado = 0 WHERE contrato_id = ?`;
       db.query(sqlCancel, [contrato_id], (err3) => {
         if (err3) return res.status(500).json({ success: false, message: "Error al cancelar el contrato" });
         res.json({ success: true, message: "Plan cancelado. Quedas a paz y salvo con AlmaSoft." });
@@ -245,7 +245,7 @@ exports.adquirirPlan = async (req, res) => {
     conn = await getConnection();
 
     const clienteRows = await queryConn(conn,
-      `SELECT cliente_id FROM CLIENTE WHERE cliente_id = ?`,
+      `SELECT cliente_id FROM cliente WHERE cliente_id = ?`,
       [usuario_id]
     );
 
@@ -255,7 +255,7 @@ exports.adquirirPlan = async (req, res) => {
     }
 
     const contratoActivoRows = await queryConn(conn,
-      `SELECT contrato_id FROM CONTRATO WHERE cliente_id = ? AND contrato_estado = 1 LIMIT 1`,
+      `SELECT contrato_id FROM contrato WHERE cliente_id = ? AND contrato_estado = 1 LIMIT 1`,
       [usuario_id]
     );
 
@@ -265,7 +265,7 @@ exports.adquirirPlan = async (req, res) => {
     }
 
     const planRows = await queryConn(conn,
-      `SELECT plan_precio FROM PLAN_FUNEBRE WHERE plan_id = ?`,
+      `SELECT plan_precio FROM plan_funebre WHERE plan_id = ?`,
       [plan_id]
     );
 
@@ -279,19 +279,19 @@ exports.adquirirPlan = async (req, res) => {
     await beginTx(conn);
 
     const contratoResult = await queryConn(conn,
-      `INSERT INTO CONTRATO (contrato_estado, contrato_valor, cliente_id) VALUES (1, ?, ?)`,
+      `INSERT INTO contrato (contrato_estado, contrato_valor, cliente_id) VALUES (1, ?, ?)`,
       [valor, cliente_id]
     );
 
     const contrato_id = contratoResult.insertId;
 
     await queryConn(conn,
-      `INSERT INTO PAGO (pago_metodo, pago_fecha, contrato_id) VALUES (?, NOW(), ?)`,
+      `INSERT INTO pago (pago_metodo, pago_fecha, contrato_id) VALUES (?, NOW(), ?)`,
       [metodo_pago, contrato_id]
     );
 
     await queryConn(conn,
-      `INSERT INTO CONTRATO_PLAN (contrato_id, plan_id) VALUES (?, ?)`,
+      `INSERT INTO contrato_plan (contrato_id, plan_id) VALUES (?, ?)`,
       [contrato_id, plan_id]
     );
 

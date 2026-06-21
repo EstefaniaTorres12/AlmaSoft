@@ -9,7 +9,7 @@ router.post(
   "/asignar",
   async (req, res, next) => {
     try {
-      const rows = await query("SELECT COUNT(*) AS total FROM ROL_USUARIO");
+      const rows = await query("SELECT COUNT(*) AS total FROM rol_usuario");
       if (rows[0].total === 0) {
         return rolUsuarioController.assign(req, res);
       }

@@ -4,7 +4,7 @@ const Categoria = {};
 
 Categoria.create = (categoria, result) => {
     const sql = `
-        INSERT INTO CATEGORIA (
+        INSERT INTO categoria (
             categoria_id,
             categoria_nombre
         ) VALUES (?, ?)
@@ -22,7 +22,7 @@ Categoria.create = (categoria, result) => {
 };
 
 Categoria.findAll = (result) => {
-    const sql = `SELECT categoria_id, categoria_nombre FROM CATEGORIA`;
+    const sql = `SELECT categoria_id, categoria_nombre FROM categoria`;
 
     db.query(sql, (err, categorias) => {
         if (err) {
@@ -33,7 +33,7 @@ Categoria.findAll = (result) => {
 };
 
 Categoria.findById = (categoria_id, result) => {
-    const sql = `SELECT categoria_id, categoria_nombre FROM CATEGORIA WHERE categoria_id = ?`;
+    const sql = `SELECT categoria_id, categoria_nombre FROM categoria WHERE categoria_id = ?`;
     db.query(sql,[categoria_id], (err, categoria) => {
         if(err){
             console.log('Error al consultar :', err);

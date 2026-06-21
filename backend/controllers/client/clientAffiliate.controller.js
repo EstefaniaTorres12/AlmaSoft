@@ -72,9 +72,9 @@ async function obtenerPanelTitular(usuarioId) {
         cp.plan_id,
         p.plan_nombre,
         p.plan_descripcion
-      FROM CONTRATO c
-      INNER JOIN CONTRATO_PLAN cp ON cp.contrato_id = c.contrato_id
-      INNER JOIN PLAN_FUNEBRE p ON p.plan_id = cp.plan_id
+      FROM contrato c
+      INNER JOIN contrato_plan cp ON cp.contrato_id = c.contrato_id
+      INNER JOIN plan_funebre p ON p.plan_id = cp.plan_id
       WHERE c.cliente_id = ? AND c.contrato_estado = 1
       ORDER BY c.contrato_id DESC
       LIMIT 1
@@ -95,8 +95,8 @@ async function obtenerPanelTitular(usuarioId) {
         u.usuario_segundo_nombre,
         u.usuario_primer_apellido,
         u.usuario_segundo_apellido
-      FROM AFILIADO a
-      INNER JOIN USUARIO u ON u.usuario_id = a.afiliado_id
+      FROM afiliado a
+      INNER JOIN usuario u ON u.usuario_id = a.afiliado_id
       WHERE a.contrato_id = ?
       ORDER BY u.usuario_primer_nombre, u.usuario_primer_apellido
     `,
@@ -135,11 +135,11 @@ async function obtenerPanelAfiliado(usuarioId) {
         p.plan_descripcion,
         tu.usuario_primer_nombre AS titular_primer_nombre,
         tu.usuario_primer_apellido AS titular_primer_apellido
-      FROM AFILIADO a
-      INNER JOIN CONTRATO c ON c.contrato_id = a.contrato_id
-      INNER JOIN CONTRATO_PLAN cp ON cp.contrato_id = c.contrato_id
-      INNER JOIN PLAN_FUNEBRE p ON p.plan_id = cp.plan_id
-      INNER JOIN USUARIO tu ON tu.usuario_id = c.cliente_id
+      FROM afiliado a
+      INNER JOIN contrato c ON c.contrato_id = a.contrato_id
+      INNER JOIN contrato_plan cp ON cp.contrato_id = c.contrato_id
+      INNER JOIN plan_funebre p ON p.plan_id = cp.plan_id
+      INNER JOIN usuario tu ON tu.usuario_id = c.cliente_id
       WHERE a.afiliado_id = ? AND c.contrato_estado = 1
       ORDER BY a.contrato_id DESC
       LIMIT 1
@@ -229,9 +229,9 @@ exports.searchAffiliateCandidates = async (req, res) => {
           u.usuario_segundo_apellido,
           u.usuario_documento,
           u.usuario_correo
-        FROM USUARIO u
-        INNER JOIN ROL_USUARIO ru ON ru.usuario_id = u.usuario_id AND ru.estado_cred = 1
-        INNER JOIN ROL r ON r.rol_id = ru.rol_id
+        FROM usuario u
+        INNER JOIN rol_usuario ru ON ru.usuario_id = u.usuario_id AND ru.estado_cred = 1
+        INNER JOIN rol r ON r.rol_id = ru.rol_id
         WHERE u.usuario_id <> ?
           AND LOWER(r.rol_nombre) NOT IN ('administrador', 'asesor')
           AND CAST(u.usuario_documento AS CHAR) LIKE ?
@@ -296,7 +296,7 @@ exports.requestAffiliate = async (req, res) => {
 
     const existingAffiliate = await ejecutarConsulta(
       db,
-      `SELECT afiliado_id FROM AFILIADO WHERE afiliado_id = ? AND contrato_id = ? LIMIT 1`,
+      `SELECT afiliado_id FROM afiliado WHERE afiliado_id = ? AND contrato_id = ? LIMIT 1`,
       [usuario_postulado_id, titularPanel.contrato_id]
     );
 
@@ -309,7 +309,7 @@ exports.requestAffiliate = async (req, res) => {
 
     const candidateRows = await ejecutarConsulta(
       db,
-      `SELECT usuario_id FROM USUARIO WHERE usuario_id = ? LIMIT 1`,
+      `SELECT usuario_id FROM usuario WHERE usuario_id = ? LIMIT 1`,
       [usuario_postulado_id]
     );
 
@@ -322,7 +322,7 @@ exports.requestAffiliate = async (req, res) => {
 
     await ejecutarConsulta(
       db,
-      `INSERT INTO AFILIADO (afiliado_id, contrato_id) VALUES (?, ?)`,
+      `INSERT INTO afiliado (afiliado_id, contrato_id) VALUES (?, ?)`,
       [usuario_postulado_id, titularPanel.contrato_id]
     );
 
@@ -355,7 +355,7 @@ exports.removeAffiliate = async (req, res) => {
 
     const existing = await ejecutarConsulta(
       db,
-      `SELECT afiliado_id FROM AFILIADO WHERE afiliado_id = ? AND contrato_id = ? LIMIT 1`,
+      `SELECT afiliado_id FROM afiliado WHERE afiliado_id = ? AND contrato_id = ? LIMIT 1`,
       [afiliadoId, titularPanel.contrato_id]
     );
 
@@ -365,7 +365,7 @@ exports.removeAffiliate = async (req, res) => {
 
     await ejecutarConsulta(
       db,
-      `DELETE FROM AFILIADO WHERE afiliado_id = ? AND contrato_id = ?`,
+      `DELETE FROM afiliado WHERE afiliado_id = ? AND contrato_id = ?`,
       [afiliadoId, titularPanel.contrato_id]
     );
 

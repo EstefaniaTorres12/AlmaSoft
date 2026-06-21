@@ -13,7 +13,7 @@ Usuario.create = async (user, result) => {
         await beginTx(conn);
 
         const resUsuario = await queryConn(conn, `
-            INSERT INTO USUARIO (
+            INSERT INTO usuario (
                 usuario_primer_nombre,
                 usuario_segundo_nombre,
                 usuario_primer_apellido,
@@ -37,12 +37,12 @@ Usuario.create = async (user, result) => {
         const insertId = resUsuario.insertId;
 
         await queryConn(conn,
-            `INSERT INTO ROL_USUARIO (rol_id, usuario_id, estado_cred) VALUES (?,?,?)`,
+            `INSERT INTO rol_usuario (rol_id, usuario_id, estado_cred) VALUES (?,?,?)`,
             [user.rol_id, insertId, true]
         );
 
         await queryConn(conn,
-            `INSERT INTO TELEFONO (telefono, usuario_id) VALUES (?,?)`,
+            `INSERT INTO telefono (telefono, usuario_id) VALUES (?,?)`,
             [user.usuario_telefono, insertId]
         );
 
@@ -54,7 +54,7 @@ Usuario.create = async (user, result) => {
             }
             const años = dayjs().diff(dayjs(user.cliente_fecha_nacimiento), 'year');
             await queryConn(conn,
-                `INSERT INTO CLIENTE (cliente_id, cliente_fecha_nacimiento, cliente_edad) VALUES (?,?,?)`,
+                `INSERT INTO cliente (cliente_id, cliente_fecha_nacimiento, cliente_edad) VALUES (?,?,?)`,
                 [insertId, user.cliente_fecha_nacimiento, años]
             );
         }
@@ -87,10 +87,10 @@ Usuario.findAll = (result) => {
             us.usuario_correo,
             us.usuario_direccion,
             GROUP_CONCAT(t.telefono) AS telefonos
-        FROM USUARIO us
-        INNER JOIN ROL_USUARIO ru ON us.usuario_id = ru.usuario_id AND ru.estado_cred = 1
-        INNER JOIN ROL r ON ru.rol_id = r.rol_id
-        LEFT JOIN TELEFONO t ON us.usuario_id = t.usuario_id
+        FROM usuario us
+        INNER JOIN rol_usuario ru ON us.usuario_id = ru.usuario_id AND ru.estado_cred = 1
+        INNER JOIN rol r ON ru.rol_id = r.rol_id
+        LEFT JOIN telefono t ON us.usuario_id = t.usuario_id
         GROUP BY us.usuario_id, r.rol_id, r.rol_nombre
         ORDER BY us.usuario_id DESC
     `;
@@ -115,7 +115,7 @@ Usuario.findById = (id, result) => {
                         usuario_documento,
                         usuario_correo,
                         usuario_direccion
-                 FROM USUARIO
+                 FROM usuario
                  WHERE usuario_id = ?`;
     pool.query(sql, [id], (err, user) => {
         if (err) {
@@ -137,7 +137,7 @@ Usuario.findByDocument = (documento, result) => {
                         usuario_documento,
                         usuario_correo,
                         usuario_direccion
-                 FROM USUARIO
+                 FROM usuario
                  WHERE usuario_documento = ?`;
     pool.query(sql, [documento], (err, doc) => {
         if (err) {
@@ -209,7 +209,7 @@ Usuario.update = async (id, usuario, result) => {
 
 // Eliminar usuario
 Usuario.delete = (id, result) => {
-    const sql = `DELETE FROM USUARIO WHERE usuario_id = ?`;
+    const sql = `DELETE FROM usuario WHERE usuario_id = ?`;
     pool.query(sql, [id], (err, res) => {
         if (err) {
             console.log('Error al eliminar usuario: ', err);
@@ -226,25 +226,25 @@ Usuario.delete = (id, result) => {
 Usuario.findByEmailWithRole = (email, result) => {
     const sql = `
         SELECT
-            USUARIO.usuario_id,
-            USUARIO.usuario_primer_nombre,
-            USUARIO.usuario_segundo_nombre,
-            USUARIO.usuario_primer_apellido,
-            USUARIO.usuario_segundo_apellido,
-            USUARIO.usuario_documento,
-            USUARIO.usuario_correo,
-            USUARIO.usuario_direccion,
-            USUARIO.usuario_credencial,
-            ROL.rol_id,
-            ROL.rol_nombre
-        FROM USUARIO
-        INNER JOIN ROL_USUARIO
-            ON USUARIO.usuario_id = ROL_USUARIO.usuario_id
-        INNER JOIN ROL
-            ON ROL_USUARIO.rol_id = ROL.rol_id
-        WHERE USUARIO.usuario_correo = ?
-          AND ROL_USUARIO.estado_cred = 1
-        ORDER BY ROL_USUARIO.cred_id DESC
+            usuario.usuario_id,
+            usuario.usuario_primer_nombre,
+            usuario.usuario_segundo_nombre,
+            usuario.usuario_primer_apellido,
+            usuario.usuario_segundo_apellido,
+            usuario.usuario_documento,
+            usuario.usuario_correo,
+            usuario.usuario_direccion,
+            usuario.usuario_credencial,
+            rol.rol_id,
+            rol.rol_nombre
+        FROM usuario
+        INNER JOIN rol_usuario
+            ON usuario.usuario_id = rol_usuario.usuario_id
+        INNER JOIN rol
+            ON rol_usuario.rol_id = rol.rol_id
+        WHERE usuario.usuario_correo = ?
+          AND rol_usuario.estado_cred = 1
+        ORDER BY rol_usuario.cred_id DESC
         LIMIT 1
     `;
 

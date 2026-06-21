@@ -79,7 +79,7 @@ async function ensureOperationsSchema() {
   await ejecutarConsulta(
     db,
     `
-      CREATE TABLE IF NOT EXISTS NOTIFICACION_USUARIO (
+      CREATE TABLE IF NOT EXISTS notificacion_usuario (
         notificacion_id INT NOT NULL AUTO_INCREMENT,
         usuario_id INT NOT NULL,
         notificacion_titulo VARCHAR(120) NOT NULL,
@@ -91,7 +91,7 @@ async function ensureOperationsSchema() {
         PRIMARY KEY (notificacion_id),
         CONSTRAINT fk_notificacion_usuario_ops
           FOREIGN KEY (usuario_id)
-          REFERENCES USUARIO(usuario_id)
+          REFERENCES usuario(usuario_id)
           ON DELETE CASCADE
           ON UPDATE CASCADE
       ) ENGINE=InnoDB
@@ -103,7 +103,7 @@ async function ensureOperationsSchema() {
   await ejecutarConsulta(
     db,
     `
-      CREATE TABLE IF NOT EXISTS COMPRA_TIENDA (
+      CREATE TABLE IF NOT EXISTS compra_tienda (
         compra_id INT NOT NULL AUTO_INCREMENT,
         contrato_id INT NOT NULL,
         usuario_id INT NOT NULL,
@@ -120,17 +120,17 @@ async function ensureOperationsSchema() {
         PRIMARY KEY (compra_id),
         CONSTRAINT fk_compra_contrato
           FOREIGN KEY (contrato_id)
-          REFERENCES CONTRATO(contrato_id)
+          REFERENCES contrato(contrato_id)
           ON DELETE CASCADE
           ON UPDATE CASCADE,
         CONSTRAINT fk_compra_usuario
           FOREIGN KEY (usuario_id)
-          REFERENCES USUARIO(usuario_id)
+          REFERENCES usuario(usuario_id)
           ON DELETE CASCADE
           ON UPDATE CASCADE,
         CONSTRAINT fk_compra_pago
           FOREIGN KEY (pago_id)
-          REFERENCES PAGO(pago_id)
+          REFERENCES pago(pago_id)
           ON DELETE CASCADE
           ON UPDATE CASCADE
       ) ENGINE=InnoDB
@@ -140,7 +140,7 @@ async function ensureOperationsSchema() {
   await ejecutarConsulta(
     db,
     `
-      CREATE TABLE IF NOT EXISTS COMPRA_TIENDA_DETALLE (
+      CREATE TABLE IF NOT EXISTS compra_tienda_detalle (
         detalle_id INT NOT NULL AUTO_INCREMENT,
         compra_id INT NOT NULL,
         producto_id INT NOT NULL,
@@ -150,12 +150,12 @@ async function ensureOperationsSchema() {
         PRIMARY KEY (detalle_id),
         CONSTRAINT fk_compra_detalle_compra
           FOREIGN KEY (compra_id)
-          REFERENCES COMPRA_TIENDA(compra_id)
+          REFERENCES compra_tienda(compra_id)
           ON DELETE CASCADE
           ON UPDATE CASCADE,
         CONSTRAINT fk_compra_detalle_producto
           FOREIGN KEY (producto_id)
-          REFERENCES PRODUCTO(producto_id)
+          REFERENCES producto(producto_id)
           ON DELETE CASCADE
           ON UPDATE CASCADE
       ) ENGINE=InnoDB
@@ -165,7 +165,7 @@ async function ensureOperationsSchema() {
   await ejecutarConsulta(
     db,
     `
-      CREATE TABLE IF NOT EXISTS SOLICITUD_SERVICIO_ADICIONAL (
+      CREATE TABLE IF NOT EXISTS solicitud_servicio_adicional (
         solicitud_id INT NOT NULL AUTO_INCREMENT,
         contrato_id INT NOT NULL,
         usuario_id INT NOT NULL,
@@ -183,22 +183,22 @@ async function ensureOperationsSchema() {
         PRIMARY KEY (solicitud_id),
         CONSTRAINT fk_servicio_solicitud_contrato
           FOREIGN KEY (contrato_id)
-          REFERENCES CONTRATO(contrato_id)
+          REFERENCES contrato(contrato_id)
           ON DELETE CASCADE
           ON UPDATE CASCADE,
         CONSTRAINT fk_servicio_solicitud_usuario
           FOREIGN KEY (usuario_id)
-          REFERENCES USUARIO(usuario_id)
+          REFERENCES usuario(usuario_id)
           ON DELETE CASCADE
           ON UPDATE CASCADE,
         CONSTRAINT fk_servicio_solicitud_servicio
           FOREIGN KEY (servicio_id)
-          REFERENCES SERVICIO(servicio_id)
+          REFERENCES servicio(servicio_id)
           ON DELETE CASCADE
           ON UPDATE CASCADE,
         CONSTRAINT fk_servicio_solicitud_pago
           FOREIGN KEY (pago_id)
-          REFERENCES PAGO(pago_id)
+          REFERENCES pago(pago_id)
           ON DELETE CASCADE
           ON UPDATE CASCADE
       ) ENGINE=InnoDB
@@ -217,9 +217,9 @@ async function obtenerContratoActivo(usuarioId) {
         c.contrato_valor,
         cp.plan_id,
         p.plan_nombre
-      FROM CONTRATO c
-      INNER JOIN CONTRATO_PLAN cp ON cp.contrato_id = c.contrato_id
-      INNER JOIN PLAN_FUNEBRE p ON p.plan_id = cp.plan_id
+      FROM contrato c
+      INNER JOIN contrato_plan cp ON cp.contrato_id = c.contrato_id
+      INNER JOIN plan_funebre p ON p.plan_id = cp.plan_id
       WHERE c.cliente_id = ? AND c.contrato_estado = 1
       ORDER BY c.contrato_id DESC
       LIMIT 1
@@ -231,7 +231,7 @@ async function obtenerContratoActivo(usuarioId) {
 }
 
 async function obtenerColumnasProducto() {
-  const columns = await ejecutarConsulta(db, "SHOW COLUMNS FROM PRODUCTO");
+  const columns = await ejecutarConsulta(db, "SHOW COLUMNS FROM producto");
   return new Set(columns.map((column) => column.Field));
 }
 
@@ -280,8 +280,8 @@ async function registrarNotificacionParaRevision(titulo, mensaje, referenciaId) 
     db,
     `
       SELECT DISTINCT ru.usuario_id
-      FROM ROL_USUARIO ru
-      INNER JOIN ROL r ON r.rol_id = ru.rol_id
+      FROM rol_usuario ru
+      INNER JOIN rol r ON r.rol_id = ru.rol_id
       WHERE ru.estado_cred = 1
         AND LOWER(r.rol_nombre) IN ('administrador', 'asesor')
     `
@@ -291,7 +291,7 @@ async function registrarNotificacionParaRevision(titulo, mensaje, referenciaId) 
     await ejecutarConsulta(
       db,
       `
-        INSERT INTO NOTIFICACION_USUARIO (
+        INSERT INTO notificacion_usuario (
           usuario_id,
           notificacion_titulo,
           notificacion_mensaje,
@@ -353,9 +353,9 @@ exports.getStoreProducts = async (req, res) => {
           ${hasImage ? "p.producto_imagen," : "NULL AS producto_imagen,"}
           sc.subcategoria_nombre,
           c.categoria_nombre
-        FROM PRODUCTO p
-        INNER JOIN SUBCATEGORIA sc ON sc.subcategoria_id = p.subcategoria_id
-        INNER JOIN CATEGORIA c ON c.categoria_id = sc.categoria_id
+        FROM producto p
+        INNER JOIN subcategoria sc ON sc.subcategoria_id = p.subcategoria_id
+        INNER JOIN categoria c ON c.categoria_id = sc.categoria_id
         WHERE p.producto_estado = 1 AND p.producto_stock > 0
         ORDER BY c.categoria_nombre, p.producto_nombre
       `
@@ -392,10 +392,10 @@ exports.getCart = async (req, res) => {
           ${hasImage ? "p.producto_imagen," : "NULL AS producto_imagen,"}
           sc.subcategoria_nombre,
           ca.categoria_nombre
-        FROM CARRITO c
-        INNER JOIN PRODUCTO p ON p.producto_id = c.producto_id
-        INNER JOIN SUBCATEGORIA sc ON sc.subcategoria_id = p.subcategoria_id
-        INNER JOIN CATEGORIA ca ON ca.categoria_id = sc.categoria_id
+        FROM carrito c
+        INNER JOIN producto p ON p.producto_id = c.producto_id
+        INNER JOIN subcategoria sc ON sc.subcategoria_id = p.subcategoria_id
+        INNER JOIN categoria ca ON ca.categoria_id = sc.categoria_id
         WHERE c.usuario_id = ?
         ORDER BY c.fecha DESC
       `,
@@ -428,7 +428,7 @@ exports.addToCart = async (req, res) => {
       db,
       `
         SELECT producto_id, producto_nombre, producto_precio, producto_stock, producto_estado
-        FROM PRODUCTO
+        FROM producto
         WHERE producto_id = ?
         LIMIT 1
       `,
@@ -448,7 +448,7 @@ exports.addToCart = async (req, res) => {
       db,
       `
         SELECT carrito_id, cantidad
-        FROM CARRITO
+        FROM carrito
         WHERE usuario_id = ? AND producto_id = ?
         LIMIT 1
       `,
@@ -464,7 +464,7 @@ exports.addToCart = async (req, res) => {
       await ejecutarConsulta(
         db,
         `
-          UPDATE CARRITO
+          UPDATE carrito
           SET cantidad = ?, precio_unitario = ?, fecha = NOW()
           WHERE carrito_id = ?
         `,
@@ -474,7 +474,7 @@ exports.addToCart = async (req, res) => {
       await ejecutarConsulta(
         db,
         `
-          INSERT INTO CARRITO (usuario_id, producto_id, cantidad, precio_unitario, fecha)
+          INSERT INTO carrito (usuario_id, producto_id, cantidad, precio_unitario, fecha)
           VALUES (?, ?, ?, ?, NOW())
         `,
         [usuarioId, producto_id, requestedQuantity, product.producto_precio]
@@ -506,8 +506,8 @@ exports.updateCartItem = async (req, res) => {
       db,
       `
         SELECT c.carrito_id, c.producto_id, p.producto_stock, p.producto_precio
-        FROM CARRITO c
-        INNER JOIN PRODUCTO p ON p.producto_id = c.producto_id
+        FROM carrito c
+        INNER JOIN producto p ON p.producto_id = c.producto_id
         WHERE c.carrito_id = ? AND c.usuario_id = ?
         LIMIT 1
       `,
@@ -525,7 +525,7 @@ exports.updateCartItem = async (req, res) => {
     await ejecutarConsulta(
       db,
       `
-        UPDATE CARRITO
+        UPDATE carrito
         SET cantidad = ?, precio_unitario = ?, fecha = NOW()
         WHERE carrito_id = ?
       `,
@@ -550,7 +550,7 @@ exports.removeCartItem = async (req, res) => {
     await ejecutarConsulta(
       db,
       `
-        DELETE FROM CARRITO
+        DELETE FROM carrito
         WHERE carrito_id = ? AND usuario_id = ?
       `,
       [carritoId, usuarioId]
@@ -592,8 +592,8 @@ exports.checkoutCart = async (req, res) => {
           c.precio_unitario,
           p.producto_nombre,
           p.producto_stock
-        FROM CARRITO c
-        INNER JOIN PRODUCTO p ON p.producto_id = c.producto_id
+        FROM carrito c
+        INNER JOIN producto p ON p.producto_id = c.producto_id
         WHERE c.usuario_id = ?
       `,
       [usuarioId]
@@ -621,7 +621,7 @@ exports.checkoutCart = async (req, res) => {
       const pagoResult = await ejecutarConsulta(
         db,
         `
-          INSERT INTO PAGO (pago_metodo, pago_fecha, contrato_id)
+          INSERT INTO pago (pago_metodo, pago_fecha, contrato_id)
           VALUES (?, CURDATE(), ?)
         `,
         [paymentCode, contrato.contrato_id]
@@ -630,7 +630,7 @@ exports.checkoutCart = async (req, res) => {
       const compraResult = await ejecutarConsulta(
         db,
         `
-          INSERT INTO COMPRA_TIENDA (
+          INSERT INTO compra_tienda (
             contrato_id,
             usuario_id,
             pago_id,
@@ -666,7 +666,7 @@ exports.checkoutCart = async (req, res) => {
         await ejecutarConsulta(
           db,
           `
-            INSERT INTO COMPRA_TIENDA_DETALLE (
+            INSERT INTO compra_tienda_detalle (
               compra_id,
               producto_id,
               cantidad,
@@ -681,7 +681,7 @@ exports.checkoutCart = async (req, res) => {
         await ejecutarConsulta(
           db,
           `
-            UPDATE PRODUCTO
+            UPDATE producto
             SET producto_stock = producto_stock - ?
             WHERE producto_id = ?
           `,
@@ -692,7 +692,7 @@ exports.checkoutCart = async (req, res) => {
           db,
           `
             SELECT 1
-            FROM CONTRATO_PRODUCTO
+            FROM contrato_producto
             WHERE contrato_id = ? AND producto_id = ?
             LIMIT 1
           `,
@@ -703,7 +703,7 @@ exports.checkoutCart = async (req, res) => {
           await ejecutarConsulta(
             db,
             `
-              INSERT INTO CONTRATO_PRODUCTO (contrato_id, producto_id)
+              INSERT INTO contrato_producto (contrato_id, producto_id)
               VALUES (?, ?)
             `,
             [contrato.contrato_id, item.producto_id]
@@ -711,7 +711,7 @@ exports.checkoutCart = async (req, res) => {
         }
       }
 
-      await ejecutarConsulta(db, "DELETE FROM CARRITO WHERE usuario_id = ?", [usuarioId]);
+      await ejecutarConsulta(db, "DELETE FROM carrito WHERE usuario_id = ?", [usuarioId]);
       await confirmarTransaccion(db);
 
       return res.status(201).json({
@@ -739,7 +739,7 @@ exports.getServiceCatalog = async (req, res) => {
       db,
       `
         SELECT servicio_id, servicio_nombre, servicio_descripcion, servicio_precio
-        FROM SERVICIO
+        FROM servicio
         ORDER BY servicio_nombre
       `
     );
@@ -779,7 +779,7 @@ exports.requestAdditionalService = async (req, res) => {
       db,
       `
         SELECT servicio_id, servicio_nombre, servicio_descripcion, servicio_precio
-        FROM SERVICIO
+        FROM servicio
         WHERE servicio_id = ?
         LIMIT 1
       `,
@@ -799,7 +799,7 @@ exports.requestAdditionalService = async (req, res) => {
       const pagoResult = await ejecutarConsulta(
         db,
         `
-          INSERT INTO PAGO (pago_metodo, pago_fecha, contrato_id)
+          INSERT INTO pago (pago_metodo, pago_fecha, contrato_id)
           VALUES (?, CURDATE(), ?)
         `,
         [paymentCode, contrato.contrato_id]
@@ -808,7 +808,7 @@ exports.requestAdditionalService = async (req, res) => {
       const requestResult = await ejecutarConsulta(
         db,
         `
-          INSERT INTO SOLICITUD_SERVICIO_ADICIONAL (
+          INSERT INTO solicitud_servicio_adicional (
             contrato_id,
             usuario_id,
             servicio_id,
@@ -883,9 +883,9 @@ exports.getGeneralPaymentHistory = async (req, res) => {
           p.pago_id,
           p.pago_metodo,
           p.pago_fecha
-        FROM PAGO p
-        LEFT JOIN COMPRA_TIENDA ct ON ct.pago_id = p.pago_id
-        LEFT JOIN SOLICITUD_SERVICIO_ADICIONAL ss ON ss.pago_id = p.pago_id
+        FROM pago p
+        LEFT JOIN compra_tienda ct ON ct.pago_id = p.pago_id
+        LEFT JOIN solicitud_servicio_adicional ss ON ss.pago_id = p.pago_id
         WHERE p.contrato_id = ?
           AND ct.pago_id IS NULL
           AND ss.pago_id IS NULL
@@ -908,8 +908,8 @@ exports.getGeneralPaymentHistory = async (req, res) => {
           ct.tarjeta_tipo,
           ct.tarjeta_ultimos4,
           ct.compra_estado
-        FROM COMPRA_TIENDA ct
-        INNER JOIN PAGO p ON p.pago_id = ct.pago_id
+        FROM compra_tienda ct
+        INNER JOIN pago p ON p.pago_id = ct.pago_id
         WHERE ct.contrato_id = ?
         ORDER BY ct.fecha_compra DESC
       `,
@@ -931,9 +931,9 @@ exports.getGeneralPaymentHistory = async (req, res) => {
           ssa.tarjeta_ultimos4,
           s.servicio_nombre,
           s.servicio_precio
-        FROM SOLICITUD_SERVICIO_ADICIONAL ssa
-        INNER JOIN PAGO p ON p.pago_id = ssa.pago_id
-        INNER JOIN SERVICIO s ON s.servicio_id = ssa.servicio_id
+        FROM solicitud_servicio_adicional ssa
+        INNER JOIN pago p ON p.pago_id = ssa.pago_id
+        INNER JOIN servicio s ON s.servicio_id = ssa.servicio_id
         WHERE ssa.contrato_id = ?
         ORDER BY ssa.fecha_solicitud DESC
       `,

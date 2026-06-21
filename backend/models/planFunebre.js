@@ -3,7 +3,7 @@ const PlanFunebre = {};
 
 PlanFunebre.create = (plan, result) => {
     const sql = `
-        INSERT INTO PLAN_FUNEBRE(
+        INSERT INTO plan_funebre(
             plan_nombre,
             plan_descripcion,
             plan_precio,
@@ -27,7 +27,7 @@ PlanFunebre.create = (plan, result) => {
 };
 
 PlanFunebre.findAll = (result) => {
-    const sql = `SELECT * FROM PLAN_FUNEBRE`;
+    const sql = `SELECT * FROM plan_funebre`;
 
     db.query(sql, (err, data) => {
         if (err) return result(err, null);
@@ -36,7 +36,7 @@ PlanFunebre.findAll = (result) => {
 };
 
 PlanFunebre.findById = (id, result) => {
-    const sql = `SELECT * FROM PLAN_FUNEBRE WHERE plan_id = ?`;
+    const sql = `SELECT * FROM plan_funebre WHERE plan_id = ?`;
 
     db.query(sql, [id], (err, data) => {
         if (err) return result(err, null);
@@ -46,7 +46,7 @@ PlanFunebre.findById = (id, result) => {
 
 PlanFunebre.update = (plan, result) => {
     const sql = `
-        UPDATE PLAN_FUNEBRE SET
+        UPDATE plan_funebre SET
         plan_nombre = ?,
         plan_descripcion = ?,
         plan_precio = ?,
@@ -67,7 +67,7 @@ PlanFunebre.update = (plan, result) => {
 };
 
 PlanFunebre.delete = (id, result) => {
-    const sql = `DELETE FROM PLAN_FUNEBRE WHERE plan_id = ?`;
+    const sql = `DELETE FROM plan_funebre WHERE plan_id = ?`;
 
     db.query(sql, [id], (err, res) => {
         if (err) return result(err, null);

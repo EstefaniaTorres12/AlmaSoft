@@ -6,14 +6,14 @@ exports.getProductos = (req, res) => {
     SELECT p.producto_id, p.producto_nombre, p.producto_descripcion,
            p.producto_precio, p.producto_stock,
            sc.subcategoria_nombre, c.categoria_nombre
-    FROM PRODUCTO p
-    LEFT JOIN SUBCATEGORIA sc ON sc.subcategoria_id = p.subcategoria_id
-    LEFT JOIN CATEGORIA    c  ON c.categoria_id     = sc.categoria_id
+    FROM producto p
+    LEFT JOIN subcategoria sc ON sc.subcategoria_id = p.subcategoria_id
+    LEFT JOIN categoria    c  ON c.categoria_id     = sc.categoria_id
     WHERE p.producto_estado = 1
       AND p.producto_id IN (
         SELECT MIN(p2.producto_id)
-        FROM PRODUCTO p2
-        LEFT JOIN SUBCATEGORIA sc2 ON sc2.subcategoria_id = p2.subcategoria_id
+        FROM producto p2
+        LEFT JOIN subcategoria sc2 ON sc2.subcategoria_id = p2.subcategoria_id
         WHERE p2.producto_estado = 1
         GROUP BY sc2.categoria_id
       )
@@ -31,8 +31,8 @@ exports.getCarrito = (req, res) => {
   const sql = `
     SELECT ca.carrito_id, ca.producto_id, ca.cantidad,
            p.producto_nombre, p.producto_precio, p.producto_imagen
-    FROM CARRITO ca
-    INNER JOIN PRODUCTO p ON p.producto_id = ca.producto_id
+    FROM carrito ca
+    INNER JOIN producto p ON p.producto_id = ca.producto_id
     WHERE ca.usuario_id = ?
   `;
   db.query(sql, [usuario_id], (err, rows) => {
@@ -50,13 +50,13 @@ exports.addCarrito = (req, res) => {
     return res.status(400).json({ success: false, message: "Falta producto_id" });
   }
 
-  const checkSql = `SELECT carrito_id, cantidad FROM CARRITO WHERE usuario_id = ? AND producto_id = ?`;
+  const checkSql = `SELECT carrito_id, cantidad FROM carrito WHERE usuario_id = ? AND producto_id = ?`;
   db.query(checkSql, [usuario_id, producto_id], (err, rows) => {
     if (err) return res.status(500).json({ success: false, message: "Error al consultar el carrito" });
 
     if (rows.length > 0) {
       db.query(
-        `UPDATE CARRITO SET cantidad = cantidad + ? WHERE carrito_id = ?`,
+        `UPDATE carrito SET cantidad = cantidad + ? WHERE carrito_id = ?`,
         [cantidad, rows[0].carrito_id],
         (err2) => {
           if (err2) return res.status(500).json({ success: false, message: "Error al actualizar el carrito" });
@@ -65,7 +65,7 @@ exports.addCarrito = (req, res) => {
       );
     } else {
       db.query(
-        `INSERT INTO CARRITO (usuario_id, producto_id, cantidad) VALUES (?, ?, ?)`,
+        `INSERT INTO carrito (usuario_id, producto_id, cantidad) VALUES (?, ?, ?)`,
         [usuario_id, producto_id, cantidad],
         (err2) => {
           if (err2) return res.status(500).json({ success: false, message: "Error al agregar al carrito" });
@@ -82,7 +82,7 @@ exports.removeCarrito = (req, res) => {
   const { id } = req.params;
 
   db.query(
-    `DELETE FROM CARRITO WHERE carrito_id = ? AND usuario_id = ?`,
+    `DELETE FROM carrito WHERE carrito_id = ? AND usuario_id = ?`,
     [id, usuario_id],
     (err) => {
       if (err) return res.status(500).json({ success: false, message: "Error al eliminar del carrito" });
@@ -101,7 +101,7 @@ exports.checkoutCarrito = (req, res) => {
   }
 
   db.query(
-    `SELECT contrato_id FROM CONTRATO WHERE cliente_id = ? AND contrato_estado = 1 ORDER BY contrato_id DESC LIMIT 1`,
+    `SELECT contrato_id FROM contrato WHERE cliente_id = ? AND contrato_estado = 1 ORDER BY contrato_id DESC LIMIT 1`,
     [usuario_id],
     (err, contratos) => {
       if (err) return res.status(500).json({ success: false, message: "Error al consultar contrato" });
@@ -116,8 +116,8 @@ exports.checkoutCarrito = (req, res) => {
 
       db.query(
         `SELECT ca.carrito_id, ca.cantidad, p.producto_precio, p.producto_nombre
-         FROM CARRITO ca
-         INNER JOIN PRODUCTO p ON p.producto_id = ca.producto_id
+         FROM carrito ca
+         INNER JOIN producto p ON p.producto_id = ca.producto_id
          WHERE ca.usuario_id = ?`,
         [usuario_id],
         (err2, items) => {
@@ -132,12 +132,12 @@ exports.checkoutCarrito = (req, res) => {
           const fecha = new Date().toISOString().slice(0, 10);
 
           db.query(
-            `INSERT INTO PAGO (pago_metodo, pago_fecha, contrato_id) VALUES (?, ?, ?)`,
+            `INSERT INTO pago (pago_metodo, pago_fecha, contrato_id) VALUES (?, ?, ?)`,
             [pago_metodo, fecha, contrato_id],
             (err3) => {
               if (err3) return res.status(500).json({ success: false, message: "Error al registrar el pago" });
 
-              db.query(`DELETE FROM CARRITO WHERE usuario_id = ?`, [usuario_id], (err4) => {
+              db.query(`DELETE FROM carrito WHERE usuario_id = ?`, [usuario_id], (err4) => {
                 if (err4) return res.status(500).json({ success: false, message: "Error al limpiar el carrito" });
                 res.json({ success: true, message: "Compra registrada correctamente.", total });
               });
@@ -152,7 +152,7 @@ exports.checkoutCarrito = (req, res) => {
 // ─── SERVICIOS: Listar ────────────────────────────────────────────────────────
 exports.getServicios = (req, res) => {
   db.query(
-    `SELECT servicio_id, servicio_nombre, servicio_descripcion, servicio_precio FROM SERVICIO ORDER BY servicio_nombre`,
+    `SELECT servicio_id, servicio_nombre, servicio_descripcion, servicio_precio FROM servicio ORDER BY servicio_nombre`,
     (err, rows) => {
       if (err) return res.status(500).json({ success: false, message: "Error al consultar servicios" });
       res.json({ success: true, data: rows });
@@ -170,7 +170,7 @@ exports.solicitarServicio = (req, res) => {
   }
 
   db.query(
-    `SELECT contrato_id FROM CONTRATO WHERE cliente_id = ? AND contrato_estado = 1 ORDER BY contrato_id DESC LIMIT 1`,
+    `SELECT contrato_id FROM contrato WHERE cliente_id = ? AND contrato_estado = 1 ORDER BY contrato_id DESC LIMIT 1`,
     [usuario_id],
     (err, contratos) => {
       if (err) return res.status(500).json({ success: false, message: "Error al consultar contrato" });
@@ -184,7 +184,7 @@ exports.solicitarServicio = (req, res) => {
       const contrato_id = contratos[0].contrato_id;
 
       db.query(
-        `SELECT servicio_nombre, servicio_precio FROM SERVICIO WHERE servicio_id = ?`,
+        `SELECT servicio_nombre, servicio_precio FROM servicio WHERE servicio_id = ?`,
         [servicio_id],
         (err2, servicios) => {
           if (err2) return res.status(500).json({ success: false, message: "Error al consultar el servicio" });
@@ -197,7 +197,7 @@ exports.solicitarServicio = (req, res) => {
           const fecha = new Date().toISOString().slice(0, 10);
 
           db.query(
-            `INSERT INTO PAGO (pago_metodo, pago_fecha, contrato_id) VALUES (?, ?, ?)`,
+            `INSERT INTO pago (pago_metodo, pago_fecha, contrato_id) VALUES (?, ?, ?)`,
             [pago_metodo, fecha, contrato_id],
             (err3) => {
               if (err3) return res.status(500).json({ success: false, message: "Error al registrar la solicitud" });
@@ -221,10 +221,10 @@ exports.getHistorialPagos = (req, res) => {
       c.contrato_id,
       c.contrato_valor,
       pf.plan_nombre
-    FROM PAGO p
-    INNER JOIN CONTRATO      c  ON c.contrato_id  = p.contrato_id
-    LEFT  JOIN CONTRATO_PLAN cp ON cp.contrato_id = c.contrato_id
-    LEFT  JOIN PLAN_FUNEBRE  pf ON pf.plan_id     = cp.plan_id
+    FROM pago p
+    INNER JOIN contrato      c  ON c.contrato_id  = p.contrato_id
+    LEFT  JOIN contrato_plan cp ON cp.contrato_id = c.contrato_id
+    LEFT  JOIN plan_funebre  pf ON pf.plan_id     = cp.plan_id
     WHERE c.cliente_id = ?
     ORDER BY p.pago_fecha DESC, p.pago_id DESC
   `;
