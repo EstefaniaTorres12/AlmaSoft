@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const EditarCategoria = () => {
 
@@ -23,7 +24,7 @@ const EditarCategoria = () => {
         const fetchCategoria = async () => {
             try {
                 const response = await authFetch(
-                    `http://localhost:3001/api/categorias/${id}`
+                    `${API_URL}/api/categorias/${id}`
                 );
 
                 const data = await response.json();
@@ -64,7 +65,7 @@ const EditarCategoria = () => {
 
         try {
             const response = await authFetch(
-                `http://localhost:3001/api/categorias/update/${id}`,
+                `${API_URL}/api/categorias/update/${id}`,
                 {
                     method: "PUT",
                     headers: {

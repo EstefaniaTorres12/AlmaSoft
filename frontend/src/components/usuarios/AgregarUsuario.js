@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { API_URL } from "../../config/api";
 
 const AgregarUsuario = () => {
     const [formData, setData] = useState({
@@ -44,7 +45,7 @@ const AgregarUsuario = () => {
         };
 
         try {
-            const response = await fetch("http://localhost:3001/api/usuarios/usuarioCreate", {
+            const response = await fetch(`${API_URL}/api/usuarios/usuarioCreate`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

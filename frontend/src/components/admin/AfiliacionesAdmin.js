@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "../../config/api";
 
 function buildName(firstName, lastName) {
   return [firstName, lastName].filter(Boolean).join(" ");
@@ -24,7 +25,7 @@ export default function AfiliacionesAdmin() {
       setError("");
 
       try {
-        const response = await fetch("http://localhost:3001/api/client/affiliates/review", {
+        const response = await fetch(`${API_URL}/api/client/affiliates/review`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -54,7 +55,7 @@ export default function AfiliacionesAdmin() {
     setError("");
 
     try {
-      const response = await fetch(`http://localhost:3001/api/client/affiliates/review/${requestId}`, {
+      const response = await fetch(`${API_URL}/api/client/affiliates/review/${requestId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

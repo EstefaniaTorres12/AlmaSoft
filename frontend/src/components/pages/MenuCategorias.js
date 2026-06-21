@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MenuCategorias.css';
+import { API_URL } from '../../config/api';
 
-const API = 'http://localhost:3001/api';
+const API = `${API_URL}/api`;
 
 const MenuCategorias = () => {
   const [open,    setOpen]    = useState(false);

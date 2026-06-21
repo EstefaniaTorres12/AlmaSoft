@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/clientPages.css";
+import { API_URL } from "../../../config/api";
 
-const API = "http://localhost:3001";
+const API = API_URL;
 
 const KINSHIP_OPTIONS = [
   "Padre o madre",

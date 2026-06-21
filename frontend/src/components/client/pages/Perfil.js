@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/clientPages.css";
+import { API_URL } from "../../../config/api";
 
 function buildDisplayName(usuario) {
   return [
@@ -62,7 +63,7 @@ export default function Perfil() {
       setProfilePhoto(storedPhoto);
     }
 
-    authFetch(`http://localhost:3001/api/usuarios/id/${usuarioId}`)
+    authFetch(`${API_URL}/api/usuarios/id/${usuarioId}`)
       .then(async (response) => {
         const data = await response.json();
 
@@ -169,7 +170,7 @@ export default function Perfil() {
 
     try {
       const response = await authFetch(
-        `http://localhost:3001/api/usuarios/update/${usuarioId}`,
+        `${API_URL}/api/usuarios/update/${usuarioId}`,
         {
           method: "PUT",
           body: JSON.stringify(payload),

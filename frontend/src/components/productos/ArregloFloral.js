@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Col, Row, Card, ListGroup, Button } from "react-bootstrap";
+import { API_URL } from "../../config/api";
 
 const ArreglosFloral = () => {
 
@@ -10,7 +11,7 @@ const ArreglosFloral = () => {
         const cargarArreglos = async () => {
             try {
                 const res = await axios.get(
-                    "http://localhost:3001/api/productos/filtrar?nombre=arreglo"
+                    `${API_URL}/api/productos/filtrar?nombre=arreglo`
                 );
                 setProductos(res.data?.data || []);
             } catch (error) {

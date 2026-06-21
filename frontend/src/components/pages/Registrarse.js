@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Container, Form, Card, Button, Alert } from "react-bootstrap";
+import { API_URL } from "../../config/api";
 
 const Registrarse = () => {
 
@@ -44,7 +45,7 @@ const Registrarse = () => {
 
         try {
             const response = await fetch(
-                "http://localhost:3001/api/usuarios/usuarioCreate",
+                `${API_URL}/api/usuarios/usuarioCreate`,
                 {
                     method: "POST",
                     headers: {

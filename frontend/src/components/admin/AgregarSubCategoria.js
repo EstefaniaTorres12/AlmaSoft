@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const AgregarSubCategoria = () => {
 
@@ -20,7 +21,7 @@ const AgregarSubCategoria = () => {
         const fetchCategorias = async () => {
             try {
                 const response = await authFetch(
-                    "http://localhost:3001/api/categorias"
+                    `${API_URL}/api/categorias`
                 );
 
                 const data = await response.json();
@@ -57,7 +58,7 @@ const AgregarSubCategoria = () => {
 
         try {
             const response = await authFetch(
-                "http://localhost:3001/api/subcategorias/createSubC",
+                `${API_URL}/api/subcategorias/createSubC`,
                 {
                     method: "POST",
                     headers: {

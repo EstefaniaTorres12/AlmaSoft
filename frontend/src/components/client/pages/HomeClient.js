@@ -5,6 +5,7 @@ import { getPlanVisual } from "../data/clientPlanVisuals";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/homeClient.css";
 import "../styles/clientPages.css";
+import { API_URL } from "../../../config/api";
 
 function formatPrice(value) {
   const number = Number(value);
@@ -46,7 +47,7 @@ export default function HomeClient() {
   const [activePlan, setActivePlan] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/client/plans")
+    fetch(`${API_URL}/api/client/plans`)
       .then(async (res) => {
         const data = await res.json();
 
@@ -91,7 +92,7 @@ export default function HomeClient() {
       return;
     }
 
-    authFetch("http://localhost:3001/api/client/contrato/mine")
+    authFetch(`${API_URL}/api/client/contrato/mine`)
       .then(async (response) => {
         const data = await response.json();
 

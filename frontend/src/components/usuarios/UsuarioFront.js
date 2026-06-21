@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Table, Row, Col, Form, Card, Button, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const UsuarioFront = () => {
 
@@ -13,7 +14,7 @@ const UsuarioFront = () => {
     const fetchUsuarios = async () => {
       try {
         const response = await authFetch(
-          "http://localhost:3001/api/usuarios/usuariosAll"
+          `${API_URL}/api/usuarios/usuariosAll`
         );
 
         const data = await response.json();
@@ -39,7 +40,7 @@ const UsuarioFront = () => {
 
     try {
       const response = await authFetch(
-        `http://localhost:3001/api/usuarios/deleteU/${id}`,
+        `${API_URL}/api/usuarios/deleteU/${id}`,
         { method: "DELETE" }
       );
 

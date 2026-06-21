@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../config/api";
 
 const AgregarCliente = () => {
 
@@ -33,7 +34,7 @@ const AgregarCliente = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:3001/api/clientes", {
+            const response = await fetch(`${API_URL}/api/clientes`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
