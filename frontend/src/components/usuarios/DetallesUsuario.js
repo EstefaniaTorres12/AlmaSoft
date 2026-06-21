@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, Col, Container, Row } from "react-bootstrap";
+import { API_URL } from "../../config/api";
 
 const DetallesUsuario = () => {
 
@@ -10,7 +11,7 @@ const DetallesUsuario = () => {
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/usuarios/id/${id}`, {
+                const response = await fetch(`${API_URL}/api/usuarios/id/${id}`, {
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token") 
                     }

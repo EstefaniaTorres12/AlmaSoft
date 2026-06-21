@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Table, Row, Col, Form, Button, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const CategoriaFront = () => {
 
@@ -13,7 +14,7 @@ const CategoriaFront = () => {
     const fetchCategorias = async () => {
       try {
         const response = await authFetch(
-          "http://localhost:3001/api/categorias"
+          `${API_URL}/api/categorias`
         );
 
         const data = await response.json();
@@ -41,7 +42,7 @@ const CategoriaFront = () => {
 
     try {
       const response = await authFetch(
-        `http://localhost:3001/api/categorias/delete/${id}`, // 🔥 CORREGIDO
+        `${API_URL}/api/categorias/delete/${id}`,
         { method: "DELETE" }
       );
 

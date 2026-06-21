@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Card, Form, Button, Spinner } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
+import { API_URL } from "../../config/api";
 
 const EditarCliente = () => {
 
@@ -23,7 +24,7 @@ const EditarCliente = () => {
 
         const fetchCliente = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/clientes/id/${id}`, {
+                const response = await fetch(`${API_URL}/api/clientes/id/${id}`, {
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token")
                     }
@@ -62,7 +63,7 @@ const EditarCliente = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch(`http://localhost:3001/api/clientes/${id}`, {
+            const response = await fetch(`${API_URL}/api/clientes/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Table, Row, Col, Button, Form, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { API_URL } from "../../config/api";
 
 const Cliente = () => {
 
@@ -10,7 +11,7 @@ const Cliente = () => {
     useEffect(() => {
         const fetchClientes = async () => {
             try {
-                const response = await fetch("http://localhost:3001/api/clientes/clientesAll", {
+                const response = await fetch(`${API_URL}/api/clientes/clientesAll`, {
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token")
                     }

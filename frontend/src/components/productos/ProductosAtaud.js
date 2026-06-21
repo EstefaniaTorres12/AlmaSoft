@@ -2,8 +2,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './ProductosAtaud.css';
+import { API_URL } from '../../config/api';
 
-const API = 'http://localhost:3001/api';
+const API = `${API_URL}/api`;
 
 const precioCOP = (v) =>
   new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 })

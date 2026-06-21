@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const AgregarProducto = () => {
 
@@ -28,7 +29,7 @@ const AgregarProducto = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const res = await authFetch("http://localhost:3001/api/categorias");
+        const res = await authFetch(`${API_URL}/api/categorias`);
         const data = await res.json();
 
         if (res.ok) {
@@ -46,7 +47,7 @@ const AgregarProducto = () => {
   useEffect(() => {
     const fetchSub = async () => {
       try {
-        const res = await authFetch("http://localhost:3001/api/subcategorias/subCAll");
+        const res = await authFetch(`${API_URL}/api/subcategorias/subCAll`);
         const data = await res.json();
 
         if (res.ok) {
@@ -92,7 +93,7 @@ const AgregarProducto = () => {
 
     try {
       const res = await authFetch(
-        "http://localhost:3001/api/productos/createProducto",
+        `${API_URL}/api/productos/createProducto`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

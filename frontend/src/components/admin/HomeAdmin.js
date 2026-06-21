@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 import { useSession } from "../../hooks/useSession";
+import { API_URL } from "../../config/api";
 import "../../styles/admin.css";
 
 export default function HomeAdmin() {
@@ -21,10 +22,10 @@ export default function HomeAdmin() {
     const fetchStats = async () => {
       try {
         const [resClientes, resUsuarios, resPlanes, resProductos] = await Promise.all([
-          authFetch("http://localhost:3006/api/clientes/clientesAll"),
-          authFetch("http://localhost:3006/api/usuarios/usuariosAll"),
-          authFetch("http://localhost:3006/api/planes/"),
-          authFetch("http://localhost:3006/api/productos/productosAll"),
+          authFetch(`${API_URL}/api/clientes/clientesAll`),
+          authFetch(`${API_URL}/api/usuarios/usuariosAll`),
+          authFetch(`${API_URL}/api/planes/`),
+          authFetch(`${API_URL}/api/productos/productosAll`),
         ]);
 
         const [dClientes, dUsuarios, dPlanes, dProductos] = await Promise.all([

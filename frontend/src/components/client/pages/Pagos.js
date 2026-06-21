@@ -3,8 +3,9 @@ import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/clientPages.css";
 import "../styles/tienda.css";
+import { API_URL } from "../../../config/api";
 
-const API = "http://localhost:3001";
+const API = API_URL;
 
 function formatFecha(value) {
   if (!value) return "Sin fecha";

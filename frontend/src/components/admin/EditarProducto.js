@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const EditarProducto = () => {
 
@@ -29,7 +30,7 @@ const EditarProducto = () => {
         const fetchProducto = async () => {
             try {
                 const res = await authFetch(
-                    `http://localhost:3001/api/productos/producto/${id}`
+                    `${API_URL}/api/productos/producto/${id}`
                 );
 
                 const data = await res.json();
@@ -63,7 +64,7 @@ const EditarProducto = () => {
 
         try {
             const res = await authFetch(
-                `http://localhost:3001/api/productos/updateProducto/${id}`,
+                `${API_URL}/api/productos/updateProducto/${id}`,
                 {
                     method: "PUT",
                     headers: {

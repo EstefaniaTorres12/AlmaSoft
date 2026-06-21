@@ -3,8 +3,9 @@ import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/clientPages.css";
 import "../styles/tienda.css";
+import { API_URL } from "../../../config/api";
 
-const API = "http://localhost:3001";
+const API = API_URL;
 
 export default function Tienda() {
   const [productos, setProductos] = useState([]);

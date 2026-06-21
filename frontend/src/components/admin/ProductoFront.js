@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Table, Row, Col, Form, Button, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
+import { API_URL } from "../../config/api";
 
 const ProductoFront = () => {
 
@@ -12,7 +13,7 @@ const ProductoFront = () => {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await authFetch("http://localhost:3001/api/productos/productosAll");
+        const res = await authFetch(`${API_URL}/api/productos/productosAll`);
         const data = await res.json();
 
         if (res.ok) {
@@ -35,7 +36,7 @@ const ProductoFront = () => {
 
     try {
       const res = await authFetch(
-        `http://localhost:3001/api/productos/deleteProducto/${id}`,
+        `${API_URL}/api/productos/deleteProducto/${id}`,
         { method: "DELETE" }
       );
 

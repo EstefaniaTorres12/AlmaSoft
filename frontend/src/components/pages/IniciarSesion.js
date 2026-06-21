@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Alert, Button } from "react-bootstrap";
 import { DESTINO_POR_ROL_ID } from "../../utils/auth";
+import { API_URL } from "../../config/api";
 
 const IniciarSesion = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +21,7 @@ const IniciarSesion = () => {
     setCargando(true);
 
     try {
-      const response = await fetch("http://localhost:3001/api/usuarios/login", {
+      const response = await fetch(`${API_URL}/api/usuarios/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/clientPages.css";
+import { API_URL } from "../../../config/api";
 
 function buildDisplayName(usuario) {
   return [
@@ -62,7 +63,7 @@ export default function Perfil() {
       setProfilePhoto(storedPhoto);
     }
 
-    authFetch(`http://localhost:3001/api/usuarios/id/${usuarioId}`)
+    authFetch(`${API_URL}/api/usuarios/id/${usuarioId}`)
       .then(async (response) => {
         const data = await response.json();
 
@@ -128,106 +129,90 @@ export default function Perfil() {
   };
 
   const handleSubmit = async (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  setSaving(true);
-  setError("");
-  setSuccess("");
+    setSaving(true);
+    setError("");
+    setSuccess("");
 
-  const payload = {};
+    const payload = {};
 
-  const editableFields = [
-    "usuario_primer_nombre",
-    "usuario_segundo_nombre",
-    "usuario_primer_apellido",
-    "usuario_segundo_apellido",
-    "usuario_documento",
-    "usuario_correo",
-    "usuario_direccion",
-    "usuario_credencial",
-  ];
+    const editableFields = [
+      "usuario_primer_nombre",
+      "usuario_segundo_nombre",
+      "usuario_primer_apellido",
+      "usuario_segundo_apellido",
+      "usuario_documento",
+      "usuario_correo",
+      "usuario_direccion",
+      "usuario_credencial",
+    ];
 
-  editableFields.forEach((field) => {
+    editableFields.forEach((field) => {
+      const currentValue = String(formData[field] ?? "");
+      const originalValue = String(originalData?.[field] ?? "");
 
-    // convertir cualquier valor a string
-    const currentValue = String(formData[field] ?? "");
-    const originalValue = String(originalData?.[field] ?? "");
-
-    // contraseña
-    if (field === "usuario_credencial") {
-
-      if (currentValue.trim() !== "") {
-        payload[field] = currentValue.trim();
+      if (field === "usuario_credencial") {
+        if (currentValue.trim() !== "") {
+          payload[field] = currentValue.trim();
+        }
+        return;
       }
 
+      if (
+        currentValue.trim() !== "" &&
+        currentValue !== originalValue
+      ) {
+        payload[field] = currentValue.trim();
+      }
+    });
+
+    if (Object.keys(payload).length === 0) {
+      setSaving(false);
+      setError("No hay cambios para actualizar.");
       return;
     }
 
-    // demás campos
-    if (
-      currentValue.trim() !== "" &&
-      currentValue !== originalValue
-    ) {
-      payload[field] = currentValue.trim();
-    }
-  });
+    try {
+      const response = await authFetch(
+        `${API_URL}/api/usuarios/update/${usuarioId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify(payload),
+        }
+      );
 
-  if (Object.keys(payload).length === 0) {
-    setSaving(false);
-    setError("No hay cambios para actualizar.");
-    return;
-  }
+      const data = await response.json();
 
-  try {
-
-    const response = await authFetch(
-      `http://localhost:3001/api/usuarios/update/${usuarioId}`,
-      {
-        method: "PUT",
-        body: JSON.stringify(payload),
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "No fue posible actualizar el perfil");
       }
-    );
 
-    const data = await response.json();
+      const updatedProfile = {
+        ...(originalData || {}),
+        ...formData,
+        ...payload,
+        usuario_id: usuarioId,
+        usuario_credencial: "",
+      };
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || "No fue posible actualizar el perfil");
+      setFormData(updatedProfile);
+      setOriginalData(updatedProfile);
+      localStorage.setItem("usuario", JSON.stringify(updatedProfile));
+      emitProfileUpdated();
+      setSuccess("Perfil actualizado correctamente.");
+
+    } catch (err) {
+      console.error(err);
+      if (String(err.message || "").includes("Acceso denegado")) {
+        setError("");
+      } else {
+        setError(err.message || "Error al actualizar el perfil.");
+      }
+    } finally {
+      setSaving(false);
     }
-
-    const updatedProfile = {
-      ...(originalData || {}),
-      ...formData,
-      ...payload,
-      usuario_id: usuarioId,
-      usuario_credencial: "",
-    };
-
-    setFormData(updatedProfile);
-    setOriginalData(updatedProfile);
-
-    localStorage.setItem(
-      "usuario",
-      JSON.stringify(updatedProfile)
-    );
-
-    emitProfileUpdated();
-
-    setSuccess("Perfil actualizado correctamente.");
-
-  } catch (err) {
-
-    console.error(err);
-
-    if (String(err.message || "").includes("Acceso denegado")) {
-      setError("");
-    } else {
-      setError(err.message || "Error al actualizar el perfil.");
-    }
-
-  } finally {
-    setSaving(false);
-  }
-};
+  };
 
   const profileName = buildDisplayName(formData) || "Cliente";
 

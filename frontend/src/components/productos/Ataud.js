@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Container, Col, Row, Card, ListGroup, Button } from "react-bootstrap";
+import { API_URL } from "../../config/api";
 
 
 const Ataud = () => {
@@ -11,7 +12,7 @@ const Ataud = () => {
         const cargarAtaudes = async () => {
             try {
                 const res = await axios.get(
-                    "http://localhost:3001/api/productos/filtrar?nombre=ataud"
+                    `${API_URL}/api/productos/filtrar?nombre=ataud`
                 );
                 setProductos(res.data.data);
             } catch (error) {
