@@ -95,7 +95,7 @@ const AgregarSubCategoria = () => {
 
                     {mostrarAlerta && (
                         <Alert variant="success" dismissible>
-                            Subcategoría creada correctamente ✅
+                            Subcategoría creada correctamente
                         </Alert>
                     )}
                 </Card.Header>
