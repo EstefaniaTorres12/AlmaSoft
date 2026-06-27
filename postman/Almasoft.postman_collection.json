@@ -19,9 +19,11 @@
   ],
   "item": [
     {
+      "id": "f1a00001-0000-0000-0000-000000000001",
       "name": "Auth",
       "item": [
         {
+          "id": "f1a00001-0000-0000-0000-000000000002",
           "name": "Login",
           "event": [
             {
@@ -46,10 +48,16 @@
               "raw": "{\n  \"usuario_correo\": \"admin@almasoft.com\",\n  \"usuario_credencial\": \"Admin1234\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/usuarios/login", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "login"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "login"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00001-0000-0000-0000-000000000003",
           "name": "Registrar Usuario",
           "request": {
             "method": "POST",
@@ -59,39 +67,64 @@
               "raw": "{\n  \"rol_id\": 1,\n  \"usuario_primer_nombre\": \"Juan\",\n  \"usuario_segundo_nombre\": \"Carlos\",\n  \"usuario_primer_apellido\": \"Pérez\",\n  \"usuario_segundo_apellido\": \"López\",\n  \"usuario_documento\": 123456789,\n  \"usuario_correo\": \"juan@gmail.com\",\n  \"usuario_direccion\": \"Bogotá\",\n  \"usuario_telefono\": \"3001234567\",\n  \"usuario_credencial\": \"Juan1234\",\n  \"cliente_fecha_nacimiento\": \"1990-05-15\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/usuarios/usuarioCreate", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "usuarioCreate"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/usuarioCreate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "usuarioCreate"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00002-0000-0000-0000-000000000001",
       "name": "Usuarios",
       "item": [
         {
+          "id": "f1a00002-0000-0000-0000-000000000002",
           "name": "Todos los Usuarios",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/usuarios/usuariosAll", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "usuariosAll"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/usuariosAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "usuariosAll"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00002-0000-0000-0000-000000000003",
           "name": "Usuario por ID",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/usuarios/id/1", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "id", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/id/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "id", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00002-0000-0000-0000-000000000004",
           "name": "Usuario por Documento",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/usuarios/documento/123456789", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "documento", "123456789"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/documento/123456789",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "documento", "123456789"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00002-0000-0000-0000-000000000005",
           "name": "Actualizar Usuario",
           "request": {
             "method": "PUT",
@@ -104,23 +137,36 @@
               "raw": "{\n  \"usuario_primer_nombre\": \"Juan\",\n  \"usuario_direccion\": \"Medellín\",\n  \"usuario_correo\": \"nuevo@gmail.com\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/usuarios/update/1", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "update", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/update/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "update", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00002-0000-0000-0000-000000000006",
           "name": "Eliminar Usuario",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/usuarios/deleteU/1", "host": ["{{baseUrl}}"], "path": ["api", "usuarios", "deleteU", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/deleteU/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "deleteU", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00003-0000-0000-0000-000000000001",
       "name": "Roles",
       "item": [
         {
+          "id": "f1a00003-0000-0000-0000-000000000002",
           "name": "Crear Rol",
           "request": {
             "method": "POST",
@@ -133,39 +179,64 @@
               "raw": "{\n  \"rol_nombre\": \"Supervisor\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/rol/createRol", "host": ["{{baseUrl}}"], "path": ["api", "rol", "createRol"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/rol/createRol",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rol", "createRol"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00003-0000-0000-0000-000000000003",
           "name": "Todos los Roles",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/rol/Roles", "host": ["{{baseUrl}}"], "path": ["api", "rol", "Roles"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/rol/Roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rol", "Roles"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00003-0000-0000-0000-000000000004",
           "name": "Rol por ID",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/rol/rol/1", "host": ["{{baseUrl}}"], "path": ["api", "rol", "rol", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/rol/rol/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rol", "rol", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00003-0000-0000-0000-000000000005",
           "name": "Eliminar Rol",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/rol/delete/1", "host": ["{{baseUrl}}"], "path": ["api", "rol", "delete", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/rol/delete/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rol", "delete", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00004-0000-0000-0000-000000000001",
       "name": "RolUsuario",
       "item": [
         {
+          "id": "f1a00004-0000-0000-0000-000000000002",
           "name": "Asignar Rol a Usuario",
           "request": {
             "method": "POST",
@@ -178,26 +249,44 @@
               "raw": "{\n  \"usuario_id\": 5,\n  \"rol_id\": 2,\n  \"estado_cred\": true\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/rol-usuario/asignar", "host": ["{{baseUrl}}"], "path": ["api", "rol-usuario", "asignar"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/rol-usuario/asignar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rol-usuario", "asignar"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00004-0000-0000-0000-000000000003",
           "name": "Todas las Asignaciones",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/rol-usuario/all", "host": ["{{baseUrl}}"], "path": ["api", "rol-usuario", "all"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/rol-usuario/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rol-usuario", "all"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00004-0000-0000-0000-000000000004",
           "name": "Roles de un Usuario",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/rol-usuario/usuario/5", "host": ["{{baseUrl}}"], "path": ["api", "rol-usuario", "usuario", "5"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/rol-usuario/usuario/5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rol-usuario", "usuario", "5"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00004-0000-0000-0000-000000000005",
           "name": "Cambiar Estado de Credencial",
           "request": {
             "method": "PUT",
@@ -210,23 +299,36 @@
               "raw": "{\n  \"estado_cred\": false\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/rol-usuario/estado/3", "host": ["{{baseUrl}}"], "path": ["api", "rol-usuario", "estado", "3"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/rol-usuario/estado/3",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rol-usuario", "estado", "3"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00004-0000-0000-0000-000000000006",
           "name": "Eliminar Asignación de Rol",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/rol-usuario/delete/3", "host": ["{{baseUrl}}"], "path": ["api", "rol-usuario", "delete", "3"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/rol-usuario/delete/3",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rol-usuario", "delete", "3"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00005-0000-0000-0000-000000000001",
       "name": "Clientes",
       "item": [
         {
+          "id": "f1a00005-0000-0000-0000-000000000002",
           "name": "Crear Cliente",
           "request": {
             "method": "POST",
@@ -239,26 +341,44 @@
               "raw": "{\n  \"usuario_primer_nombre\": \"María\",\n  \"usuario_segundo_nombre\": \"Isabel\",\n  \"usuario_primer_apellido\": \"García\",\n  \"usuario_segundo_apellido\": \"Ruiz\",\n  \"usuario_documento\": 987654321,\n  \"usuario_correo\": \"maria@gmail.com\",\n  \"usuario_direccion\": \"Cali\",\n  \"usuario_telefono\": \"3109876543\",\n  \"usuario_credencial\": \"Maria1234\",\n  \"cliente_fecha_nacimiento\": \"1985-08-20\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/clientes", "host": ["{{baseUrl}}"], "path": ["api", "clientes"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00005-0000-0000-0000-000000000003",
           "name": "Todos los Clientes",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/clientes/clientesAll", "host": ["{{baseUrl}}"], "path": ["api", "clientes", "clientesAll"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/clientesAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "clientesAll"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00005-0000-0000-0000-000000000004",
           "name": "Cliente por ID",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/clientes/id/1", "host": ["{{baseUrl}}"], "path": ["api", "clientes", "id", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/id/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "id", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00005-0000-0000-0000-000000000005",
           "name": "Actualizar Cliente",
           "request": {
             "method": "PUT",
@@ -271,23 +391,36 @@
               "raw": "{\n  \"usuario_primer_nombre\": \"María\",\n  \"usuario_direccion\": \"Barranquilla\",\n  \"cliente_fecha_nacimiento\": \"1985-08-20\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/clientes/1", "host": ["{{baseUrl}}"], "path": ["api", "clientes", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00005-0000-0000-0000-000000000006",
           "name": "Eliminar Cliente",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/clientes/1", "host": ["{{baseUrl}}"], "path": ["api", "clientes", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00006-0000-0000-0000-000000000001",
       "name": "Categorias",
       "item": [
         {
+          "id": "f1a00006-0000-0000-0000-000000000002",
           "name": "Crear Categoría",
           "request": {
             "method": "POST",
@@ -300,34 +433,58 @@
               "raw": "{\n  \"categoria_nombre\": \"Ataúdes\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/categorias/crear", "host": ["{{baseUrl}}"], "path": ["api", "categorias", "crear"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/crear",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias", "crear"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00006-0000-0000-0000-000000000003",
           "name": "Categorías Público",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{baseUrl}}/api/categorias/public", "host": ["{{baseUrl}}"], "path": ["api", "categorias", "public"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/public",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias", "public"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00006-0000-0000-0000-000000000004",
           "name": "Todas las Categorías",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/categorias", "host": ["{{baseUrl}}"], "path": ["api", "categorias"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00006-0000-0000-0000-000000000005",
           "name": "Categoría por ID",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/categorias/1", "host": ["{{baseUrl}}"], "path": ["api", "categorias", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00006-0000-0000-0000-000000000006",
           "name": "Actualizar Categoría",
           "request": {
             "method": "PUT",
@@ -340,23 +497,36 @@
               "raw": "{\n  \"categoria_nombre\": \"Ataúdes Premium\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/categorias/update/1", "host": ["{{baseUrl}}"], "path": ["api", "categorias", "update", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/update/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias", "update", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00006-0000-0000-0000-000000000007",
           "name": "Eliminar Categoría",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/categorias/delete/1", "host": ["{{baseUrl}}"], "path": ["api", "categorias", "delete", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/delete/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias", "delete", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00007-0000-0000-0000-000000000001",
       "name": "Subcategorias",
       "item": [
         {
+          "id": "f1a00007-0000-0000-0000-000000000002",
           "name": "Crear Subcategoría",
           "request": {
             "method": "POST",
@@ -369,26 +539,44 @@
               "raw": "{\n  \"subcategoria_nombre\": \"Madera\",\n  \"categoria_id\": 1\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/subcategorias/createSubC", "host": ["{{baseUrl}}"], "path": ["api", "subcategorias", "createSubC"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/subcategorias/createSubC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "subcategorias", "createSubC"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00007-0000-0000-0000-000000000003",
           "name": "Todas las Subcategorías",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{baseUrl}}/api/subcategorias/subCAll", "host": ["{{baseUrl}}"], "path": ["api", "subcategorias", "subCAll"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/subcategorias/subCAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "subcategorias", "subCAll"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00007-0000-0000-0000-000000000004",
           "name": "Subcategoría por ID",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{baseUrl}}/api/subcategorias/subCId/1", "host": ["{{baseUrl}}"], "path": ["api", "subcategorias", "subCId", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/subcategorias/subCId/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "subcategorias", "subCId", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00007-0000-0000-0000-000000000005",
           "name": "Actualizar Subcategoría",
           "request": {
             "method": "PUT",
@@ -401,23 +589,36 @@
               "raw": "{\n  \"subcategoria_nombre\": \"Madera Fina\",\n  \"categoria_id\": 1\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/subcategorias/updateSubC/1", "host": ["{{baseUrl}}"], "path": ["api", "subcategorias", "updateSubC", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/subcategorias/updateSubC/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "subcategorias", "updateSubC", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00007-0000-0000-0000-000000000006",
           "name": "Eliminar Subcategoría",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/subcategorias/deleteSubC/1", "host": ["{{baseUrl}}"], "path": ["api", "subcategorias", "deleteSubC", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/subcategorias/deleteSubC/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "subcategorias", "deleteSubC", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00008-0000-0000-0000-000000000001",
       "name": "Productos",
       "item": [
         {
+          "id": "f1a00008-0000-0000-0000-000000000002",
           "name": "Crear Producto",
           "request": {
             "method": "POST",
@@ -430,26 +631,44 @@
               "raw": "{\n  \"producto_nombre\": \"Ataúd Roble\",\n  \"producto_descripcion\": \"Ataúd en madera de roble\",\n  \"producto_precio\": 2500000,\n  \"producto_stock\": 10,\n  \"producto_estado\": true,\n  \"subcategoria_id\": 1,\n  \"producto_imagen\": \"/uploads/ataud.jpg\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/productos/createProducto", "host": ["{{baseUrl}}"], "path": ["api", "productos", "createProducto"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/createProducto",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos", "createProducto"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00008-0000-0000-0000-000000000003",
           "name": "Todos los Productos",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{baseUrl}}/api/productos/productosAll", "host": ["{{baseUrl}}"], "path": ["api", "productos", "productosAll"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/productosAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos", "productosAll"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00008-0000-0000-0000-000000000004",
           "name": "Producto por ID",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{baseUrl}}/api/productos/producto/1", "host": ["{{baseUrl}}"], "path": ["api", "productos", "producto", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/producto/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos", "producto", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00008-0000-0000-0000-000000000005",
           "name": "Filtrar Productos por Nombre",
           "request": {
             "method": "GET",
@@ -460,9 +679,11 @@
               "path": ["api", "productos", "filtrar"],
               "query": [{ "key": "nombre", "value": "ataúd" }]
             }
-          }
+          },
+          "response": []
         },
         {
+          "id": "f1a00008-0000-0000-0000-000000000006",
           "name": "Actualizar Producto",
           "request": {
             "method": "PUT",
@@ -475,23 +696,36 @@
               "raw": "{\n  \"producto_nombre\": \"Ataúd Roble Premium\",\n  \"producto_precio\": 2800000,\n  \"producto_stock\": 8,\n  \"producto_estado\": true\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/productos/updateProducto/1", "host": ["{{baseUrl}}"], "path": ["api", "productos", "updateProducto", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/updateProducto/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos", "updateProducto", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00008-0000-0000-0000-000000000007",
           "name": "Eliminar Producto",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/productos/deleteProducto/1", "host": ["{{baseUrl}}"], "path": ["api", "productos", "deleteProducto", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/deleteProducto/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "productos", "deleteProducto", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00009-0000-0000-0000-000000000001",
       "name": "Planes",
       "item": [
         {
+          "id": "f1a00009-0000-0000-0000-000000000002",
           "name": "Crear Plan",
           "request": {
             "method": "POST",
@@ -504,34 +738,58 @@
               "raw": "{\n  \"plan_nombre\": \"Plan Básico\",\n  \"plan_precio\": 500000,\n  \"plan_estado\": true,\n  \"plan_descripcion\": \"Incluye servicio básico de velación\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/planes/crear", "host": ["{{baseUrl}}"], "path": ["api", "planes", "crear"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/planes/crear",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "planes", "crear"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00009-0000-0000-0000-000000000003",
           "name": "Planes Público",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{baseUrl}}/api/planes/public", "host": ["{{baseUrl}}"], "path": ["api", "planes", "public"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/planes/public",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "planes", "public"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00009-0000-0000-0000-000000000004",
           "name": "Todos los Planes",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/planes", "host": ["{{baseUrl}}"], "path": ["api", "planes"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/planes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "planes"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00009-0000-0000-0000-000000000005",
           "name": "Plan por ID",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/planes/1", "host": ["{{baseUrl}}"], "path": ["api", "planes", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/planes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "planes", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00009-0000-0000-0000-000000000006",
           "name": "Actualizar Plan",
           "request": {
             "method": "PUT",
@@ -544,23 +802,36 @@
               "raw": "{\n  \"plan_nombre\": \"Plan Básico Plus\",\n  \"plan_precio\": 650000,\n  \"plan_estado\": true,\n  \"plan_descripcion\": \"Incluye velación y traslado\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/planes/update/1", "host": ["{{baseUrl}}"], "path": ["api", "planes", "update", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/planes/update/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "planes", "update", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00009-0000-0000-0000-000000000007",
           "name": "Eliminar Plan",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/planes/delete/1", "host": ["{{baseUrl}}"], "path": ["api", "planes", "delete", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/planes/delete/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "planes", "delete", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00010-0000-0000-0000-000000000001",
       "name": "Servicios",
       "item": [
         {
+          "id": "f1a00010-0000-0000-0000-000000000002",
           "name": "Crear Servicio",
           "request": {
             "method": "POST",
@@ -573,26 +844,44 @@
               "raw": "{\n  \"servicio_nombre\": \"Velación 24h\",\n  \"servicio_descripcion\": \"Servicio de velación por 24 horas\",\n  \"servicio_precio\": 300000\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/servicios/create", "host": ["{{baseUrl}}"], "path": ["api", "servicios", "create"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/servicios/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "servicios", "create"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00010-0000-0000-0000-000000000003",
           "name": "Todos los Servicios",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/servicios/all", "host": ["{{baseUrl}}"], "path": ["api", "servicios", "all"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/servicios/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "servicios", "all"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00010-0000-0000-0000-000000000004",
           "name": "Servicio por ID",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/servicios/byId/1", "host": ["{{baseUrl}}"], "path": ["api", "servicios", "byId", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/servicios/byId/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "servicios", "byId", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00010-0000-0000-0000-000000000005",
           "name": "Actualizar Servicio",
           "request": {
             "method": "PUT",
@@ -605,23 +894,36 @@
               "raw": "{\n  \"servicio_nombre\": \"Velación 48h\",\n  \"servicio_descripcion\": \"Servicio de velación por 48 horas\",\n  \"servicio_precio\": 500000\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/servicios/update/1", "host": ["{{baseUrl}}"], "path": ["api", "servicios", "update", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/servicios/update/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "servicios", "update", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00010-0000-0000-0000-000000000006",
           "name": "Eliminar Servicio",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/servicios/delete/1", "host": ["{{baseUrl}}"], "path": ["api", "servicios", "delete", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/servicios/delete/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "servicios", "delete", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00011-0000-0000-0000-000000000001",
       "name": "ServicioPlan",
       "item": [
         {
+          "id": "f1a00011-0000-0000-0000-000000000002",
           "name": "Vincular Servicio a Plan",
           "request": {
             "method": "POST",
@@ -634,26 +936,44 @@
               "raw": "{\n  \"servicio_id\": 1,\n  \"plan_id\": 1\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/servicio-plan/create", "host": ["{{baseUrl}}"], "path": ["api", "servicio-plan", "create"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/servicio-plan/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "servicio-plan", "create"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00011-0000-0000-0000-000000000003",
           "name": "Todas las Relaciones",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/servicio-plan/all", "host": ["{{baseUrl}}"], "path": ["api", "servicio-plan", "all"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/servicio-plan/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "servicio-plan", "all"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00011-0000-0000-0000-000000000004",
           "name": "Servicios de un Plan",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/servicio-plan/plan/1", "host": ["{{baseUrl}}"], "path": ["api", "servicio-plan", "plan", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/servicio-plan/plan/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "servicio-plan", "plan", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00011-0000-0000-0000-000000000005",
           "name": "Actualizar Relación",
           "request": {
             "method": "PUT",
@@ -666,23 +986,36 @@
               "raw": "{\n  \"new_servicio_id\": 2,\n  \"new_plan_id\": 1\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/servicio-plan/update/1/1", "host": ["{{baseUrl}}"], "path": ["api", "servicio-plan", "update", "1", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/servicio-plan/update/1/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "servicio-plan", "update", "1", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00011-0000-0000-0000-000000000006",
           "name": "Eliminar Relación",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/servicio-plan/delete/1/1", "host": ["{{baseUrl}}"], "path": ["api", "servicio-plan", "delete", "1", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/servicio-plan/delete/1/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "servicio-plan", "delete", "1", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00012-0000-0000-0000-000000000001",
       "name": "ContratoPlan",
       "item": [
         {
+          "id": "f1a00012-0000-0000-0000-000000000002",
           "name": "Vincular Contrato a Plan",
           "request": {
             "method": "POST",
@@ -695,39 +1028,64 @@
               "raw": "{\n  \"contrato_id\": 1,\n  \"plan_id\": 1\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/contrato-plan/create", "host": ["{{baseUrl}}"], "path": ["api", "contrato-plan", "create"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/contrato-plan/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "contrato-plan", "create"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00012-0000-0000-0000-000000000003",
           "name": "Todas las Relaciones",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/contrato-plan/all", "host": ["{{baseUrl}}"], "path": ["api", "contrato-plan", "all"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/contrato-plan/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "contrato-plan", "all"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00012-0000-0000-0000-000000000004",
           "name": "Planes de un Contrato",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/contrato-plan/contrato/1", "host": ["{{baseUrl}}"], "path": ["api", "contrato-plan", "contrato", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/contrato-plan/contrato/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "contrato-plan", "contrato", "1"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00012-0000-0000-0000-000000000005",
           "name": "Eliminar Relación",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/contrato-plan/delete/1/1", "host": ["{{baseUrl}}"], "path": ["api", "contrato-plan", "delete", "1", "1"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/contrato-plan/delete/1/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "contrato-plan", "delete", "1", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00013-0000-0000-0000-000000000001",
       "name": "Telefonos",
       "item": [
         {
+          "id": "f1a00013-0000-0000-0000-000000000002",
           "name": "Agregar Teléfono",
           "request": {
             "method": "POST",
@@ -740,26 +1098,44 @@
               "raw": "{\n  \"telefono\": 3001234567,\n  \"usuario_id\": 5\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/telefonos/create", "host": ["{{baseUrl}}"], "path": ["api", "telefonos", "create"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/telefonos/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telefonos", "create"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00013-0000-0000-0000-000000000003",
           "name": "Todos los Teléfonos",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/telefonos/all", "host": ["{{baseUrl}}"], "path": ["api", "telefonos", "all"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/telefonos/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telefonos", "all"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00013-0000-0000-0000-000000000004",
           "name": "Teléfonos de un Usuario",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/telefonos/usuario/5", "host": ["{{baseUrl}}"], "path": ["api", "telefonos", "usuario", "5"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/telefonos/usuario/5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telefonos", "usuario", "5"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00013-0000-0000-0000-000000000005",
           "name": "Actualizar Teléfono",
           "request": {
             "method": "PUT",
@@ -772,23 +1148,36 @@
               "raw": "{\n  \"telefono\": 3109999999\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/telefonos/update/5", "host": ["{{baseUrl}}"], "path": ["api", "telefonos", "update", "5"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/telefonos/update/5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telefonos", "update", "5"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00013-0000-0000-0000-000000000006",
           "name": "Eliminar Teléfono",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/telefonos/delete/5/3001234567", "host": ["{{baseUrl}}"], "path": ["api", "telefonos", "delete", "5", "3001234567"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/telefonos/delete/5/3001234567",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telefonos", "delete", "5", "3001234567"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00014-0000-0000-0000-000000000001",
       "name": "Upload",
       "item": [
         {
+          "id": "f1a00014-0000-0000-0000-000000000002",
           "name": "Subir Imagen",
           "request": {
             "method": "POST",
@@ -799,28 +1188,42 @@
                 { "key": "image", "type": "file", "src": "" }
               ]
             },
-            "url": { "raw": "{{baseUrl}}/api/upload", "host": ["{{baseUrl}}"], "path": ["api", "upload"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "upload"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00015-0000-0000-0000-000000000001",
       "name": "Client Plans",
       "item": [
         {
+          "id": "f1a00015-0000-0000-0000-000000000002",
           "name": "Planes con Servicios (Público)",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{baseUrl}}/api/client/plans", "host": ["{{baseUrl}}"], "path": ["api", "client", "plans"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/plans",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "plans"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00016-0000-0000-0000-000000000001",
       "name": "Client Contrato",
       "item": [
         {
+          "id": "f1a00016-0000-0000-0000-000000000002",
           "name": "Adquirir Plan",
           "request": {
             "method": "POST",
@@ -833,26 +1236,44 @@
               "raw": "{\n  \"cliente_id\": 5,\n  \"plan_id\": 1,\n  \"metodo_pago\": \"Efectivo\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/client/contrato", "host": ["{{baseUrl}}"], "path": ["api", "client", "contrato"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/contrato",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "contrato"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00016-0000-0000-0000-000000000003",
           "name": "Ver Mi Plan Activo",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/client/contrato/mine", "host": ["{{baseUrl}}"], "path": ["api", "client", "contrato", "mine"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/contrato/mine",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "contrato", "mine"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00016-0000-0000-0000-000000000004",
           "name": "Ver Planes Disponibles",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/client/contrato/planes", "host": ["{{baseUrl}}"], "path": ["api", "client", "contrato", "planes"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/contrato/planes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "contrato", "planes"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00016-0000-0000-0000-000000000005",
           "name": "Mejorar Plan",
           "request": {
             "method": "PUT",
@@ -865,39 +1286,64 @@
               "raw": "{\n  \"plan_id\": 2,\n  \"metodo_pago\": \"Transferencia\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/client/contrato/mejorar", "host": ["{{baseUrl}}"], "path": ["api", "client", "contrato", "mejorar"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/contrato/mejorar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "contrato", "mejorar"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00016-0000-0000-0000-000000000006",
           "name": "Cancelar Plan",
           "request": {
             "method": "PATCH",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/client/contrato/cancelar", "host": ["{{baseUrl}}"], "path": ["api", "client", "contrato", "cancelar"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/contrato/cancelar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "contrato", "cancelar"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00017-0000-0000-0000-000000000001",
       "name": "Client Store",
       "item": [
         {
+          "id": "f1a00017-0000-0000-0000-000000000002",
           "name": "Productos Activos (Público)",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{baseUrl}}/api/client/store/productos", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "productos"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/store/productos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "store", "productos"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00017-0000-0000-0000-000000000003",
           "name": "Ver Carrito",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/client/store/carrito", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "carrito"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/store/carrito",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "store", "carrito"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00017-0000-0000-0000-000000000004",
           "name": "Agregar al Carrito",
           "request": {
             "method": "POST",
@@ -910,10 +1356,16 @@
               "raw": "{\n  \"producto_id\": 1,\n  \"cantidad\": 2\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/client/store/carrito", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "carrito"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/store/carrito",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "store", "carrito"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00017-0000-0000-0000-000000000005",
           "name": "Checkout - Pagar Carrito",
           "request": {
             "method": "POST",
@@ -926,26 +1378,44 @@
               "raw": "{\n  \"metodo_pago\": \"Efectivo\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/client/store/carrito/checkout", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "carrito", "checkout"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/store/carrito/checkout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "store", "carrito", "checkout"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00017-0000-0000-0000-000000000006",
           "name": "Quitar del Carrito",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/client/store/carrito/3", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "carrito", "3"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/store/carrito/3",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "store", "carrito", "3"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00017-0000-0000-0000-000000000007",
           "name": "Servicios Disponibles",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/client/store/servicios", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "servicios"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/store/servicios",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "store", "servicios"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00017-0000-0000-0000-000000000008",
           "name": "Solicitar Servicio Adicional",
           "request": {
             "method": "POST",
@@ -958,31 +1428,50 @@
               "raw": "{\n  \"servicio_id\": 1,\n  \"metodo_pago\": \"Efectivo\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/client/store/servicios/solicitar", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "servicios", "solicitar"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/store/servicios/solicitar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "store", "servicios", "solicitar"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00017-0000-0000-0000-000000000009",
           "name": "Historial de Pagos",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/client/store/pagos/historial", "host": ["{{baseUrl}}"], "path": ["api", "client", "store", "pagos", "historial"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/store/pagos/historial",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "store", "pagos", "historial"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
+      "id": "f1a00018-0000-0000-0000-000000000001",
       "name": "Client Affiliates",
       "item": [
         {
+          "id": "f1a00018-0000-0000-0000-000000000002",
           "name": "Dashboard de Afiliados",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/client/affiliates/dashboard", "host": ["{{baseUrl}}"], "path": ["api", "client", "affiliates", "dashboard"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/affiliates/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "affiliates", "dashboard"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00018-0000-0000-0000-000000000003",
           "name": "Buscar Candidatos",
           "request": {
             "method": "GET",
@@ -993,9 +1482,11 @@
               "path": ["api", "client", "affiliates", "candidates"],
               "query": [{ "key": "q", "value": "123456" }]
             }
-          }
+          },
+          "response": []
         },
         {
+          "id": "f1a00018-0000-0000-0000-000000000004",
           "name": "Solicitar Afiliación",
           "request": {
             "method": "POST",
@@ -1008,16 +1499,27 @@
               "raw": "{\n  \"afiliado_id\": 7\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/client/affiliates/request", "host": ["{{baseUrl}}"], "path": ["api", "client", "affiliates", "request"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/affiliates/request",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "affiliates", "request"]
+            }
+          },
+          "response": []
         },
         {
+          "id": "f1a00018-0000-0000-0000-000000000005",
           "name": "Remover Afiliado",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-            "url": { "raw": "{{baseUrl}}/api/client/affiliates/remove/7", "host": ["{{baseUrl}}"], "path": ["api", "client", "affiliates", "remove", "7"] }
-          }
+            "url": {
+              "raw": "{{baseUrl}}/api/client/affiliates/remove/7",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "client", "affiliates", "remove", "7"]
+            }
+          },
+          "response": []
         }
       ]
     }
