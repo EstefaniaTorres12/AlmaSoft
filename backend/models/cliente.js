@@ -54,7 +54,6 @@ Cliente.create = async (cliente, result) => {
 
                 const usuario_id = resUsuario.insertId;
 
-                // 🔥 1.5 INSERT rol_usuario (CLIENTE = 1)
                 const sqlRolUsuario = `
                     INSERT INTO rol_usuario(
                         rol_id,
@@ -64,7 +63,7 @@ Cliente.create = async (cliente, result) => {
                 `;
 
                 db.query(sqlRolUsuario, [
-                    1, // 👈 SIEMPRE CLIENTE
+                    1, 
                     usuario_id,
                     true
                 ], (errRol) => {
@@ -74,7 +73,7 @@ Cliente.create = async (cliente, result) => {
                         return result(errRol, null);
                     }
 
-                    // 🔹 2. INSERT CLIENTE
+                    
                     const sqlCliente = `
                         INSERT INTO cliente(
                             cliente_id,
@@ -127,38 +126,9 @@ Cliente.create = async (cliente, result) => {
 
 
 Cliente.findAll = (result) => {
-    const sql = `SELECT 
-    u.usuario_id AS id,
-    u.usuario_documento AS documento,
-    u.usuario_primer_nombre AS primer_nombre,
-    u.usuario_segundo_nombre AS segundo_nombre,
-    u.usuario_primer_apellido AS primer_apellido,
-    u.usuario_segundo_apellido AS segundo_apellido,
-    u.usuario_correo AS correo,
-    u.usuario_direccion AS direccion,
-    GROUP_CONCAT(DISTINCT t.telefono) AS telefono,
-    c.cliente_fecha_nacimiento AS fecha_nacimiento,
-    c.cliente_edad AS edad
-FROM cliente c
-INNER JOIN usuario u ON u.usuario_id = c.cliente_id
-LEFT JOIN telefono t ON t.usuario_id = u.usuario_id
-GROUP BY u.usuario_id`;
 
-    db.query(sql, (err, cliente) => {
-        if (err) {
-            console.log('Error al consultar los clientes:', err);
-            result(err, null);
-        } else {
-            console.log('Clientes encontrados:', cliente.length);
-            result(null, cliente);
-        }
-    });
-};
-
-
-Cliente.findById = (id, result) => {
-
-    const sql = `SELECT 
+    const sql = `
+    SELECT
         u.usuario_id AS id,
         u.usuario_documento AS documento,
         u.usuario_primer_nombre AS primer_nombre,
@@ -167,25 +137,70 @@ Cliente.findById = (id, result) => {
         u.usuario_segundo_apellido AS segundo_apellido,
         u.usuario_correo AS correo,
         u.usuario_direccion AS direccion,
-        GROUP_CONCAT(DISTINCT t.telefono) AS telefono,
+        (
+            SELECT GROUP_CONCAT(telefono)
+            FROM telefono
+            WHERE telefono.usuario_id = u.usuario_id
+        ) AS telefono,
         c.cliente_fecha_nacimiento AS fecha_nacimiento,
         c.cliente_edad AS edad
     FROM cliente c
-    INNER JOIN usuario u ON u.usuario_id = c.cliente_id
-    LEFT JOIN telefono t ON t.usuario_id = u.usuario_id
-    WHERE u.usuario_id = ?
-    GROUP BY u.usuario_id`;
+    INNER JOIN usuario u
+        ON u.usuario_id = c.cliente_id
+    `;
 
-    db.query(sql, [id], (err, res) => {
+    db.query(sql, (err, cliente) => {
+
         if (err) {
-            console.log('Error al obtener cliente:', err);
-            result(err, null);
-        } else {
-            result(null, res[0]); 
+            console.log("Error al consultar los clientes:", err);
+            return result(err, null);
         }
+
+        console.log("Clientes encontrados:", cliente.length);
+        result(null, cliente);
+
     });
+
 };
 
+
+Cliente.findById = (id, result) => {
+
+    const sql = `
+    SELECT
+        u.usuario_id AS id,
+        u.usuario_documento AS documento,
+        u.usuario_primer_nombre AS primer_nombre,
+        u.usuario_segundo_nombre AS segundo_nombre,
+        u.usuario_primer_apellido AS primer_apellido,
+        u.usuario_segundo_apellido AS segundo_apellido,
+        u.usuario_correo AS correo,
+        u.usuario_direccion AS direccion,
+        (
+            SELECT GROUP_CONCAT(telefono)
+            FROM telefono
+            WHERE telefono.usuario_id = u.usuario_id
+        ) AS telefono,
+        c.cliente_fecha_nacimiento AS fecha_nacimiento,
+        c.cliente_edad AS edad
+    FROM cliente c
+    INNER JOIN usuario u
+        ON u.usuario_id = c.cliente_id
+    WHERE u.usuario_id = ?
+    `;
+
+    db.query(sql, [id], (err, res) => {
+
+        if (err) {
+            console.log("Error al obtener cliente:", err);
+            return result(err, null);
+        }
+
+        result(null, res[0]);
+
+    });
+
+};
 
 Cliente.update = (id, cliente, result) => {
 
