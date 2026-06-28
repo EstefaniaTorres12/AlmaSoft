@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Row, Col, Form, Button, Dropdown } from "react-bootstrap";
+import {
+  Container,
+  Table,
+  Row,
+  Col,
+  Form,
+  Button,
+  Dropdown,
+  Card
+} from "react-bootstrap";
+
+import "./Producto.css";
 import { Link } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 import { API_URL } from "../../config/api";
@@ -60,119 +71,477 @@ const ProductoFront = () => {
   );
 
   return (
-    <Container className="my-0">
 
-      <Row className="mb-4">
-        <Col>
-          <h2 className="mt-5 mx-5">Lista de Productos</h2>
-        </Col>
+    <Container fluid className="producto-page">
 
-        <Col className="text-end">
-          <Button
-            className="mt-5 mx-5"
-            as={Link}
-            to="/productos/agregar"
-            style={{ background: "#7856AE", border: "#7856AE" }}
-          >
-            Agregar Producto
-          </Button>
-        </Col>
-      </Row>
+      {/* HEADER */}
 
-      {/*  BUSQUEDA */}
-      <Form className="mb-3">
-        <Row>
-          <Col md={8}>
-            <Form.Control
-              placeholder="Buscar producto"
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-            />
-          </Col>
+      <Card className="producto-header mb-4">
 
-          <Col md={4}>
-            <Button variant="outline-dark" onClick={() => setBusqueda("")}>
-              Limpiar
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+        <div className="pattern"></div>
 
-      {/*  TABLA */}
-      <Table striped bordered hover>
-        <thead className="table-secondary">
-          <tr>
-            <th>Imagen</th>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Estado</th>
-            <th>Categoría</th>
-            <th>Subcategoría</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
+        <Card.Body>
 
-        <tbody>
-          {productosFiltrados.map(p => (
-            <tr key={p.producto_id}>
+          <Row className="align-items-center">
 
-              {/* IMAGEN */}
-              <td>
-                {p.producto_imagen ? (
-                  <img
-                    src={p.producto_imagen}
-                    alt="producto"
-                    width="150"
-                    onError={(e) => { e.target.onerror = null; e.target.style.display = "none"; }}
-                  />
-                ) : (
-                  <span style={{ color: "#aaa", fontSize: "12px" }}>Sin imagen</span>
-                )}
-              </td>
+            <Col>
 
-              <td>{p.producto_nombre}</td>
-              <td>${p.producto_precio}</td>
-              <td>{p.producto_stock}</td>
+              <h2 className="producto-title">
 
-              <td>
-                {p.producto_estado === 1 ? "Activo" : "Inactivo"}
-              </td>
+                📦 Gestión de Productos
 
-              <td>{p.categoria_nombre}</td>
-              <td>{p.subcategoria_nombre}</td>
+              </h2>
 
-              <td>
-                <Dropdown>
-                  <Dropdown.Toggle variant="outline-dark">
+              <p className="producto-subtitle">
+
+                Administre el catálogo de productos del sistema.
+
+              </p>
+
+            </Col>
+
+            <Col xs="auto">
+
+              <Button
+
+                as={Link}
+
+                to="/productos/agregar"
+
+                className="producto-btn-principal"
+
+              >
+
+                Agregar Producto
+
+              </Button>
+
+            </Col>
+
+          </Row>
+
+        </Card.Body>
+
+      </Card>
+
+      {/* BUSCADOR */}
+
+      <Card className="producto-search-card mb-4">
+
+        <Card.Body>
+
+          <Form>
+
+            <Row className="align-items-center g-3">
+
+              <Col lg={8}>
+
+                <Form.Control
+
+                  className="producto-input-search"
+
+                  placeholder="Buscar producto..."
+
+                  value={busqueda}
+
+                  onChange={(e) => setBusqueda(e.target.value)}
+
+                />
+
+              </Col>
+
+              <Col lg={4} className="text-lg-end">
+
+                <Button
+
+                  className="producto-btn-secundario"
+
+                  onClick={() => setBusqueda("")}
+
+                >
+
+                  Limpiar
+
+                </Button>
+
+              </Col>
+
+            </Row>
+
+          </Form>
+
+        </Card.Body>
+
+      </Card>
+
+      {/* CONTADOR */}
+
+      <div className="producto-contador">
+
+        <span className="producto-pill">
+
+          {productosFiltrados.length} productos registrados
+
+        </span>
+
+      </div>
+
+      {/* TABLA */}
+
+      <Card className="producto-table-card">
+
+        <Card.Body>
+
+          <div className="table-responsive">
+
+            <Table
+
+              hover
+
+              className="producto-table align-middle mb-0"
+
+            >
+
+              <thead>
+
+                <tr>
+
+                  <th style={{ width: "110px" }}>
+
+                    Imagen
+
+                  </th>
+
+                  <th>
+
+                    Producto
+
+                  </th>
+
+                  <th>
+
+                    Precio
+
+                  </th>
+
+                  <th>
+
+                    Stock
+
+                  </th>
+
+                  <th>
+
+                    Estado
+
+                  </th>
+
+                  <th>
+
+                    Categoría
+
+                  </th>
+
+                  <th>
+
+                    Subcategoría
+
+                  </th>
+
+                  <th
+                    className="text-center"
+                    style={{ width: "170px" }}
+                  >
+
                     Acciones
-                  </Dropdown.Toggle>
 
-                  <Dropdown.Menu>
+                  </th>
 
-                    <Dropdown.Item
-                      as={Link}
-                      to={`/productos/editar/${p.producto_id}`}
-                    >
-                      Editar
-                    </Dropdown.Item>
+                </tr>
 
-                    <Dropdown.Item
-                      onClick={() => eliminarProducto(p.producto_id)}
-                    >
-                      Eliminar
-                    </Dropdown.Item>
+              </thead>
 
-                  </Dropdown.Menu>
-                </Dropdown>
-              </td>
+              <tbody>
 
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                {
+
+                  productosFiltrados.length === 0 ?
+
+                    (
+
+                      <tr>
+
+                        <td
+                          colSpan={8}
+                          className="text-center py-5"
+                        >
+
+                          No hay productos registrados.
+
+                        </td>
+
+                      </tr>
+
+                    )
+
+                    :
+
+                    productosFiltrados.map(p => (
+
+                      <tr key={p.producto_id}>
+
+                        {/* IMAGEN */}
+
+                        <td>
+
+                          {
+
+                            p.producto_imagen ?
+
+                              (
+
+                                <img
+
+                                  src={p.producto_imagen}
+
+                                  alt="producto"
+
+                                  className="producto-img"
+
+                                  onError={(e) => {
+
+                                    e.target.onerror = null;
+
+                                    e.target.style.display = "none";
+
+                                  }}
+
+                                />
+
+                              )
+
+                              :
+
+                              <div className="producto-img-vacio">
+
+                                Sin imagen
+
+                              </div>
+
+                          }
+
+                        </td>
+
+                        {/* NOMBRE */}
+
+                        <td>
+
+                          <strong>
+
+                            {p.producto_nombre}
+
+                          </strong>
+
+                        </td>
+
+                        {/* PRECIO */}
+
+                        <td>
+
+                          <span className="precio-producto">
+
+                            $
+
+                            {Number(
+
+                              p.producto_precio
+
+                            ).toLocaleString("es-CO")}
+
+                          </span>
+
+                        </td>
+
+                        {/* STOCK */}
+
+                        <td>
+
+                          {
+
+                            p.producto_stock > 10 ?
+
+                              (
+
+                                <span className="stock-badge stock-alto">
+
+                                  🟢 {p.producto_stock}
+
+                                </span>
+
+                              )
+
+                              :
+
+                              p.producto_stock > 0 ?
+
+                                (
+
+                                  <span className="stock-badge stock-medio">
+
+                                    🟡 {p.producto_stock}
+
+                                  </span>
+
+                                )
+
+                                :
+
+                                (
+
+                                  <span className="stock-badge stock-bajo">
+
+                                    🔴 0
+
+                                  </span>
+
+                                )
+
+                          }
+
+                        </td>
+
+                        {/* ESTADO */}
+
+                        <td>
+
+                          {
+
+                            Number(p.producto_estado) === 1 ?
+
+                              (
+
+                                <span className="estado-badge estado-activo">
+
+                                  Activo
+
+                                </span>
+
+                              )
+
+                              :
+
+                              (
+
+                                <span className="estado-badge estado-inactivo">
+
+                                  Inactivo
+
+                                </span>
+
+                              )
+
+                          }
+
+                        </td>
+
+                        {/* CATEGORIA */}
+
+                        <td>
+
+                          <span className="categoria-badge">
+
+                            {p.categoria_nombre}
+
+                          </span>
+
+                        </td>
+
+                        {/* SUBCATEGORIA */}
+
+                        <td>
+
+                          <span className="subcategoria-badge">
+
+                            {p.subcategoria_nombre}
+
+                          </span>
+
+                        </td>
+
+                        {/* ACCIONES */}
+
+                        <td className="text-center">
+
+                          <Dropdown align="end">
+
+                            <Dropdown.Toggle
+
+                              variant="light"
+
+                              className="producto-acciones-btn"
+
+                            >
+
+                              Acciones
+
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+
+                              <Dropdown.Item
+
+                                as={Link}
+
+                                to={`/productos/editar/${p.producto_id}`}
+
+                              >
+
+                                Editar
+
+                              </Dropdown.Item>
+
+                              <Dropdown.Divider />
+
+                              <Dropdown.Item
+
+                                className="text-danger"
+
+                                onClick={() =>
+                                  eliminarProducto(p.producto_id)
+                                }
+
+                              >
+
+                                Eliminar
+
+                              </Dropdown.Item>
+
+                            </Dropdown.Menu>
+
+                          </Dropdown>
+
+                        </td>
+
+                      </tr>
+
+                    ))
+
+                }
+
+              </tbody>
+
+            </Table>
+
+          </div>
+
+        </Card.Body>
+
+      </Card>
+
     </Container>
+
   );
+
 };
 
 export default ProductoFront;

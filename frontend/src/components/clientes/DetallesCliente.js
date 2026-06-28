@@ -1,80 +1,430 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { API_URL } from "../../config/api";
+import "./DetallesCliente.css";
 
 const DetallesCliente = () => {
 
     const { id } = useParams();
+
     const [cliente, setCliente] = useState(null);
 
     useEffect(() => {
+
         const fetchCliente = async () => {
+
             try {
-                const response = await fetch(`${API_URL}/api/clientes/id/${id}`, {
-                    headers: {
-                        "Authorization": "Bearer " + localStorage.getItem("token") 
+
+                const response = await fetch(
+
+                    `${API_URL}/api/clientes/id/${id}`,
+
+                    {
+
+                        headers: {
+
+                            Authorization:
+                                "Bearer " +
+                                localStorage.getItem("token")
+
+                        }
+
                     }
-                });
+
+                );
 
                 const data = await response.json();
 
                 if (response.ok) {
+
                     setCliente(data.data);
+
                 } else {
+
                     alert(data.message);
+
                 }
+
             } catch (error) {
-                console.error("Error cargando cliente", error);
+
+                console.log(error);
+
                 alert("Error cargando datos del cliente");
+
             }
+
         };
 
         fetchCliente();
+
     }, [id]);
 
     if (!cliente) {
-        return <h2 className="text-center mt-5">Cargando cliente...</h2>;
+
+        return (
+
+            <div className="detalle-cliente-loading">
+
+                <h3>
+
+                    Cargando cliente...
+
+                </h3>
+
+            </div>
+
+        );
+
     }
 
     return (
-        <Container className="my-5">
-            <Row>
-                <Col>
-                    <Card>
-                        <Card.Header>
-                            <h3 className="text-center">Detalles del Cliente</h3>
-                        </Card.Header>
+
+        <Container
+            fluid
+            className="detalle-cliente-page"
+        >
+
+            {/* HEADER */}
+
+            <Card className="detalle-cliente-header mb-4">
+
+                <div className="pattern"></div>
+
+                <Card.Body>
+
+                    <h2 className="detalle-cliente-title">
+
+                        Detalles del Cliente
+
+                    </h2>
+
+                    <p className="detalle-cliente-subtitle">
+
+                        Consulte la información completa del cliente.
+
+                    </p>
+
+                </Card.Body>
+
+            </Card>
+
+            <Row className="g-4">
+
+                {/* INFORMACIÓN */}
+
+                <Col lg={8}>
+
+                    <Card className="detalle-cliente-card">
+
                         <Card.Body>
-                            <h4>ID: {cliente.id}</h4>
-                            <h4>Documento: {cliente.documento}</h4>
-                            <h4>Nombres: {cliente.primer_nombre} {cliente.segundo_nombre}</h4>
-                            <h4>Apellidos: {cliente.primer_apellido} {cliente.segundo_apellido}</h4>
-                            <h4>Email: {cliente.correo}</h4>
-                            <h4>Dirección: {cliente.direccion}</h4>
-                            <h4>Teléfono: {cliente.telefono}</h4>
-                            <h4>Fecha Nacimiento: {cliente.fecha_nacimiento}</h4>
-                            <h4>Edad: {cliente.edad}</h4>
+
+                            <h5 className="detalle-section-title">
+
+                                Información Personal
+
+                            </h5>
+
+                            <Row>
+
+                                <Col md={6} className="mb-4">
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            ID
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.id}
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                                <Col md={6} className="mb-4">
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            Documento
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.documento}
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                                <Col md={6} className="mb-4">
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            Primer Nombre
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.primer_nombre}
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                                <Col md={6} className="mb-4">
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            Segundo Nombre
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.segundo_nombre || "---"}
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                                <Col md={6} className="mb-4">
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            Primer Apellido
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.primer_apellido}
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                                <Col md={6} className="mb-4">
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            Segundo Apellido
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.segundo_apellido || "---"}
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                            </Row>
+
+                            <h5 className="detalle-section-title mt-3">
+
+                                Información de Contacto
+
+                            </h5>
+
+                            <Row>
+
+                                <Col md={6} className="mb-4">
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            Correo
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.correo}
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                                <Col md={6} className="mb-4">
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            Teléfono
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.telefono}
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                                <Col md={12} className="mb-4">
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            Dirección
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.direccion}
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                            </Row>
+
+                            <h5 className="detalle-section-title mt-3">
+
+                                Información del Cliente
+
+                            </h5>
+
+                            <Row>
+
+                                <Col md={6}>
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            Fecha de Nacimiento
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.fecha_nacimiento}
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                                <Col md={6}>
+
+                                    <div className="detalle-item">
+
+                                        <span>
+
+                                            Edad
+
+                                        </span>
+
+                                        <h6>
+
+                                            {cliente.edad} años
+
+                                        </h6>
+
+                                    </div>
+
+                                </Col>
+
+                            </Row>
+                            {/* TARJETA LATERAL */}
+
                         </Card.Body>
+
                     </Card>
+
                 </Col>
 
-                <Col>
-                    <Card style={{ width: '30rem' }}>
-                        <Card.Header>
-                            <h3 className="text-center">Cliente</h3>
-                        </Card.Header>
-                        <Card.Img variant="top" src="/img/usuario.png" />
+                <Col lg={4}>
+
+                    <Card className="detalle-cliente-card text-center">
+
                         <Card.Body>
-                            <Card.Text>
-                                Información detallada del cliente
-                            </Card.Text>
+
+                            <img
+                                src="/img/usuario.png"
+                                alt="Cliente"
+                                className="detalle-cliente-img"
+                            />
+
+                            <h4 className="mt-3">
+
+                                {cliente.primer_nombre} {cliente.primer_apellido}
+
+                            </h4>
+
+                            <span className="detalle-cliente-badge">
+
+                                Cliente
+
+                            </span>
+
+                            <div className="mt-4">
+
+                                <Link
+                                    to="/clientes/Cliente"
+                                    className="btn detalle-cliente-btn"
+                                >
+
+                                    Volver
+
+                                </Link>
+
+                            </div>
+
                         </Card.Body>
+
                     </Card>
+
                 </Col>
+
             </Row>
+
         </Container>
+
     );
-}
+
+};
 
 export default DetallesCliente;

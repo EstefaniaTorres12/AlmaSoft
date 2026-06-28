@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Row, Col, Form, Button, Dropdown } from "react-bootstrap";
+import {
+  Container,
+  Table,
+  Row,
+  Col,
+  Form,
+  Button,
+  Dropdown,
+  Card
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 import { API_URL } from "../../config/api";
+import "./Categorias.css";
+
 
 const CategoriaFront = () => {
 
@@ -18,10 +29,10 @@ const CategoriaFront = () => {
         );
 
         const data = await response.json();
-        console.log("DATA:", data); 
+        console.log("DATA:", data);
 
         if (response.ok) {
-        
+
           setCategorias(data.data || data);
         } else {
           alert(data.message || "Error al obtener categorías");
@@ -64,90 +75,273 @@ const CategoriaFront = () => {
 
   const categoriasFiltradas = Array.isArray(categorias)
     ? categorias.filter(c =>
-        c.categoria_nombre?.toLowerCase().includes(busqueda.toLowerCase())
-      )
+      c.categoria_nombre?.toLowerCase().includes(busqueda.toLowerCase())
+    )
     : [];
 
   return (
-    <Container>
-      <Row className="mb-4">
-        <Col>
-          <h2 className="mt-5 mx-5">Lista de Categorías</h2>
-        </Col>
-        <Col className="text-end">
-          <Button className="mt-5 mx-5"
-            as={Link}
-            to="/categorias/agregar"
-            style={{ background: "#7856AE", border: "#7856AE" }}
-          >
-            Agregar Categoría
-          </Button>
-        </Col>
-      </Row>
 
-      
-      <Form className="mb-3">
-        <Row>
-          <Col md={8}>
-            <Form.Control
-              type="text"
-              placeholder="Buscar por nombre"
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-            />
-          </Col>
-          <Col md={4}>
-            <Button variant="outline-dark" onClick={() => setBusqueda("")}>
-              Mostrar todos
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+    <Container fluid className="categoria-page">
+
+      {/* HEADER */}
+
+      <Card className="categoria-header mb-4">
+
+        <div className="pattern"></div>
+
+        <Card.Body>
+
+          <Row className="align-items-center">
+
+            <Col>
+
+              <h2 className="categoria-title">
+
+                Gestión de Categorías
+
+              </h2>
+
+              <p className="categoria-subtitle">
+
+                Administre las categorías registradas en el sistema.
+
+              </p>
+
+            </Col>
+
+            <Col xs="auto">
+
+              <Button
+
+                as={Link}
+
+                to="/categorias/agregar"
+
+                className="categoria-btn-principal"
+
+              >
+
+                Agregar Categoría
+
+              </Button>
+
+            </Col>
+
+          </Row>
+
+        </Card.Body>
+
+      </Card>
+
+      {/* BUSCADOR */}
+
+      <Card className="categoria-search-card mb-4">
+
+        <Card.Body>
+
+          <Form>
+
+            <Row className="align-items-center g-3">
+
+              <Col lg={8}>
+
+                <Form.Control
+
+                  type="text"
+
+                  placeholder="Buscar categoría..."
+
+                  value={busqueda}
+
+                  onChange={(e) =>
+                    setBusqueda(e.target.value)
+                  }
+
+                  className="categoria-input-search"
+
+                />
+
+              </Col>
+
+              <Col lg={4} className="text-lg-end">
+
+                <Button
+
+                  className="categoria-btn-secundario"
+
+                  onClick={() => setBusqueda("")}
+
+                >
+
+                  Mostrar Todos
+
+                </Button>
+
+              </Col>
+
+            </Row>
+
+          </Form>
+
+        </Card.Body>
+
+      </Card>
+
+      {/* CONTADOR */}
+
+      <div className="categoria-contador">
+
+        <span className="categoria-pill">
+
+          {categoriasFiltradas.length} Categorías registradas
+
+        </span>
+
+      </div>
 
       {/* TABLA */}
-      <Table striped bordered hover>
-        <thead className="table-secondary">
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
 
-        <tbody>
-          {categoriasFiltradas.map(categoria => (
-            <tr key={categoria.categoria_id}>
-              <td>{categoria.categoria_id}</td>
-              <td>{categoria.categoria_nombre}</td>
+      <Card className="categoria-table-card">
 
-              <td>
-                <Dropdown>
-                  <Dropdown.Toggle variant="outline-dark">
+        <Card.Body>
+
+          <div className="table-responsive">
+
+            <Table
+
+              hover
+
+              className="categoria-table align-middle mb-0"
+
+            >
+
+              <thead>
+
+                <tr>
+
+                  <th style={{ width: "120px" }}>
+
+                    ID
+
+                  </th>
+
+                  <th>
+
+                    Nombre
+
+                  </th>
+
+                  <th
+                    className="text-center"
+                    style={{ width: "180px" }}
+                  >
+
                     Acciones
-                  </Dropdown.Toggle>
 
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      as={Link}
-                      to={`/categorias/editar/${categoria.categoria_id}`}
-                    >
-                      Editar
-                    </Dropdown.Item>
+                  </th>
 
-                    <Dropdown.Item
-                      onClick={() => eliminarCategoria(categoria.categoria_id)}
-                    >
-                      Eliminar
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                {
+
+                  categoriasFiltradas.length === 0 ?
+
+                    (
+
+                      <tr>
+
+                        <td
+                          colSpan={3}
+                          className="text-center py-5"
+                        >
+
+                          No hay categorías registradas.
+
+                        </td>
+
+                      </tr>
+
+                    )
+
+                    :
+
+                    categoriasFiltradas.map(categoria => (
+
+                      <tr
+                        key={categoria.categoria_id}
+                      >
+
+                        <td>
+
+                          {categoria.categoria_id}
+
+                        </td>
+
+                        <td>
+
+                          {categoria.categoria_nombre}
+
+                        </td>
+
+                        <td className="text-center">
+
+                          <Dropdown align="end">
+
+                            <Dropdown.Toggle
+                              variant="light"
+                              className="categoria-acciones-btn"
+                            >
+                              Acciones
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+
+                              <Dropdown.Item
+                                as={Link}
+                                to={`/categorias/editar/${categoria.categoria_id}`}
+                              >
+                                Editar
+                              </Dropdown.Item>
+
+                              <Dropdown.Divider />
+
+                              <Dropdown.Item
+                                className="text-danger"
+                                onClick={() =>
+                                  eliminarCategoria(categoria.categoria_id)
+                                }
+                              >
+                                Eliminar
+                              </Dropdown.Item>
+
+                            </Dropdown.Menu>
+
+                          </Dropdown>
+
+                        </td>
+                      </tr>
+                    ))
+
+                }
+
+              </tbody>
+
+            </Table>
+
+          </div>
+
+        </Card.Body>
+
+      </Card>
+
     </Container>
+
   );
+
 };
 
 export default CategoriaFront;

@@ -1,0 +1,277 @@
+/* =====================================================
+   PAGINA
+===================================================== */
+
+.editar-producto-page {
+    background: #F8F5FC;
+    min-height: 100vh;
+    padding: 35px;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.editar-producto-header {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    border-radius: 22px;
+    background: linear-gradient(135deg,
+            #6F46B8 0%,
+            #7856AE 45%,
+            #A27BDE 100%);
+    color: white;
+    box-shadow: 0 12px 30px rgba(120, 86, 174, .25);
+}
+
+.editar-producto-header::before {
+    content: "";
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    top: -180px;
+    right: -120px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, .18),
+            transparent 70%);
+}
+
+.editar-producto-header::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    left: -90px;
+    bottom: -120px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, .10),
+            transparent 70%);
+}
+
+.pattern {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, .08) 1px,
+            transparent 1px);
+    background-size: 24px 24px;
+}
+
+.editar-producto-header .card-body {
+    position: relative;
+    z-index: 2;
+}
+
+.editar-producto-title {
+    font-size: 34px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.editar-producto-subtitle {
+    color: #EFE9FA;
+    margin: 0;
+}
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.editar-producto-form-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(120, 86, 174, .12);
+}
+
+.editar-producto-form-card .card-body {
+    padding: 35px;
+}
+
+/* =====================================================
+   TITULOS
+===================================================== */
+
+.form-title {
+    color: #7856AE;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #EEE6FA;
+}
+
+/* =====================================================
+   LABELS
+===================================================== */
+
+.form-label {
+    font-weight: 600;
+    color: #444;
+}
+
+/* =====================================================
+   INPUTS
+===================================================== */
+
+.editar-producto-input {
+    border-radius: 14px !important;
+    border: 2px solid #EEEAF8 !important;
+    min-height: 52px;
+    box-shadow: none !important;
+}
+
+.editar-producto-input:focus {
+    border-color: #7856AE !important;
+    box-shadow: 0 0 0 .25rem rgba(120, 86, 174, .15) !important;
+}
+
+textarea.editar-producto-input {
+    min-height: 120px;
+    resize: none;
+}
+
+/* =====================================================
+   GALERIA
+===================================================== */
+
+.galeria-imagenes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+    gap: 14px;
+}
+
+.imagen-card {
+    position: relative;
+    border: 3px solid transparent;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .25s;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+}
+
+.imagen-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 22px rgba(120, 86, 174, .18);
+}
+
+.imagen-card img {
+    width: 100%;
+    height: 95px;
+    object-fit: cover;
+    display: block;
+}
+
+.imagen-card.seleccionada {
+    border-color: #7856AE;
+}
+
+.imagen-card.seleccionada img {
+    transform: scale(1.05);
+}
+
+.check-imagen {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #7856AE;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .2);
+}
+
+/* =====================================================
+   BOTONES
+===================================================== */
+
+.editar-producto-btn {
+    background: #7856AE !important;
+    border: none !important;
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-weight: 600;
+}
+
+.editar-producto-btn:hover {
+    background: #6542A4 !important;
+}
+
+/* =====================================================
+   ALERTA
+===================================================== */
+
+.alert {
+    border: none;
+    border-left: 5px solid #2ECC71;
+    border-radius: 12px;
+}
+
+/* =====================================================
+   ANIMACION
+===================================================== */
+
+.editar-producto-header,
+.editar-producto-form-card {
+    animation: fadeUp .45s ease;
+}
+
+@keyframes fadeUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:991px) {
+
+    .editar-producto-page {
+        padding: 20px;
+    }
+
+    .editar-producto-title {
+        font-size: 28px;
+    }
+
+    .editar-producto-form-card .card-body {
+        padding: 22px;
+    }
+
+}
+
+@media(max-width:768px) {
+
+    .galeria-imagenes {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .d-flex.justify-content-end {
+        flex-direction: column-reverse;
+    }
+
+    .editar-producto-btn,
+    .btn-secondary {
+        width: 100%;
+    }
+
+}

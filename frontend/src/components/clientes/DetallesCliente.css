@@ -1,0 +1,392 @@
+/* ==========================================
+   CONTENEDOR
+========================================== */
+
+.detalle-cliente-page{
+
+    background:#F8F5FC;
+
+    min-height:100vh;
+
+    padding:35px;
+
+}
+
+/* ==========================================
+   LOADING
+========================================== */
+
+.detalle-cliente-loading{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#7856AE;
+
+    font-weight:600;
+
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.detalle-cliente-header{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border:none;
+
+    border-radius:22px;
+
+    background:linear-gradient(
+        135deg,
+        #6F46B8 0%,
+        #7856AE 45%,
+        #A27BDE 100%
+    );
+
+    color:white;
+
+    padding:20px;
+
+    box-shadow:0 12px 30px rgba(120,86,174,.25);
+
+    transition:.3s;
+
+}
+
+.detalle-cliente-header:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 18px 40px rgba(120,86,174,.30);
+
+}
+
+.detalle-cliente-header::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:420px;
+    height:420px;
+
+    top:-180px;
+    right:-120px;
+
+    border-radius:50%;
+
+    background:radial-gradient(
+        circle,
+        rgba(255,255,255,.18),
+        transparent 70%
+    );
+
+}
+
+.detalle-cliente-header::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:300px;
+    height:300px;
+
+    bottom:-120px;
+    left:-90px;
+
+    border-radius:50%;
+
+    background:radial-gradient(
+        circle,
+        rgba(255,255,255,.10),
+        transparent 70%
+    );
+
+}
+
+.pattern{
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+        radial-gradient(
+            rgba(255,255,255,.08) 1px,
+            transparent 1px
+        );
+
+    background-size:24px 24px;
+
+    opacity:.6;
+
+}
+
+.detalle-cliente-header .card-body{
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+.detalle-cliente-title{
+
+    color:white;
+
+    font-size:34px;
+
+    font-weight:700;
+
+    margin-bottom:5px;
+
+}
+
+.detalle-cliente-subtitle{
+
+    color:#F0E8FC;
+
+    margin:0;
+
+}
+
+/* ==========================================
+   TARJETAS
+========================================== */
+
+.detalle-cliente-card{
+
+    border:none;
+
+    border-radius:20px;
+
+    box-shadow:0 10px 25px rgba(120,86,174,.10);
+
+    animation:fadeUp .45s ease;
+
+}
+
+.detalle-cliente-card .card-body{
+
+    padding:30px;
+
+}
+
+/* ==========================================
+   TITULOS
+========================================== */
+
+.detalle-section-title{
+
+    color:#7856AE;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    margin-bottom:25px;
+
+    padding-bottom:10px;
+
+    border-bottom:2px solid #EEE6FA;
+
+}
+
+/* ==========================================
+   ITEMS
+========================================== */
+
+.detalle-item{
+
+    background:white;
+
+    border:1px solid #EEE6FA;
+
+    border-radius:14px;
+
+    padding:18px;
+
+    height:100%;
+
+    transition:.25s;
+
+}
+
+.detalle-item:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 18px rgba(120,86,174,.10);
+
+}
+
+.detalle-item span{
+
+    display:block;
+
+    color:#8B8B8B;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    margin-bottom:6px;
+
+    text-transform:uppercase;
+
+}
+
+.detalle-item h6{
+
+    margin:0;
+
+    color:#333;
+
+    font-size:17px;
+
+    font-weight:600;
+
+}
+
+/* ==========================================
+   IMAGEN
+========================================== */
+
+.detalle-cliente-img{
+
+    width:180px;
+
+    height:180px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:5px solid #EEE6FA;
+
+    padding:10px;
+
+}
+
+/* ==========================================
+   BADGE
+========================================== */
+
+.detalle-cliente-badge{
+
+    display:inline-block;
+
+    margin-top:15px;
+
+    background:#7856AE;
+
+    color:white;
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    font-weight:600;
+
+}
+
+/* ==========================================
+   BOTON
+========================================== */
+
+.detalle-cliente-btn{
+
+    background:#7856AE !important;
+
+    color:white !important;
+
+    border:none !important;
+
+    border-radius:12px;
+
+    padding:10px 22px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.detalle-cliente-btn:hover{
+
+    background:#6542A4 !important;
+
+    color:white !important;
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================
+   ANIMACION
+========================================== */
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:768px){
+
+    .detalle-cliente-page{
+
+        padding:20px;
+
+    }
+
+    .detalle-cliente-title{
+
+        font-size:28px;
+
+    }
+
+    .detalle-cliente-card .card-body{
+
+        padding:20px;
+
+    }
+
+    .detalle-cliente-img{
+
+        width:150px;
+
+        height:150px;
+
+    }
+
+}

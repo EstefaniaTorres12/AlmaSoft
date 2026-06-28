@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Row, Col, Form, Button, Dropdown } from "react-bootstrap";
+import {
+  Container,
+  Table,
+  Row,
+  Col,
+  Form,
+  Button,
+  Dropdown,
+  Card
+} from "react-bootstrap";
+
+import "./SubcategoriaFront.css";
 import { Link } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 import { API_URL } from "../../config/api";
@@ -66,90 +77,296 @@ const SubCategoriaFront = () => {
   );
 
   return (
-    <Container>
-      <Row className="mb-4">
-        <Col>
-          <h2 className="mt-5 mx-5">Lista de Subcategorías</h2>
-        </Col>
-        <Col className="text-end">
-          <Button
-            as={Link}
-            to="/subcategorias/agregar"
-            className="mt-5 mx-5"
-            style={{ background: "#7856AE", border: "#7856AE" }}
-          >
-            Agregar Subcategoría
-          </Button>
-        </Col>
-      </Row>
 
-      {/* 🔍 BUSQUEDA */}
-      <Form className="mb-3">
-        <Row>
-          <Col md={8}>
-            <Form.Control
-              type="text"
-              placeholder="Buscar por nombre"
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-            />
-          </Col>
-          <Col md={4}>
-            <Button variant="outline-dark" onClick={() => setBusqueda("")}>
-              Mostrar todos
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+    <Container fluid className="subcategoria-page">
 
-      {/* 📋 TABLA */}
-      <Table striped bordered hover>
-        <thead className="table-secondary">
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
+      {/* HEADER */}
 
-        <tbody>
-          {subcategoriasFiltradas.map(sub => (
-            <tr key={sub.subcategoria_id}>
-              <td>{sub.subcategoria_id}</td>
-              <td>{sub.subcategoria_nombre}</td>
+      <Card className="subcategoria-header mb-4">
 
-              {/* 🔥 SI HICISTE JOIN → muestra nombre, si no → ID */}
-              <td>{sub.categoria_nombre || sub.categoria_id}</td>
+        <div className="pattern"></div>
 
-              <td>
-                <Dropdown>
-                  <Dropdown.Toggle variant="outline-dark">
+        <Card.Body>
+
+          <Row className="align-items-center">
+
+            <Col>
+
+              <h2 className="subcategoria-title">
+
+                🗂 Gestión de Subcategorías
+
+              </h2>
+
+              <p className="subcategoria-subtitle">
+
+                Administre las subcategorías asociadas a cada categoría.
+
+              </p>
+
+            </Col>
+
+            <Col xs="auto">
+
+              <Button
+
+                as={Link}
+
+                to="/subcategorias/agregar"
+
+                className="subcategoria-btn-principal"
+
+              >
+
+                Agregar Subcategoría
+
+              </Button>
+
+            </Col>
+
+          </Row>
+
+        </Card.Body>
+
+      </Card>
+
+      {/* BUSCADOR */}
+
+      <Card className="subcategoria-search-card mb-4">
+
+        <Card.Body>
+
+          <Form>
+
+            <Row className="align-items-center g-3">
+
+              <Col lg={8}>
+
+                <Form.Control
+
+                  className="subcategoria-input-search"
+
+                  type="text"
+
+                  placeholder="Buscar subcategoría..."
+
+                  value={busqueda}
+
+                  onChange={(e) => setBusqueda(e.target.value)}
+
+                />
+
+              </Col>
+
+              <Col lg={4} className="text-lg-end">
+
+                <Button
+
+                  className="subcategoria-btn-secundario"
+
+                  onClick={() => setBusqueda("")}
+
+                >
+
+                  Mostrar Todos
+
+                </Button>
+
+              </Col>
+
+            </Row>
+
+          </Form>
+
+        </Card.Body>
+
+      </Card>
+
+      {/* CONTADOR */}
+
+      <div className="subcategoria-contador">
+
+        <span className="subcategoria-pill">
+
+          {subcategoriasFiltradas.length} Subcategorías registradas
+
+        </span>
+
+      </div>
+
+      {/* TABLA */}
+
+      <Card className="subcategoria-table-card">
+
+        <Card.Body>
+
+          <div className="table-responsive">
+
+            <Table
+
+              hover
+
+              className="subcategoria-table align-middle mb-0"
+
+            >
+
+              <thead>
+
+                <tr>
+
+                  <th style={{ width: "90px" }}>
+
+                    ID
+
+                  </th>
+
+                  <th>
+
+                    Subcategoría
+
+                  </th>
+
+                  <th>
+
+                    Categoría
+
+                  </th>
+
+                  <th
+                    className="text-center"
+                    style={{ width: "180px" }}
+                  >
+
                     Acciones
-                  </Dropdown.Toggle>
 
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      as={Link}
-                      to={`/subcategorias/editar/${sub.subcategoria_id}`}
-                    >
-                      Editar
-                    </Dropdown.Item>
+                  </th>
 
-                    <Dropdown.Item
-                      onClick={() => eliminarSubcategoria(sub.subcategoria_id)}
-                    >
-                      Eliminar
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                {
+
+                  subcategoriasFiltradas.length === 0 ?
+
+                    (
+
+                      <tr>
+
+                        <td
+                          colSpan={4}
+                          className="text-center py-5"
+                        >
+
+                          No hay subcategorías registradas.
+
+                        </td>
+
+                      </tr>
+
+                    )
+
+                    :
+
+                    subcategoriasFiltradas.map(sub => (
+
+                      <tr
+                        key={sub.subcategoria_id}
+                      >
+
+                        <td>
+
+                          {sub.subcategoria_id}
+
+                        </td>
+
+                        <td>
+
+                          {sub.subcategoria_nombre}
+
+                        </td>
+
+                        <td>
+
+                          <span className="categoria-badge">
+
+                            {sub.categoria_nombre || sub.categoria_id}
+
+                          </span>
+
+                        </td>
+
+                        <td className="text-center"><Dropdown align="end">
+
+                          <Dropdown.Toggle
+
+                            variant="light"
+
+                            className="subcategoria-acciones-btn"
+
+                          >
+
+                            Acciones
+
+                          </Dropdown.Toggle>
+
+                          <Dropdown.Menu>
+
+                            <Dropdown.Item
+
+                              as={Link}
+
+                              to={`/subcategorias/editar/${sub.subcategoria_id}`}
+
+                            >
+
+                              Editar
+
+                            </Dropdown.Item>
+
+                            <Dropdown.Divider />
+
+                            <Dropdown.Item
+
+                              className="text-danger"
+
+                              onClick={() =>
+                                eliminarSubcategoria(sub.subcategoria_id)
+                              }
+
+                            >
+
+                              Eliminar
+
+                            </Dropdown.Item>
+
+                          </Dropdown.Menu>
+
+                        </Dropdown>
+
+                        </td>
+
+                      </tr>
+
+                    ))
+
+                }
+
+              </tbody>
+
+            </Table>
+
+          </div>
+
+        </Card.Body>
+
+      </Card>
+
     </Container>
-  );
-};
 
+  );
+
+};
 export default SubCategoriaFront;

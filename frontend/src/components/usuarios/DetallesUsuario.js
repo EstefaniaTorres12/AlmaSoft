@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { API_URL } from "../../config/api";
 
@@ -38,41 +38,216 @@ const DetallesUsuario = () => {
     }
 
     return (
-        <Container className="my-5">
-            <Row>
-                <Col>
-                    <Card>
-                        <Card.Header>
-                            <h3 className="text-center">Detalles del Usuario</h3>
-                        </Card.Header>
-                        <Card.Body>
-                            <h4>ID Usuario: {usuario.usuario_id}</h4>
-                            <h4>Documento: {usuario.usuario_documento}</h4>
-                            <h4>Nombres: {usuario.usuario_primer_nombre} {usuario.usuario_segundo_nombre}</h4>
-                            <h4>Apellidos: {usuario.usuario_primer_apellido} {usuario.usuario_segundo_apellido}</h4>
-                            <h4>Email: {usuario.usuario_correo}</h4>
-                            <h4>Dirección: {usuario.usuario_direccion}</h4>
-                            <h4>Teléfono: {usuario.usuario_telefono}</h4>
-                        </Card.Body>
-                    </Card>
-                </Col>
+    <Container fluid className="usuarios-page">
 
-                <Col>
-                    <Card style={{ width: '30rem' }}>
-                        <Card.Header>
-                            <h3 className="text-center">{usuario.rol_nombre}</h3>
-                        </Card.Header>
-                        <Card.Img variant="top" src="/img/usuario.png" />
-                        <Card.Body>
-                            <Card.Text>
-                                Información adicional del usuario
-                            </Card.Text>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
-    );
+        {/* HEADER */}
+
+        <Card className="header-card mb-4">
+
+            <div className="pattern"></div>
+
+            <Card.Body>
+
+                <h2 className="titulo">
+                    Detalles del Usuario
+                </h2>
+
+                <p className="subtitulo">
+                    Consulte la información del usuario seleccionado.
+                </p>
+
+            </Card.Body>
+        </Card>
+        <Row className="g-4">
+            <Col lg={8}>
+                <Card className="form-card">
+                    <Card.Body>
+                        <h5 className="form-title">
+                            Información General
+                        </h5>
+
+                        <Row>
+
+                            <Col md={6} className="mb-4">
+
+                                <div className="detalle-item">
+
+                                    <span className="detalle-label">
+                                        ID
+                                    </span>
+
+                                    <h6>{usuario.usuario_id}</h6>
+
+                                </div>
+
+                            </Col>
+
+                            <Col md={6} className="mb-4">
+
+                                <div className="detalle-item">
+
+                                    <span className="detalle-label">
+                                        Documento
+                                    </span>
+
+                                    <h6>{usuario.usuario_documento}</h6>
+
+                                </div>
+
+                            </Col>
+
+                            <Col md={6} className="mb-4">
+
+                                <div className="detalle-item">
+
+                                    <span className="detalle-label">
+                                        Rol
+                                    </span>
+
+                                    <h6>{usuario.rol_nombre}</h6>
+
+                                </div>
+
+                            </Col>
+
+                            <Col md={6} className="mb-4">
+
+                                <div className="detalle-item">
+
+                                    <span className="detalle-label">
+                                        Teléfono
+                                    </span>
+
+                                    <h6>{usuario.usuario_telefono}</h6>
+
+                                </div>
+
+                            </Col>
+
+                            <Col md={6} className="mb-4">
+
+                                <div className="detalle-item">
+
+                                    <span className="detalle-label">
+                                        Primer Nombre
+                                    </span>
+
+                                    <h6>{usuario.usuario_primer_nombre}</h6>
+
+                                </div>
+
+                            </Col>
+
+                            <Col md={6} className="mb-4">
+
+                                <div className="detalle-item">
+
+                                    <span className="detalle-label">
+                                        Segundo Nombre
+                                    </span>
+
+                                    <h6>{usuario.usuario_segundo_nombre || "---"}</h6>
+
+                                </div>
+
+                            </Col>
+
+                            <Col md={6} className="mb-4">
+
+                                <div className="detalle-item">
+
+                                    <span className="detalle-label">
+                                        Primer Apellido
+                                    </span>
+
+                                    <h6>{usuario.usuario_primer_apellido}</h6>
+
+                                </div>
+
+                            </Col>
+
+                            <Col md={6} className="mb-4">
+
+                                <div className="detalle-item">
+
+                                    <span className="detalle-label">
+                                        Segundo Apellido
+                                    </span>
+
+                                    <h6>{usuario.usuario_segundo_apellido || "---"}</h6>
+
+                                </div>
+
+                            </Col>
+
+                            <Col md={12} className="mb-4">
+
+                                <div className="detalle-item">
+
+                                    <span className="detalle-label">
+                                        Correo
+                                    </span>
+
+                                    <h6>{usuario.usuario_correo}</h6>
+
+                                </div>
+
+                            </Col>
+
+                            <Col md={12}>
+
+                                <div className="detalle-item">
+
+                                    <span className="detalle-label">
+                                        Dirección
+                                    </span>
+
+                                    <h6>{usuario.usuario_direccion}</h6>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Card.Body>
+                </Card>
+            </Col>
+
+            {/* PERFIL */}
+
+            <Col lg={4}>
+                <Card className="form-card text-center">
+                    <Card.Body>
+                        <img
+                            src="/img/usuario.png"
+                            alt="Usuario"
+                            className="img-usuario"
+                        />
+
+                        <h4 className="mt-3">
+
+                            {usuario.usuario_primer_nombre} {usuario.usuario_primer_apellido}
+
+                        </h4>
+
+                        <span className="badge-rol">
+
+                            {usuario.rol_nombre}
+
+                        </span>
+
+                        <div className="mt-4">
+
+                            <Link
+                                to="/usuarios"
+                                className="btn btn-secundario"
+                            >
+                                Volver
+                            </Link>
+                        </div>
+                    </Card.Body>
+                </Card>
+            </Col>
+        </Row>
+    </Container>
+);
 }
 
 export default DetallesUsuario;

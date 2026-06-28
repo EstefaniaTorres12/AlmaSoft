@@ -1,9 +1,19 @@
 import React, { useState } from "react";
-import { Container, Card, Form, Button, Alert } from "react-bootstrap";
+import {
+    Container,
+    Card,
+    Form,
+    Button,
+    Alert,
+    Row,
+    Col
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { API_URL } from "../../config/api";
+import "./AgregarUsuario.css";
 
 const AgregarUsuario = () => {
+
     const [formData, setData] = useState({
         Rol: '',
         Documento: '',
@@ -18,16 +28,16 @@ const AgregarUsuario = () => {
     });
 
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
+
     const handleChange = (e) => {
         setData({
             ...formData,
             [e.target.name]: e.target.value
         });
-    }
-
-
+    };
 
     const enviarDatos = async (e) => {
+
         e.preventDefault();
 
         const usuario = {
@@ -41,24 +51,28 @@ const AgregarUsuario = () => {
             usuario_telefono: formData.Telefono,
             usuario_correo: formData.Correo.toLowerCase(),
             usuario_credencial: formData.Credencial,
-            cliente_fecha_nacimiento: formData.FechaNacimiento || null // solo si rol_id = 1 (Cliente)
+            cliente_fecha_nacimiento: formData.FechaNacimiento || null
         };
 
         try {
-            const response = await fetch(`${API_URL}/api/usuarios/usuarioCreate`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(usuario)
-            });
+
+            const response = await fetch(
+                `${API_URL}/api/usuarios/usuarioCreate`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(usuario)
+                }
+            );
 
             const data = await response.json();
 
             if (response.ok) {
+
                 setMostrarAlerta(true);
-                console.log("Usuario creado:", data);
-                // Limpiar formulario opcional
+
                 setData({
                     Rol: '',
                     Documento: '',
@@ -71,150 +85,327 @@ const AgregarUsuario = () => {
                     Correo: '',
                     Credencial: '',
                 });
+
             } else {
+
                 alert("Error: " + data.message);
+
             }
 
         } catch (error) {
-            console.error("Error al enviar datos:", error);
+            console.error(error);
             alert("Error de conexión con el servidor");
         }
     };
 
     return (
-        <Container className="mt-5" style={{ maxWidth: "600px" }}>
-            <Card>
-                <Card.Header>
-                    <h3 className="text-center">Agregar Nuevo Usuario</h3>
-                    {mostrarAlerta && (
-                        <Alert variant="success" onClose={() => setMostrarAlerta(false)} dismissible>
-                            Datos enviados  correctamente!!!!......
-                        </Alert>
-                    )}
-                </Card.Header>
+
+        <Container fluid className="usuarios-page">
+
+            {/* HEADER */}
+
+            <Card className="header-card mb-4">
+
+                <div className="pattern"></div>
                 <Card.Body>
+                    <Row className="align-items-center">
+                        <Col>
+                            <h2 className="titulo">
+                                Agregar Usuario
+                            </h2>
+                            <p className="subtitulo">
+                                Complete la información del nuevo usuario.
+                            </p>
+                        </Col>
+                    </Row>
+                </Card.Body>
+            </Card>
+            {/* FORMULARIO */}
+            <Card className="form-card">
+                <Card.Body>
+                    {mostrarAlerta && (
+
+                        <Alert
+                            variant="success"
+                            dismissible
+                            onClose={() => setMostrarAlerta(false)}
+                            className="mb-4"
+                        >
+
+                            Usuario creado correctamente.
+
+                        </Alert>
+
+                    )}
+
                     <Form onSubmit={enviarDatos}>
 
-                        <Form.Group className="mb-3" controlId="Rol">
-                            <Form.Label>ROL</Form.Label>
-                            <Form.Select
-                                name="Rol"
-                                value={formData.Rol}
-                                onChange={handleChange}
-                            >
-                                <option value="">Seleccione un rol</option>
-                                <option value="3">Administrador</option>
-                                <option value="2">Asesor</option>
-                                <option value="1">Cliente</option>
-                            </Form.Select>
-                        </Form.Group>
+                        <h5 className="form-title mb-4">
+                            Información General
+                        </h5>
 
-                        <Form.Group className="mb-3" controlId="Documento">
-                            <Form.Label>DOCUMENTO</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="Documento"
-                                value={formData.Documento}
-                                onChange={handleChange}
-                                placeholder="digite el documento del Usuario "
-                            />
-                        </Form.Group>
+                        <Row>
 
-                        <Form.Group className="mb-3" controlId="PrimerNombre">
-                            <Form.Label>PRIMER NOMBRE</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="PrimerNombre"
-                                value={formData.PrimerNombre}
-                                onChange={handleChange}
-                                placeholder="digite el nombre del Usuario "
-                            />
-                        </Form.Group>
+                            <Col md={6}>
 
-                        <Form.Group className="mb-3" controlId="SegundoNombre">
-                            <Form.Label>SEGUNDO NOMBRE</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="SegundoNombre"
-                                value={formData.SegundoNombre}
-                                onChange={handleChange}
-                                placeholder="digite el nombre del Usuario "
-                            />
-                        </Form.Group>
+                                <Form.Group
+                                    className="mb-4"
+                                    controlId="Rol"
+                                >
 
-                        <Form.Group className="mb-3" controlId="PrimerApellido">
-                            <Form.Label>APELLIDO</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="PrimerApellido"
-                                value={formData.PrimerApellido}
-                                onChange={handleChange}
-                                placeholder="digite el apellido del Usuario "
-                            />
-                        </Form.Group>
+                                    <Form.Label>
+                                        Rol
+                                    </Form.Label>
 
-                        <Form.Group className="mb-3" controlId="SegundoApellido">
-                            <Form.Label>APELLIDO</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="SegundoApellido"
-                                value={formData.SegundoApellido}
-                                onChange={handleChange}
-                                placeholder="digite el apellido Usuario "
-                            />
-                        </Form.Group>
+                                    <Form.Select
+                                        name="Rol"
+                                        value={formData.Rol}
+                                        onChange={handleChange}
+                                        className="input-form"
+                                    >
 
-                        <Form.Group className="mb-3" controlId="Direccion">
-                            <Form.Label>DIRECCION</Form.Label>
+                                        <option value="">
+                                            Seleccione un rol
+                                        </option>
+
+                                        <option value="3">
+                                            Administrador
+                                        </option>
+
+                                        <option value="2">
+                                            Asesor
+                                        </option>
+
+                                        <option value="1">
+                                            Cliente
+                                        </option>
+
+                                    </Form.Select>
+
+                                </Form.Group>
+
+                            </Col>
+
+                            <Col md={6}>
+
+                                <Form.Group
+                                    className="mb-4"
+                                    controlId="Documento"
+                                >
+
+                                    <Form.Label>
+                                        Documento
+                                    </Form.Label>
+
+                                    <Form.Control
+                                        type="text"
+                                        name="Documento"
+                                        value={formData.Documento}
+                                        onChange={handleChange}
+                                        placeholder="Digite el documento del usuario"
+                                        className="input-form"
+                                    />
+
+                                </Form.Group>
+
+                            </Col>
+
+                        </Row>
+                                                {/* NOMBRES */}
+
+                        <Row>
+
+                            <Col md={6}>
+
+                                <Form.Group
+                                    className="mb-4"
+                                    controlId="PrimerNombre"
+                                >
+
+                                    <Form.Label>
+                                        Primer Nombre
+                                    </Form.Label>
+
+                                    <Form.Control
+                                        type="text"
+                                        name="PrimerNombre"
+                                        value={formData.PrimerNombre}
+                                        onChange={handleChange}
+                                        placeholder="Digite el primer nombre"
+                                        className="input-form"
+                                    />
+
+                                </Form.Group>
+
+                            </Col>
+
+                            <Col md={6}>
+
+                                <Form.Group
+                                    className="mb-4"
+                                    controlId="SegundoNombre"
+                                >
+
+                                    <Form.Label>
+                                        Segundo Nombre
+                                    </Form.Label>
+
+                                    <Form.Control
+                                        type="text"
+                                        name="SegundoNombre"
+                                        value={formData.SegundoNombre}
+                                        onChange={handleChange}
+                                        placeholder="Digite el segundo nombre"
+                                        className="input-form"
+                                    />
+
+                                </Form.Group>
+
+                            </Col>
+
+                        </Row>
+
+                        {/* APELLIDOS */}
+
+                        <Row>
+                            <Col md={6}>
+
+                                <Form.Group
+                                    className="mb-4"
+                                    controlId="PrimerApellido"
+                                >
+
+                                    <Form.Label>
+                                        Primer Apellido
+                                    </Form.Label>
+
+                                    <Form.Control
+                                        type="text"
+                                        name="PrimerApellido"
+                                        value={formData.PrimerApellido}
+                                        onChange={handleChange}
+                                        placeholder="Digite el primer apellido"
+                                        className="input-form"
+                                    />
+
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group
+                                    className="mb-4"
+                                    controlId="SegundoApellido"
+                                >
+                                    <Form.Label>
+                                        Segundo Apellido
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="SegundoApellido"
+                                        value={formData.SegundoApellido}
+                                        onChange={handleChange}
+                                        placeholder="Digite el segundo apellido"
+                                        className="input-form"
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        {/* DIRECCIÓN */}
+                        <Form.Group
+                            className="mb-4"
+                            controlId="Direccion"
+                        >
+                            <Form.Label>
+                                Dirección
+                            </Form.Label>
                             <Form.Control
                                 type="text"
                                 name="Direccion"
                                 value={formData.Direccion}
                                 onChange={handleChange}
-                                placeholder="digite la direccion del  Usuario"
+                                placeholder="Digite la dirección"
+                                className="input-form"
                             />
                         </Form.Group>
+                        {/* TELÉFONO Y CORREO */}
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group
+                                    className="mb-4"
+                                    controlId="Telefono"
+                                >
+                                    <Form.Label>
+                                        Teléfono
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="Telefono"
+                                        value={formData.Telefono}
+                                        onChange={handleChange}
+                                        placeholder="Digite el teléfono"
+                                        className="input-form"
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group
+                                    className="mb-4"
+                                    controlId="Correo"
+                                >
+                                    <Form.Label>
+                                        Correo
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="email"
+                                        name="Correo"
+                                        value={formData.Correo}
+                                        onChange={handleChange}
+                                        placeholder="Digite el correo"
+                                        className="input-form"
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
 
-                        <Form.Group className="mb-3" controlId="Telefono">
-                            <Form.Label>TELEFONO</Form.Label>
+                        {/* CONTRASEÑA */}
+                        <Form.Group
+                            className="mb-4"
+                            controlId="Credencial"
+                        >
+                            <Form.Label>
+                                Contraseña
+                            </Form.Label>
                             <Form.Control
-                                type="text"
-                                name="Telefono"
-                                value={formData.Telefono}
-                                onChange={handleChange}
-                                placeholder="digite el telefono del Usuario "
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3" controlId="Correo">
-                            <Form.Label>CORREO</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="Correo"
-                                value={formData.Correo}
-                                onChange={handleChange}
-                                placeholder="digite el Correo del Usuario "
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3" controlId="Credencial">
-                            <Form.Label>CONTRASEÑA</Form.Label>
-                            <Form.Control
-                                type="password" // importante para ocultar la contraseña
+                                type="password"
                                 name="Credencial"
                                 value={formData.Credencial}
                                 onChange={handleChange}
                                 placeholder="Digite la contraseña del usuario"
+                                className="input-form"
                                 required
                             />
                         </Form.Group>
-                        <Button style={{ background: "#7856AE", border: "#7856AE" }} type="submit">Guardar</Button>
-                        <Button style={{ background: "#7856AE", border: "#7856AE" }} className="mx-5" type="button">Cancelar</Button>
 
+                        {/* BOTONES */}
+                        <div className="d-flex justify-content-end gap-3 mt-4">
+                            <Button
+                                className="btn-secundario"
+                                type="button"
+                                as={Link}
+                                to="/usuarios"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                className="btn-principal"
+                                type="submit"
+                            >
+                                Guardar
+                            </Button>
+                        </div>
                     </Form>
                 </Card.Body>
             </Card>
         </Container>
     )
-}
+};
 export default AgregarUsuario;

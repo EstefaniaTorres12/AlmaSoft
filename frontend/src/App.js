@@ -116,7 +116,7 @@ function App() {
             <SideBar /><div className="admin-page"><EditarCliente /></div>
           </RutaProtegida>
         } />
-        <Route path='/usuarios/DetallesCliente/:id' element={
+        <Route path='/clientes/DetallesCliente/:id' element={
           <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
             <SideBar /><div className="admin-page"><DetallesCliente /></div>
           </RutaProtegida>
