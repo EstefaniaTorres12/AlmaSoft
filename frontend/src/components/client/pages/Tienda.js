@@ -1,15 +1,16 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
 import "../styles/clientPages.css";
 import "../styles/tienda.css";
 import { API_URL } from "../../../config/api";
+import { useCart } from '../../../context/CartContext';
+import { getProductImageUrl, DEFAULT_IMAGE } from '../../../utils/imageUrl';
 
 const API = API_URL;
 
 export default function Tienda() {
   const [productos, setProductos] = useState([]);
-  const [carrito, setCarrito]     = useState([]);
   const [loading, setLoading]     = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [checkout, setCheckout]   = useState(false);
@@ -17,60 +18,43 @@ export default function Tienda() {
   const [msg, setMsg]             = useState({ text: "", type: "" });
   const [procesando, setProcesando] = useState(false);
   const [detalle, setDetalle]     = useState(null);
+  const { items: cartItems, addToCart, removeFromCart, cartTotal, refreshFromServer, clearCart } = useCart();
 
   const flash = (text, type = "success") => {
     setMsg({ text, type });
     setTimeout(() => setMsg({ text: "", type: "" }), 3500);
   };
 
-  const cargarCarrito = useCallback(async () => {
-    try {
-      const res  = await authFetch(`${API}/api/client/store/carrito`);
-      const data = await res.json();
-      if (data.success) setCarrito(data.data);
-    } catch (_) {}
-  }, []);
-
   useEffect(() => {
     Promise.all([
       fetch(`${API}/api/client/store/productos`).then((r) => r.json()),
-      authFetch(`${API}/api/client/store/carrito`).then((r) => r.json()),
     ])
-      .then(([prod, cart]) => {
+      .then(([prod]) => {
         if (prod.success)  setProductos(prod.data);
-        if (cart.success)  setCarrito(cart.data);
+        // sincronizar carrito remoto con contexto si es necesario
+        refreshFromServer && refreshFromServer();
       })
       .catch(console.error)
       .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const agregarAlCarrito = async (producto) => {
     try {
-      const res  = await authFetch(`${API}/api/client/store/carrito`, {
-        method: "POST",
-        body: JSON.stringify({ producto_id: producto.producto_id, cantidad: 1 }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        await cargarCarrito();
-        flash(`${producto.producto_nombre} agregado al carrito`);
-      } else {
-        flash(data.message || "Error al agregar", "error");
-      }
+      addToCart(producto);
+      flash(`${producto.producto_nombre} agregado al carrito`);
     } catch (_) {
       flash("Error de conexion", "error");
     }
   };
 
-  const eliminarDelCarrito = async (carritoId) => {
+  const eliminarDelCarrito = async (productoId) => {
     try {
-      const res  = await authFetch(`${API}/api/client/store/carrito/${carritoId}`, { method: "DELETE" });
-      const data = await res.json();
-      if (data.success) setCarrito((prev) => prev.filter((it) => it.carrito_id !== carritoId));
+      removeFromCart(productoId);
     } catch (_) {}
   };
 
-  const total = carrito.reduce((sum, it) => sum + it.producto_precio * it.cantidad, 0);
+  const total = cartTotal;
 
   const pagar = async () => {
     setProcesando(true);
@@ -81,7 +65,7 @@ export default function Tienda() {
       });
       const data = await res.json();
       if (data.success) {
-        setCarrito([]);
+        clearCart();
         setDrawerOpen(false);
         setCheckout(false);
         flash("Compra registrada correctamente.");
@@ -107,7 +91,7 @@ export default function Tienda() {
             <p>Adquiere productos complementarios directamente desde tu panel.</p>
           </div>
           <button className="tienda-carrito-btn" onClick={() => setDrawerOpen(true)}>
-            Carrito ({carrito.length})
+            Carrito ({cartItems.length})
           </button>
         </div>
 
@@ -130,9 +114,9 @@ export default function Tienda() {
               >
                 <div className="tienda-card-img">
                   <img
-                    src={p.producto_imagen ? `${API}${p.producto_imagen}` : `${process.env.PUBLIC_URL}/img/img_default.png`}
+                    src={getProductImageUrl(p.producto_imagen)}
                     alt={p.producto_nombre}
-                    onError={(e) => { e.target.src = `${process.env.PUBLIC_URL}/img/img_default.png`; }}
+                    onError={(e) => { e.target.src = DEFAULT_IMAGE; }}
                   />
                 </div>
                 <div className="tienda-card-body">
@@ -162,9 +146,9 @@ export default function Tienda() {
             <button className="tienda-detalle-close" onClick={() => setDetalle(null)}>✕</button>
             <div className="tienda-detalle-img">
               <img
-                src={detalle.producto_imagen ? `${API}${detalle.producto_imagen}` : `${process.env.PUBLIC_URL}/img/img_default.png`}
+                src={getProductImageUrl(detalle.producto_imagen)}
                 alt={detalle.producto_nombre}
-                onError={(e) => { e.target.src = `${process.env.PUBLIC_URL}/img/img_default.png`; }}
+                onError={(e) => { e.target.src = DEFAULT_IMAGE; }}
               />
             </div>
             <div className="tienda-detalle-info">
@@ -197,17 +181,17 @@ export default function Tienda() {
               <button onClick={() => { setDrawerOpen(false); setCheckout(false); }}>✕</button>
             </div>
 
-            {carrito.length === 0 ? (
+                  {cartItems.length === 0 ? (
               <p className="tienda-drawer-empty">El carrito esta vacio.</p>
             ) : (
               <>
                 <ul className="tienda-drawer-list">
-                  {carrito.map((it) => (
-                    <li key={it.carrito_id} className="tienda-drawer-item">
-                      <span>{it.producto_nombre}</span>
+                  {cartItems.map((it) => (
+                    <li key={it.carrito_id || it.producto_id} className="tienda-drawer-item">
+                      <span>{it.nombre || it.producto_nombre}</span>
                       <span>x{it.cantidad}</span>
-                      <span>${Number(it.producto_precio * it.cantidad).toLocaleString("es-CO")}</span>
-                      <button onClick={() => eliminarDelCarrito(it.carrito_id)}>✕</button>
+                      <span>${Number((it.precio || it.producto_precio) * it.cantidad).toLocaleString("es-CO")}</span>
+                      <button onClick={() => eliminarDelCarrito(it.producto_id)}>✕</button>
                     </li>
                   ))}
                 </ul>

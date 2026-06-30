@@ -146,6 +146,14 @@ const BarraPrincipal = () => {
           />
           <button type="submit" className="hdr-search__btn">Buscar</button>
         </form>
+        <nav className="hdr-mobile-nav" aria-label="Categorías">
+          <Link to="/"                            className="hdr-mobile-link" onClick={() => setMenuAbierto(false)}>Inicio</Link>
+          <Link to="/productos/Ataud"             className="hdr-mobile-link" onClick={() => setMenuAbierto(false)}>Ataúdes</Link>
+          <Link to="/productos/Urna"              className="hdr-mobile-link" onClick={() => setMenuAbierto(false)}>Urnas</Link>
+          <Link to="/productos/lapida"            className="hdr-mobile-link" onClick={() => setMenuAbierto(false)}>Lápidas</Link>
+          <Link to="/productos/arreglos-florales" className="hdr-mobile-link" onClick={() => setMenuAbierto(false)}>Arreglos Florales</Link>
+          <Link to="/productos/ProductosAtaud"    className="hdr-mobile-link" onClick={() => setMenuAbierto(false)}>Todos los productos</Link>
+        </nav>
         <div className="hdr-mobile-auth">
           {isLoggedIn ? (
             <>

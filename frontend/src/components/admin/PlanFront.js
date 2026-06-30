@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Container, Table, Row, Col, Form, Button, Dropdown } from "react-bootstrap";
+import { Container, Table, Row, Col, Form, Button, Dropdown, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 import { API_URL } from "../../config/api";
+import "./Producto.css";
 
 const PlanFront = () => {
 
@@ -53,76 +54,106 @@ const PlanFront = () => {
   );
 
   return (
-    <Container>
-      <Row className="mb-4">
-        <Col>
-          <h2 className="mt-5 mx-5">Planes Fúnebres</h2>
-        </Col>
-        <Col className="text-end">
-          <Button
-            as={Link}
-            to="/planes/agregar"
-            className="mt-5 mx-5"
-            style={{ background: "#7856AE", border: "#7856AE" }}
-          >
-            Agregar Plan
-          </Button>
-        </Col>
-      </Row>
+    <Container fluid className="producto-page">
+      <Card className="producto-header mb-4">
+        <div className="pattern"></div>
+        <Card.Body>
+          <Row className="align-items-center">
+            <Col>
+              <h2 className="producto-title">Gestión de Planes Fúnebres</h2>
+              <p className="producto-subtitle">
+                Administre los planes fúnebres disponibles y mantenga su catálogo actualizado.
+              </p>
+            </Col>
+            <Col xs="auto">
+              <Button as={Link} to="/planes/agregar" className="producto-btn-principal">
+                Agregar Plan
+              </Button>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
 
-      <Form className="mb-3">
-        <Form.Control
-          placeholder="Buscar plan..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-        />
-      </Form>
+      <Card className="producto-search-card mb-4">
+        <Card.Body>
+          <Form>
+            <Row className="align-items-center g-3">
+              <Col lg={8}>
+                <Form.Control
+                  className="producto-input-search"
+                  placeholder="Buscar plan..."
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                />
+              </Col>
+              <Col lg={4} className="text-lg-end">
+                <Button className="producto-btn-secundario" onClick={() => setBusqueda("")}>
+                  Limpiar
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Card.Body>
+      </Card>
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
+      <div className="producto-contador">
+        <span className="producto-pill">{planesFiltrados.length} planes registrados</span>
+      </div>
 
-        <tbody>
-          {planesFiltrados.map(plan => (
-            <tr key={plan.plan_id}>
-              <td>{plan.plan_id}</td>
-              <td>{plan.plan_nombre}</td>
-              <td>{plan.plan_descripcion}</td>
-              <td>${plan.plan_precio}</td>
-              <td>{plan.plan_estado === 1 ? "Activo" : "Inactivo"}</td>
-
-              <td>
-                <Dropdown>
-                  <Dropdown.Toggle variant="dark">Acciones</Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      as={Link}
-                      to={`/planes/editar/${plan.plan_id}`}
-                    >
-                      Editar
-                    </Dropdown.Item>
-
-                    <Dropdown.Item
-                      onClick={() => eliminarPlan(plan.plan_id)}
-                    >
-                      Eliminar
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <Card className="producto-table-card">
+        <Card.Body>
+          <div className="table-responsive">
+            <Table hover className="producto-table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Precio</th>
+                  <th>Estado</th>
+                  <th className="text-center" style={{ width: "170px" }}>
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {planesFiltrados.map((plan) => (
+                  <tr key={plan.plan_id}>
+                    <td>{plan.plan_id}</td>
+                    <td>{plan.plan_nombre}</td>
+                    <td>{plan.plan_descripcion}</td>
+                    <td>${plan.plan_precio}</td>
+                    <td>
+                      <span
+                        className={`estado-badge ${
+                          plan.plan_estado === 1 ? "estado-activo" : "estado-inactivo"
+                        }`}
+                      >
+                        {plan.plan_estado === 1 ? "Activo" : "Inactivo"}
+                      </span>
+                    </td>
+                    <td className="text-center">
+                      <Dropdown>
+                        <Dropdown.Toggle className="producto-acciones-btn" id="dropdown-acciones">
+                          Acciones
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          <Dropdown.Item as={Link} to={`/planes/editar/${plan.plan_id}`}>
+                            Editar
+                          </Dropdown.Item>
+                          <Dropdown.Item onClick={() => eliminarPlan(plan.plan_id)}>
+                            Eliminar
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        </Card.Body>
+      </Card>
     </Container>
   );
 };

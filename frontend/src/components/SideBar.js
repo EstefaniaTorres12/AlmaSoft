@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Nav } from "react-bootstrap";
+import { Button, Nav, Offcanvas } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { logout, getSession } from "../utils/auth";
 
@@ -10,10 +10,10 @@ const ADMIN_NAV = [
   { label: "Sub Categorias", to: "/admin/SubCategoriaFront" },
   { label: "Productos",      to: "/admin/ProductoFront" },
   { label: "Planes Funebres",to: "/admin/Planes" },
-  { label: "Afiliaciones",   to: "/admin/afiliaciones" },
 ];
 
 const SideBar = () => {
+  const [showMenu, setShowMenu] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
   const { rol, usuario } = getSession();
 
@@ -25,53 +25,63 @@ const SideBar = () => {
     rol ||
     "Administrador";
 
+  const sidebarContent = (
+    <>
+      <div className="admin-sidebar-header">
+        <h3>ALMASOFT</h3>
+        <small>{rol} — {nombreCorto}</small>
+      </div>
+      <Nav className="flex-column admin-sidebar-nav">
+        <Button as={Link} to="/" className="admin-sidebar-link" variant="light">
+          Inicio
+        </Button>
+        {ADMIN_NAV.map(({ label, to }) => (
+          <Button key={to} as={Link} to={to} className="admin-sidebar-link" variant="light">
+            {label}
+          </Button>
+        ))}
+        <Button
+          className="admin-sidebar-link admin-sidebar-logout"
+          variant="outline-danger"
+          onClick={() => setConfirmLogout(true)}
+        >
+          Cerrar sesión
+        </Button>
+      </Nav>
+    </>
+  );
+
   return (
     <>
-      <div className="admin-sidebar">
-        <div style={{ padding: "8px 12px 4px" }}>
-          <h3 style={{ margin: 0 }}>ALMASOFT</h3>
-          <small style={{ opacity: 0.7 }}>{rol} — {nombreCorto}</small>
-        </div>
+      <Button
+        className="admin-sidebar-toggle d-md-none"
+        onClick={() => setShowMenu(true)}
+        variant="dark"
+      >
+        ☰ Menú
+      </Button>
 
-        <Nav className="flex-column">
-          <Button as={Link} to="/" className="m-3" variant="light">
-            Inicio
-          </Button>
+      <Offcanvas show={showMenu} onHide={() => setShowMenu(false)} placement="start">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>ALMASOFT</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          {sidebarContent}
+        </Offcanvas.Body>
+      </Offcanvas>
 
-          {ADMIN_NAV.map(({ label, to }) => (
-            <Button key={to} as={Link} to={to} className="m-3" variant="light">
-              {label}
-            </Button>
-          ))}
-
-          <Button
-            className="m-3"
-            variant="outline-danger"
-            onClick={() => setConfirmLogout(true)}
-          >
-            Cerrar sesión
-          </Button>
-        </Nav>
+      <div className="admin-sidebar d-none d-md-flex">
+        {sidebarContent}
       </div>
 
       {confirmLogout && (
         <div
-          style={{
-            position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            zIndex: 9999,
-          }}
+          className="admin-confirm-overlay"
           onClick={() => setConfirmLogout(false)}
         >
-          <div
-            style={{
-              background: "#fff", borderRadius: 8, padding: "24px 32px",
-              textAlign: "center", minWidth: 280,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p style={{ marginBottom: 16 }}>¿Deseas cerrar sesión?</p>
-            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+          <div className="admin-confirm-box" onClick={(e) => e.stopPropagation()}>
+            <p>¿Deseas cerrar sesión?</p>
+            <div className="admin-confirm-actions">
               <Button variant="danger" onClick={logout}>
                 Sí, salir
               </Button>

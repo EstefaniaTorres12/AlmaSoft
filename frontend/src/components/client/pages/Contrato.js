@@ -16,17 +16,32 @@ function formatFecha(value) {
   });
 }
 
+function describePago(pago_metodo) {
+  if (!pago_metodo) return "Sin descripción";
+  const partes = pago_metodo.split(" | ");
+  const prefix = (partes[0] || "").toLowerCase().trim();
+  if (prefix === "tienda") {
+    return [partes[1], partes[2], partes[3]].filter(Boolean).join(" · ") || "Compra en tienda";
+  }
+  if (prefix === "servicio") {
+    return [partes[1], partes[2], partes[3]].filter(Boolean).join(" · ") || "Servicio adicional";
+  }
+  return pago_metodo || "Pago de plan";
+}
+
 export default function Contrato() {
-  const [contrato, setContrato] = useState(null);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState("");
+  const [contrato, setContrato]       = useState(null);
+  const [loading, setLoading]         = useState(true);
+  const [error, setError]             = useState("");
+  const [sinContrato, setSinContrato] = useState(false);
 
   useEffect(() => {
     authFetch(`${API}/api/client/contrato/mine`)
-      .then((r) => r.json())
-      .then((data) => {
+      .then(async (r) => {
+        const data = await r.json();
+        if (r.status === 404) { setSinContrato(true); return; }
         if (data.success) setContrato(data.data);
-        else setError(data.message || "No se encontro un contrato activo.");
+        else setError(data.message || "No se encontró un contrato activo.");
       })
       .catch(() => setError("No fue posible cargar el contrato."))
       .finally(() => setLoading(false));
@@ -55,7 +70,7 @@ export default function Contrato() {
     const pagosHtml = contrato.pagos?.length
       ? contrato.pagos.map((p) => `
           <tr>
-            <td>${p.pago_metodo}</td>
+            <td>${describePago(p.pago_metodo)}</td>
             <td>${formatFecha(p.pago_fecha)}</td>
           </tr>`).join("")
       : `<tr><td colspan="2">Sin pagos registrados</td></tr>`;
@@ -264,7 +279,15 @@ export default function Contrato() {
         </div>
 
         {loading && <div className="client-empty-state">Cargando contrato...</div>}
-        {!loading && error && !contrato && <div className="client-empty-state">{error}</div>}
+        {!loading && sinContrato && (
+          <div className="client-empty-state" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+            <p style={{ fontSize: "1.1rem", color: "#6f6789" }}>No tienes un contrato activo en este momento.</p>
+            <a href="/client/plan" className="client-primary-button" style={{ textDecoration: "none", padding: "12px 28px", borderRadius: "14px" }}>
+              Ver planes disponibles
+            </a>
+          </div>
+        )}
+        {!loading && !sinContrato && error && !contrato && <div className="client-empty-state">{error}</div>}
 
         {!loading && contrato && (
           <div>
@@ -326,7 +349,7 @@ export default function Contrato() {
                   <tbody>
                     {contrato.pagos.map((p) => (
                       <tr key={p.pago_id}>
-                        <td>{p.pago_metodo}</td>
+                        <td>{describePago(p.pago_metodo)}</td>
                         <td>{formatFecha(p.pago_fecha)}</td>
                       </tr>
                     ))}

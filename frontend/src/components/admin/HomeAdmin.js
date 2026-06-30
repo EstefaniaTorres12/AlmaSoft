@@ -83,12 +83,7 @@ export default function HomeAdmin() {
       ruta: "/admin/CategoriaFront",
       label: "Ir a Categorías",
     },
-    {
-      titulo: "Solicitudes de Afiliación",
-      desc: "Revisa y aprueba o rechaza las solicitudes de afiliación pendientes.",
-      ruta: "/admin/afiliaciones",
-      label: "Ir a Afiliaciones",
-    },
+
   ];
 
   return (

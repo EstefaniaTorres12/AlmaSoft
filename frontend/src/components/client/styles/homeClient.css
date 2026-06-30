@@ -328,6 +328,13 @@
   }
 }
 
+/* ── Tablet estrecha (≤760px) ──────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .client-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* ── Móvil (≤640px) ────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .client-stats-grid {

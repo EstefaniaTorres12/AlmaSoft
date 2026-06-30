@@ -1,27 +1,13 @@
 import { useEffect, useState } from "react";
 import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
+import { formatFecha } from "../../../utils/formatters";
+import { clasificarPago, parsePagoMetodo } from "../../../utils/payments";
 import "../styles/clientPages.css";
 import "../styles/tienda.css";
 import { API_URL } from "../../../config/api";
 
 const API = API_URL;
-
-function formatFecha(value) {
-  if (!value) return "Sin fecha";
-  return new Date(value).toLocaleDateString("es-CO", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function clasificarPago(metodo) {
-  const m = (metodo || "").toLowerCase();
-  if (m.startsWith("tienda"))   return { label: "Tienda",   color: "#3a7bd5", bg: "#e8f0ff" };
-  if (m.startsWith("servicio")) return { label: "Servicio", color: "#6a5acd", bg: "#f0eeff" };
-  return                               { label: "Plan",     color: "#2e7b59", bg: "#e1f5e9" };
-}
 
 export default function Pagos() {
   const [pagos, setPagos]     = useState([]);
@@ -57,7 +43,7 @@ export default function Pagos() {
         {!loading && error && <div className="client-empty-state">{error}</div>}
 
         {!loading && !error && pagos.length === 0 && (
-          <div className="client-empty-state">No tienes pagos registrados aun.</div>
+          <div className="client-empty-state">No tienes pagos registrados aún.</div>
         )}
 
         {!loading && !error && pagos.length > 0 && (
@@ -95,7 +81,8 @@ export default function Pagos() {
               <h3>Historial completo</h3>
               <div className="plan-payments-list">
                 {pagos.map((p) => {
-                  const tipo = clasificarPago(p.pago_metodo);
+                  const tipo   = clasificarPago(p.pago_metodo);
+                  const parsed = parsePagoMetodo(p.pago_metodo);
                   return (
                     <article key={p.pago_id} className="plan-payment-item payment-item-stacked">
                       <div className="plan-payment-copy">
@@ -113,10 +100,41 @@ export default function Pagos() {
                           >
                             {tipo.label}
                           </span>
-                          <strong style={{ color: "#2f1d57", fontSize: "0.9rem" }}>{p.pago_metodo}</strong>
+
+                          {parsed.tipo === "tienda" && (
+                            <strong style={{ color: "#2f1d57", fontSize: "0.9rem" }}>
+                              {parsed.metodo}
+                              {parsed.total ? ` · ${parsed.total}` : ""}
+                            </strong>
+                          )}
+                          {parsed.tipo === "servicio" && (
+                            <strong style={{ color: "#2f1d57", fontSize: "0.9rem" }}>
+                              {parsed.nombre}
+                            </strong>
+                          )}
+                          {parsed.tipo === "plan" && (
+                            <strong style={{ color: "#2f1d57", fontSize: "0.9rem" }}>
+                              {p.plan_nombre || "Pago de plan"}
+                            </strong>
+                          )}
                         </div>
-                        <span>Contrato #{p.contrato_id}</span>
-                        {p.plan_nombre && <span>Plan: {p.plan_nombre}</span>}
+
+                        {parsed.tipo === "tienda" && parsed.productos && (
+                          <span style={{ fontSize: "0.85rem", color: "#555" }}>
+                            {parsed.productos}
+                          </span>
+                        )}
+                        {parsed.tipo === "servicio" && (
+                          <span style={{ fontSize: "0.85rem", color: "#555" }}>
+                            Método: {parsed.metodo}
+                            {parsed.total ? ` · ${parsed.total}` : ""}
+                          </span>
+                        )}
+                        {p.plan_nombre && parsed.tipo !== "plan" && (
+                          <span style={{ fontSize: "0.8rem", color: "#888" }}>
+                            Plan: {p.plan_nombre}
+                          </span>
+                        )}
                       </div>
                       <span style={{ whiteSpace: "nowrap", color: "#6f6789", fontSize: "0.9rem" }}>
                         {formatFecha(p.pago_fecha)}

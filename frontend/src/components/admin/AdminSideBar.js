@@ -11,7 +11,6 @@ const NAV_ADMIN = [
   { label: "Subcategorías", path: "/admin/SubCategoriaFront",  icon: "SubCat"   },
   { label: "Productos",     path: "/admin/ProductoFront",      icon: "Prod"     },
   { label: "Planes",        path: "/admin/Planes",             icon: "Planes"   },
-  { label: "Afiliaciones",  path: "/admin/afiliaciones",       icon: "Afil"     },
 ];
 
 export default function AdminSideBar() {

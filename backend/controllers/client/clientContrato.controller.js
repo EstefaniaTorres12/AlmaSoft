@@ -30,6 +30,15 @@ function rollbackTx(conn) {
   return new Promise((resolve) => conn.rollback(() => resolve()));
 }
 
+function normalizarMetodoPago(metodo) {
+  const m = (metodo || "").toLowerCase().trim();
+  if (m === "pse")                                return "PSE";
+  if (m === "debito"  || m === "tarjeta debito")  return "Tarjeta débito";
+  if (m === "credito" || m === "tarjeta credito") return "Tarjeta crédito";
+  if (m.startsWith("efectivo"))                   return "Efectivo";
+  return metodo || "Sin especificar";
+}
+
 // ── Endpoints ─────────────────────────────────────────────────────────────────
 
 exports.obtenerMiPlan = (req, res) => {
@@ -171,9 +180,12 @@ exports.mejorarPlan = async (req, res) => {
 
     await beginTx(conn);
 
+    const fechaMejora        = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
+    const metodoNormMejora   = normalizarMetodoPago(metodo_pago);
+
     await queryConn(conn,
-      `INSERT INTO pago (pago_metodo, pago_fecha, contrato_id) VALUES (?, NOW(), ?)`,
-      [metodo_pago, contrato_id]
+      `INSERT INTO pago (pago_metodo, pago_fecha, contrato_id) VALUES (?, ?, ?)`,
+      [metodoNormMejora, fechaMejora, contrato_id]
     );
 
     await queryConn(conn,
@@ -283,11 +295,13 @@ exports.adquirirPlan = async (req, res) => {
       [valor, cliente_id]
     );
 
-    const contrato_id = contratoResult.insertId;
+    const contrato_id        = contratoResult.insertId;
+    const fechaAdquirir      = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
+    const metodoNormAdquirir = normalizarMetodoPago(metodo_pago);
 
     await queryConn(conn,
-      `INSERT INTO pago (pago_metodo, pago_fecha, contrato_id) VALUES (?, NOW(), ?)`,
-      [metodo_pago, contrato_id]
+      `INSERT INTO pago (pago_metodo, pago_fecha, contrato_id) VALUES (?, ?, ?)`,
+      [metodoNormAdquirir, fechaAdquirir, contrato_id]
     );
 
     await queryConn(conn,

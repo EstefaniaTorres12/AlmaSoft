@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { API_URL } from '../../config/api';
+import { getProductImageUrl, DEFAULT_IMAGE } from '../../utils/imageUrl';
 import './Carrito.css';
 
 const precioCOP = (v) =>
@@ -12,46 +13,35 @@ const METODOS = ['Efectivo', 'Tarjeta débito', 'Tarjeta crédito', 'PSE'];
 
 const Carrito = () => {
   const { items, removeFromCart, updateQuantity, clearCart, cartTotal } = useCart();
-  const [fase,       setFase]       = useState('carrito'); // 'carrito' | 'checkout' | 'confirmado'
-  const [metodo,     setMetodo]     = useState('Efectivo');
-  const [procesando, setProcesando] = useState(false);
+  const [fase,          setFase]          = useState('carrito'); // 'carrito' | 'checkout' | 'confirmado'
+  const [metodo,        setMetodo]        = useState('Efectivo');
+  const [procesando,    setProcesando]    = useState(false);
+  const [checkoutError, setCheckoutError] = useState('');
   const navigate = useNavigate();
 
   const isLoggedIn = !!localStorage.getItem('token');
-  const rol        = localStorage.getItem('rol') || '';
 
   const confirmarPedido = async () => {
+    setCheckoutError('');
     setProcesando(true);
-    if (isLoggedIn && rol === 'Cliente') {
-      try {
-        const { authFetch } = await import('../../utils/authFetch');
-        /* Agrega items al carrito del backend y luego hace checkout */
-        for (const item of items) {
-          await authFetch(`${API_URL}/api/client/store/carrito`, {
-            method: 'POST',
-            body: JSON.stringify({ producto_id: item.producto_id, cantidad: item.cantidad }),
-          });
-        }
-        const res  = await authFetch(`${API_URL}/api/client/store/carrito/checkout`, {
-          method: 'POST',
-          body: JSON.stringify({ metodo_pago: metodo }),
-        });
-        const data = await res.json();
-        if (data.success) {
-          clearCart();
-          setFase('confirmado');
-          setProcesando(false);
-          return;
-        }
-      } catch (_) { /* fallback a confirmación visual */ }
-    }
-
-    /* Para invitados o si falla: confirmación visual */
-    setTimeout(() => {
-      clearCart();
-      setFase('confirmado');
+    try {
+      const { authFetch } = await import('../../utils/authFetch');
+      const res  = await authFetch(`${API_URL}/api/client/store/carrito/checkout`, {
+        method: 'POST',
+        body: JSON.stringify({ metodo_pago: metodo }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        clearCart();
+        setFase('confirmado');
+      } else {
+        setCheckoutError(data.message || 'No fue posible procesar la compra.');
+      }
+    } catch (_) {
+      setCheckoutError('Error de conexión. Verifica tu red e intenta nuevamente.');
+    } finally {
       setProcesando(false);
-    }, 1200);
+    }
   };
 
   /* ── Vista confirmación ─────────────────────────────────── */
@@ -112,9 +102,9 @@ const Carrito = () => {
                   <div key={item.producto_id} className="cart-item">
                     <div className="cart-item__img">
                       <img
-                        src={item.imagen ? `/${item.imagen}` : '/img/default.png'}
+                        src={getProductImageUrl(item.imagen)}
                         alt={item.nombre}
-                        onError={(e) => { e.target.src = '/img/default.png'; }}
+                        onError={(e) => { e.target.src = DEFAULT_IMAGE; }}
                       />
                     </div>
                     <div className="cart-item__info">
@@ -175,13 +165,6 @@ const Carrito = () => {
                 </div>
               )}
 
-              {/* Aviso para invitados */}
-              {!isLoggedIn && fase === 'checkout' && (
-                <div className="cart-guest-notice">
-                  💡 Tu pedido se registrará como solicitud. Para un seguimiento completo,{' '}
-                  <Link to="/pages/IniciarSesion">inicia sesión</Link> antes de confirmar.
-                </div>
-              )}
             </div>
 
             {/* ── Panel lateral totales ─────────────────────── */}
@@ -197,20 +180,34 @@ const Carrito = () => {
                 </div>
 
                 {fase === 'carrito' ? (
-                  <button
-                    className="cart-totals__cta"
-                    onClick={() => setFase('checkout')}
-                  >
-                    Proceder al pago →
-                  </button>
+                  isLoggedIn ? (
+                    <button
+                      className="cart-totals__cta"
+                      onClick={() => setFase('checkout')}
+                    >
+                      Proceder al pago →
+                    </button>
+                  ) : (
+                    <button
+                      className="cart-totals__cta"
+                      onClick={() => navigate('/pages/IniciarSesion')}
+                    >
+                      Inicia sesión para comprar
+                    </button>
+                  )
                 ) : (
-                  <button
-                    className="cart-totals__cta"
-                    onClick={confirmarPedido}
-                    disabled={procesando}
-                  >
-                    {procesando ? 'Procesando…' : '✓ Confirmar pedido'}
-                  </button>
+                  <>
+                    {checkoutError && (
+                      <div className="cart-checkout-error">{checkoutError}</div>
+                    )}
+                    <button
+                      className="cart-totals__cta"
+                      onClick={confirmarPedido}
+                      disabled={procesando}
+                    >
+                      {procesando ? 'Procesando…' : '✓ Confirmar pedido'}
+                    </button>
+                  </>
                 )}
 
                 <Link to="/productos/ProductosAtaud" className="cart-totals__secondary">

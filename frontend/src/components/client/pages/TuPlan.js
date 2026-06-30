@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
 import { getPlanVisual } from "../data/clientPlanVisuals";
+import { formatPrice, formatFecha } from "../../../utils/formatters";
+import { clasificarPago, parsePagoMetodo } from "../../../utils/payments";
 import "../styles/clientPages.css";
 import { API_URL } from "../../../config/api";
 
@@ -19,29 +21,7 @@ async function parseJsonSafe(response) {
   }
 }
 
-function formatPrice(value) {
-  const number = Number(value);
-  if (Number.isNaN(number)) return value || "No disponible";
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-  }).format(number);
-}
 
-function formatDate(value) {
-  if (!value) return "Sin fecha";
-  return new Date(value).toLocaleString("es-CO");
-}
-
-function formatPaymentLabel(payment) {
-  if (!payment) return "Sin informacion";
-  if (payment.pago_tipo_tarjeta && payment.pago_entidad) {
-    return `${payment.pago_tipo_tarjeta === "credito" ? "Tarjeta credito" : "Tarjeta debito"} - ${payment.pago_entidad}`;
-  }
-  if (payment.pago_entidad) return `${payment.pago_metodo} - ${payment.pago_entidad}`;
-  return payment.pago_metodo;
-}
 
 export default function TuPlan() {
   const [loading, setLoading]         = useState(true);
@@ -254,19 +234,47 @@ export default function TuPlan() {
               <h3>Pagos registrados</h3>
               {planData.pagos?.length ? (
                 <div className="plan-payments-list">
-                  {planData.pagos.map((pago) => (
-                    <article className="plan-payment-item" key={pago.pago_id}>
-                      <div className="plan-payment-copy">
-                        <strong>{formatPaymentLabel(pago)}</strong>
-                        <span>Referencia: {pago.pago_referencia || "No disponible"}</span>
-                        <span>Estado: {pago.pago_estado || "Registrado"}</span>
-                        {pago.pago_fecha_limite && (
-                          <span>Fecha limite: {formatDate(pago.pago_fecha_limite)}</span>
-                        )}
-                      </div>
-                      <span>{formatDate(pago.pago_fecha)}</span>
-                    </article>
-                  ))}
+                  {planData.pagos.map((pago) => {
+                    const tipo   = clasificarPago(pago.pago_metodo);
+                    const parsed = parsePagoMetodo(pago.pago_metodo);
+                    return (
+                      <article className="plan-payment-item" key={pago.pago_id}>
+                        <div className="plan-payment-copy">
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                            <span style={{ padding: "3px 12px", borderRadius: "20px", background: tipo.bg, color: tipo.color, fontWeight: 700, fontSize: "0.78rem", whiteSpace: "nowrap" }}>
+                              {tipo.label}
+                            </span>
+                            {parsed.tipo === "tienda" && (
+                              <strong style={{ fontSize: "0.9rem", color: "#2f1d57" }}>
+                                {parsed.metodo}{parsed.total ? ` · ${parsed.total}` : ""}
+                              </strong>
+                            )}
+                            {parsed.tipo === "servicio" && (
+                              <strong style={{ fontSize: "0.9rem", color: "#2f1d57" }}>
+                                {parsed.nombre}
+                              </strong>
+                            )}
+                            {parsed.tipo === "plan" && (
+                              <strong style={{ fontSize: "0.9rem", color: "#2f1d57" }}>
+                                {pago.pago_metodo || "Pago de plan"}
+                              </strong>
+                            )}
+                          </div>
+                          {parsed.tipo === "tienda" && parsed.productos && (
+                            <span style={{ fontSize: "0.85rem", color: "#555" }}>{parsed.productos}</span>
+                          )}
+                          {parsed.tipo === "servicio" && (
+                            <span style={{ fontSize: "0.85rem", color: "#555" }}>
+                              Método: {parsed.metodo}{parsed.total ? ` · ${parsed.total}` : ""}
+                            </span>
+                          )}
+                        </div>
+                        <span style={{ whiteSpace: "nowrap", color: "#6f6789", fontSize: "0.9rem" }}>
+                          {formatFecha(pago.pago_fecha)}
+                        </span>
+                      </article>
+                    );
+                  })}
                 </div>
               ) : (
                 <p>No hay pagos registrados para este contrato.</p>

@@ -6,6 +6,7 @@ import Carrusel from './Carrusel';
 import ContactenosFooter from './ContactenosFooter';
 import './PaginaInicio.css';
 import { API_URL } from '../../config/api';
+import { getProductImageUrl, DEFAULT_IMAGE } from '../../utils/imageUrl';
 
 const API = `${API_URL}/api`;
 
@@ -42,7 +43,7 @@ const ProductCard = ({ producto, index }) => {
           producto_stock, producto_imagen, categoria_nombre } = producto;
 
   const stock  = Number(producto_stock) || 0;
-  const imgSrc = producto_imagen ? `/${producto_imagen}` : '/img/default.png';
+  const imgSrc = getProductImageUrl(producto_imagen);
   const agotado = stock === 0;
 
   const handleAdd = () => {
@@ -59,7 +60,7 @@ const ProductCard = ({ producto, index }) => {
           alt={producto_nombre}
           className="home-card__img"
           loading="lazy"
-          onError={(e) => { e.target.src = '/img/default.png'; }}
+          onError={(e) => { e.target.src = DEFAULT_IMAGE; }}
         />
         <div className="home-card__badges">
           {index < 4 && <span className="home-badge home-badge--nuevo">Destacado</span>}

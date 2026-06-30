@@ -8,6 +8,7 @@ import {
     Row,
     Col
 } from "react-bootstrap";
+// eslint-disable-next-line no-unused-vars
 import { Link } from "react-router-dom";
 import { API_URL } from "../../config/api";
 import "./AgregarUsuario.css";
