@@ -3,20 +3,10 @@ import ClientLayout from "../layout/ClientLayout";
 import PlanModal from "../components/PlanModal";
 import { getPlanVisual } from "../data/clientPlanVisuals";
 import { authFetch } from "../../../utils/authFetch";
+import { formatPrice } from "../../../utils/formatters";
 import "../styles/homeClient.css";
 import "../styles/clientPages.css";
 import { API_URL } from "../../../config/api";
-
-function formatPrice(value) {
-  const number = Number(value);
-  if (Number.isNaN(number)) return value || "No disponible";
-
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-  }).format(number);
-}
 
 function readClientSession() {
   try {
@@ -122,8 +112,7 @@ export default function HomeClient() {
       <section className="client-hero">
         <div className="client-hero-copy">
           <p className="client-kicker">Experiencia cliente</p>
-          <h1>Logged In Successfully</h1>
-          <h2>Bienvenido, {clientSession.nombre}</h2>
+          <h1>Bienvenido, {clientSession.nombre}</h1>
           <p className="client-hero-email">{clientSession.correo}</p>
           <p className="client-hero-text">
             Consulta tus planes disponibles, revisa coberturas y gestiona tu

@@ -44,7 +44,7 @@ body, html {
 
 /* Sidebar admin */
 .admin-sidebar {
-  width: 200px;
+  width: 250px;
   min-height: 100vh;
   background-color: #211730;
   color: white;
@@ -60,80 +60,111 @@ body, html {
   transition: width 0.25s ease;
 }
 
-.admin-sidebar h3 {
-  font-size: 1rem;
-  text-align: center;
-  margin-bottom: 1rem;
-  padding: 0 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.admin-sidebar-header {
+  padding: 8px 12px 4px;
 }
 
-/* Área de contenido admin */
+.admin-sidebar-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.admin-sidebar-header small {
+  opacity: 0.8;
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  white-space: normal;
+}
+
+.admin-sidebar h3 {
+  display: none;
+}
+
+.admin-sidebar .nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0 12px 20px;
+}
+
+.admin-sidebar .admin-sidebar-link {
+  justify-content: flex-start;
+  padding: 10px 14px;
+  border-radius: 12px;
+  white-space: normal;
+  text-align: left;
+}
+
+.admin-sidebar .admin-sidebar-logout {
+  margin-top: auto;
+}
+
 .admin-page {
-  margin-left: 200px;
+  margin-left: 250px;
   background: #D8CFE8;
   min-height: 100vh;
-  overflow-x: auto;          /* tablas desbordan horizontalmente sin romper layout */
+  overflow-x: hidden;
 }
 
-/* ── Tablet (≤992px): sidebar colapsa a barra horizontal superior ─────────── */
+.admin-sidebar-toggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 250;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+.admin-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.admin-confirm-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 28px;
+  min-width: 280px;
+  max-width: 92vw;
+}
+
+.admin-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+/* ── Tablet (≤992px): activar menú offcanvas y ajustar contenido */
 @media (max-width: 992px) {
   .admin-sidebar {
-    width: 100%;
-    min-height: unset;
-    height: auto;
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding: 6px 12px;
-    flex-direction: row;
-    align-items: center;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .admin-sidebar::-webkit-scrollbar {
     display: none;
   }
 
-  .admin-sidebar h3 {
-    font-size: 0.85rem;
-    margin: 0 10px 0 0;
-    flex-shrink: 0;
-    white-space: nowrap;
-    overflow: visible;
-    text-overflow: unset;
-  }
-
-  /* Bootstrap Nav que normalmente es flex-column */
-  .admin-sidebar .flex-column {
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center;
-    gap: 0;
-  }
-
-  .admin-sidebar .btn {
-    font-size: 0.72rem !important;
-    padding: 5px 8px !important;
-    white-space: nowrap;
-    margin: 2px 2px !important;
+  .admin-sidebar-toggle {
+    display: inline-flex;
   }
 
   .admin-page {
     margin-left: 0;
-    padding-top: 54px;        /* altura de la barra superior */
+    padding-top: 0;
   }
 }
 
-/* ── Móvil (≤576px): botones más compactos ───────────────────────────────── */
+/* ── Móvil (≤576px): botón más pequeño */
 @media (max-width: 576px) {
-  .admin-sidebar .btn {
-    font-size: 0.66rem !important;
-    padding: 4px 6px !important;
+  .admin-sidebar-toggle {
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
   }
 }

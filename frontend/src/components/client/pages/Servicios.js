@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ClientLayout from "../layout/ClientLayout";
 import { authFetch } from "../../../utils/authFetch";
+import { formatPrice } from "../../../utils/formatters";
 import "../styles/clientPages.css";
 import "../styles/servicios.css";
 import { API_URL } from "../../../config/api";
@@ -13,16 +14,6 @@ const PAYMENT_METHODS = [
   { value: "Tarjeta credito", label: "Tarjeta credito",  sub: "Cuotas disponibles" },
   { value: "PSE",             label: "PSE",              sub: "Transferencia online" },
 ];
-
-function formatPrice(precio) {
-  const n = Number(precio);
-  if (!n) return null;
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-  }).format(n);
-}
 
 function isIncluded(precio) {
   return !Number(precio);

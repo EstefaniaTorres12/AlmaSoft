@@ -40,7 +40,6 @@ import EditarProducto from './components/admin/EditarProducto';
 import PlanFront from './components/admin/PlanFront';
 import AgregarPlan from './components/admin/AgregarPlan';
 import EditarPlan from './components/admin/EditarPlan';
-import AfiliacionesAdmin from './components/admin/AfiliacionesAdmin';
 
 /* CLIENTE */
 import HomeClient from './components/client/pages/HomeClient';
@@ -199,11 +198,6 @@ function App() {
         <Route path='/planes/editar/:id' element={
           <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
             <SideBar /><div className="admin-page"><EditarPlan /></div>
-          </RutaProtegida>
-        } />
-        <Route path='/admin/afiliaciones' element={
-          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
-            <SideBar /><div className="admin-page"><AfiliacionesAdmin /></div>
           </RutaProtegida>
         } />
 

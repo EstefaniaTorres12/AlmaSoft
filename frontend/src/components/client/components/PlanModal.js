@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { authFetch } from "../../../utils/authFetch";
+import { formatPrice } from "../../../utils/formatters";
 import "../styles/PlanModal.css";
 import { API_URL } from "../../../config/api";
 
@@ -33,17 +34,6 @@ const PSE_ENTITIES = [
 
 const CARD_FRANCHISES = ["Visa", "Mastercard", "American Express", "Diners Club"];
 const CASH_LOCATIONS = ["Sede principal", "Sede norte", "Sede centro", "Sede sur"];
-
-function formatPrice(value) {
-  const number = Number(value);
-  if (Number.isNaN(number)) return value || "No disponible";
-
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-  }).format(number);
-}
 
 function getClientId() {
   const rawCliente = localStorage.getItem("usuario_id");

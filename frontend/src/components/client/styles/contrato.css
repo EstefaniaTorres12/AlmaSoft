@@ -97,4 +97,10 @@
   .contrato-grid {
     grid-template-columns: 1fr 1fr;
   }
+
+  .contrato-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
