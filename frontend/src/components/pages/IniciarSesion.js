@@ -74,7 +74,7 @@ const IniciarSesion = () => {
     <div
       style={{
         minHeight: "100vh",
-        backgroundImage: `url(/img/3302177.jpg)`,
+        backgroundImage: `url(/img/backgrounds/3302177.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         display: "flex",

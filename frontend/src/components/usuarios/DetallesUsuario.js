@@ -216,7 +216,7 @@ const DetallesUsuario = () => {
                 <Card className="form-card text-center">
                     <Card.Body>
                         <img
-                            src="/img/usuario.png"
+                            src="/img/icons/usuario.png"
                             alt="Usuario"
                             className="img-usuario"
                         />

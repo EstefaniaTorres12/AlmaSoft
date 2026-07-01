@@ -1,4 +1,4 @@
-const DEFAULT_IMAGE = '/img/default.png';
+const DEFAULT_IMAGE = '/img/default/default.png';
 
 /**
  * Construye la URL correcta para una imagen de producto.

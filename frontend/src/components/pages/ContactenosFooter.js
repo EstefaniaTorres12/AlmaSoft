@@ -9,7 +9,7 @@ const ContactenosFooter = () => {
 
         {/* Brand */}
         <div className="footer__brand">
-          <img src="/img/logoAS.png" alt="AlmaSoft" width="48" height="48" />
+          <img src="/img/icons/logoAS.png" alt="AlmaSoft" width="48" height="48" />
           <h3 className="footer__brand-name">ALMASOFT</h3>
           <p className="footer__brand-desc">
             Brindamos servicios funerarios con dignidad, respeto y acompañamiento

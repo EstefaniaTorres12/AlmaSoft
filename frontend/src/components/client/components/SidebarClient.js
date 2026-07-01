@@ -26,7 +26,7 @@ export default function SidebarClient() {
       return {};
     }
   });
-  const [profilePhoto, setProfilePhoto] = useState("/img/usuario.png");
+  const [profilePhoto, setProfilePhoto] = useState("/img/icons/usuario.png");
   const rol = localStorage.getItem("rol");
 
   useEffect(() => {
@@ -38,11 +38,11 @@ export default function SidebarClient() {
         const usuarioId = usuarioActual.usuario_id || localStorage.getItem("usuario_id");
         if (usuarioId) {
           const storedPhoto = localStorage.getItem(`client_profile_photo_${usuarioId}`);
-          setProfilePhoto(storedPhoto || "/img/usuario.png");
+          setProfilePhoto(storedPhoto || "/img/icons/usuario.png");
         }
       } catch {
         setUsuario({});
-        setProfilePhoto("/img/usuario.png");
+        setProfilePhoto("/img/icons/usuario.png");
       }
     };
 
@@ -75,7 +75,7 @@ export default function SidebarClient() {
     <>
       <aside className="sidebar">
         <div className="sidebar-brand">
-          <img src="/img/logoAS.png" alt="AlmaSoft" className="sidebar-brand-logo" />
+          <img src="/img/icons/logoAS.png" alt="AlmaSoft" className="sidebar-brand-logo" />
           <div>
             <p className="sidebar-kicker">Panel cliente</p>
             <h2 className="sidebar-title">AlmaSoft</h2>

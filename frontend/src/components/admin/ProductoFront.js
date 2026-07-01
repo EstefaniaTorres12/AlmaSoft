@@ -14,6 +14,7 @@ import "./Producto.css";
 import { Link } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 import { API_URL } from "../../config/api";
+import { getProductImageUrl, DEFAULT_IMAGE } from "../../utils/imageUrl";
 
 const ProductoFront = () => {
 
@@ -294,41 +295,23 @@ const ProductoFront = () => {
 
                         <td>
 
-                          {
+                          <img
 
-                            p.producto_imagen ?
+                            src={getProductImageUrl(p.producto_imagen)}
 
-                              (
+                            alt="producto"
 
-                                <img
+                            className="producto-img"
 
-                                  src={p.producto_imagen}
+                            onError={(e) => {
 
-                                  alt="producto"
+                              e.target.onerror = null;
 
-                                  className="producto-img"
+                              e.target.src = DEFAULT_IMAGE;
 
-                                  onError={(e) => {
+                            }}
 
-                                    e.target.onerror = null;
-
-                                    e.target.style.display = "none";
-
-                                  }}
-
-                                />
-
-                              )
-
-                              :
-
-                              <div className="producto-img-vacio">
-
-                                Sin imagen
-
-                              </div>
-
-                          }
+                          />
 
                         </td>
 
