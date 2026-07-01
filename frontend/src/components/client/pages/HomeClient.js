@@ -152,7 +152,7 @@ export default function HomeClient() {
         </div>
 
         <div className="client-hero-visual">
-          <img src="/img/3302177.jpg" alt="Acompanamiento AlmaSoft" />
+          <img src="/img/backgrounds/3302177.jpg" alt="Acompanamiento AlmaSoft" />
           <div className="client-hero-badge">
             <span>Que puedes hacer hoy</span>
             <strong>Explora planes, revisa pagos y continua tu proceso sin salir del panel.</strong>

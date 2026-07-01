@@ -693,4 +693,5 @@
   .home-grid, .home-skel-grid { grid-template-columns: 1fr; }
   .home-hscroll .home-card { width: 200px; }
   .home-why-grid { grid-template-columns: 1fr; }
+  .home-trust__grid { grid-template-columns: 1fr; }
 }

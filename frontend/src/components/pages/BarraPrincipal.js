@@ -69,7 +69,7 @@ const BarraPrincipal = () => {
 
           {/* Logo */}
           <Link to="/" className="hdr-brand" onClick={handleLogoClick}>
-            <img src="/img/logoAS.png" alt="AlmaSoft" className="hdr-brand__img" />
+            <img src="/img/icons/logoAS.png" alt="AlmaSoft" className="hdr-brand__img" />
             <div>
               <span className="hdr-brand__name">AlmaSoft</span>
               <span className="hdr-brand__sub">Servicios Funerarios</span>

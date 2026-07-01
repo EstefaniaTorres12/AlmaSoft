@@ -12,7 +12,7 @@ export const ROLES = {
 // Redirección por nombre de rol (usado por RutaProtegida)
 export const DESTINO_POR_ROL = {
   [ROLES.ADMINISTRADOR]: "/usuarios",
-  [ROLES.ASESOR]:        "/usuarios",
+  [ROLES.ASESOR]:        "/asesor",
   [ROLES.CLIENTE]:       "/client",
   [ROLES.AFILIADO]:      "/client/afiliados",
 };
@@ -21,7 +21,7 @@ export const DESTINO_POR_ROL = {
 // rol_id = 1 → Cliente, 2 → Asesor, 3 → Administrador
 export const DESTINO_POR_ROL_ID = {
   1: "/client",    // Cliente
-  2: "/usuarios",  // Asesor
+  2: "/asesor",    // Asesor
   3: "/usuarios",  // Administrador
 };
 

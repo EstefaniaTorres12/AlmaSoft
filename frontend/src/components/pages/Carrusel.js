@@ -4,7 +4,7 @@ import './Carrusel.css';
 
 const SLIDES = [
   {
-    img:     '/img/1.png',
+    img:     '/img/carousel/1.png',
     kicker:  'Planes funerarios',
     titulo:  'Acompañamiento en los momentos más difíciles',
     texto:   'Planes completos con dignidad, respeto y el calor humano que mereces.',
@@ -12,7 +12,7 @@ const SLIDES = [
     ctaLink: '/pages/IniciarSesion',
   },
   {
-    img:     '/img/2.png',
+    img:     '/img/carousel/2.png',
     kicker:  'Catálogo de productos',
     titulo:  'Productos de la más alta calidad',
     texto:   'Ataúdes, urnas, lápidas y arreglos florales para cada necesidad y presupuesto.',
@@ -20,7 +20,7 @@ const SLIDES = [
     ctaLink: '/productos/ProductosAtaud',
   },
   {
-    img:     '/img/3.png',
+    img:     '/img/carousel/3.png',
     kicker:  'Siempre disponibles',
     titulo:  'Estamos cuando más nos necesitas',
     texto:   'Atención personalizada 24/7. Un equipo humano listo para acompañarte.',

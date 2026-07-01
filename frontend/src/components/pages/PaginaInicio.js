@@ -30,7 +30,7 @@ const precioCOP = (v) =>
   new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 })
     .format(Number(v) || 0);
 
-const planImg = (i) => `/img/plan${(i % 3) + 1}.png`;
+const planImg = (i) => `/img/plans/plan${(i % 3) + 1}.png`;
 
 /* Asigna color de chip según índice */
 const CHIP_COLORS = ['amber', 'violet', 'slate', 'green', 'amber', 'violet', 'slate', 'green'];
@@ -248,7 +248,7 @@ const PaginaInicio = () => {
         <div className="home-wrap">
           <div className="home-banners">
             <div className="home-banner home-banner--dark">
-              <img src="/img/Promocion.png" alt="" className="home-banner__bg" />
+              <img src="/img/backgrounds/Promocion.png" alt="" className="home-banner__bg" />
               <div className="home-banner__overlay" />
               <div className="home-banner__body">
                 <span className="home-banner__kicker">Planes funerarios</span>
@@ -259,7 +259,7 @@ const PaginaInicio = () => {
               </div>
             </div>
             <div className="home-banner home-banner--light">
-              <img src="/img/2.png" alt="" className="home-banner__bg" />
+              <img src="/img/carousel/2.png" alt="" className="home-banner__bg" />
               <div className="home-banner__overlay" />
               <div className="home-banner__body">
                 <span className="home-banner__kicker">Catálogo completo</span>

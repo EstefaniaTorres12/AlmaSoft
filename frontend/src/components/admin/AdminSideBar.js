@@ -28,7 +28,7 @@ export default function AdminSideBar() {
     <>
       <aside className="admin-sidebar-modern">
         <div className="admin-sidebar-brand">
-          <img src="/img/logoAS.png" alt="AlmaSoft" className="admin-sidebar-logo" />
+          <img src="/img/icons/logoAS.png" alt="AlmaSoft" className="admin-sidebar-logo" />
           <div>
             <p className="admin-sidebar-kicker">Panel administrador</p>
             <h2 className="admin-sidebar-title">AlmaSoft</h2>

@@ -11,82 +11,28 @@ import {
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 import { API_URL } from "../../config/api";
+import { DEFAULT_IMAGE } from "../../utils/imageUrl";
 import "./AgregarProducto.css";
-import ArreglosFloral from "../productos/ArregloFloral";
-
-const imagenes = {
-
-    Ataud: [
-        "/img/Ataud1.jpg",
-        "/img/Ataud2.jpg",
-        "/img/Ataud3.jpg",
-        "/img/Ataud4.jpg",
-        "/img/AtaudClasico.jpg",
-        "/img/AtaudPremium.jpg"
-    ],
-
-    Urna: [
-        "/img/Urna1.jpg",
-        "/img/Urna2.jpg",
-        "/img/Urna3.jpg",
-        "/img/Urna4.jpg"
-    ],
-
-    "Arreglo Floral": [
-        "/img/Arreglo1.jpg",
-        "/img/Arreglo2.jpg",
-        "/img/Arreglo3.jpg",
-        "/img/Arreglo4.jpg",
-        "/img/Arreglo5.jpg"
-    ],
-
-    Lapida: [
-        "/img/Lapida1.jpeg",
-        "/img/Lapida2.png",
-        "/img/Lapida3.jpg",
-        "/img/Lapida4.jpg"
-    ],
-
-    Planes: [
-        "/img/plan1.png",
-        "/img/plan2.png",
-        "/img/plan3.png"
-    ]
-
-};
 
 const AgregarProducto = () => {
 
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-
         nombre: "",
-
         descripcion: "",
-
         precio: "",
-
         stock: "",
-
         estado: "1",
-
-        imagen: "",
-
         categoria_id: "",
-
         subcategoria_id: ""
-
     });
 
     const [categorias, setCategorias] = useState([]);
-
     const [subcategorias, setSubcategorias] = useState([]);
-
     const [subFiltradas, setSubFiltradas] = useState([]);
-
-    const [imagenesFiltradas, setImagenesFiltradas] = useState([]);
-
+    const [archivoImagen, setArchivoImagen] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState("");
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
 
     /* CARGAR CATEGORIAS */
@@ -171,32 +117,6 @@ const AgregarProducto = () => {
 
     }, [formData.categoria_id, subcategorias]);
 
-    /* FILTRAR IMAGENES */
-
-    useEffect(() => {
-
-        const categoria = categorias.find(
-
-            c => c.categoria_id === Number(formData.categoria_id)
-
-        );
-
-        if (!categoria) {
-
-            setImagenesFiltradas([]);
-
-            return;
-
-        }
-
-        setImagenesFiltradas(
-
-            imagenes[categoria.categoria_nombre] || []
-
-        );
-
-    }, [formData.categoria_id, categorias]);
-
     /* HANDLE */
 
     const handleChange = (e) => {
@@ -211,33 +131,45 @@ const AgregarProducto = () => {
 
     };
 
+    const handleImagen = (e) => {
+
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        setArchivoImagen(file);
+
+        setPreviewUrl(URL.createObjectURL(file));
+
+    };
+
     /* GUARDAR */
 
     const enviarDatos = async (e) => {
 
         e.preventDefault();
 
-        const producto = {
+        const fd = new FormData();
 
-            producto_nombre: formData.nombre,
+        fd.append('producto_nombre', formData.nombre);
 
-            producto_descripcion: formData.descripcion,
+        fd.append('producto_descripcion', formData.descripcion);
 
-            producto_precio: parseFloat(formData.precio),
+        fd.append('producto_precio', formData.precio);
 
-            producto_stock: parseInt(formData.stock),
+        fd.append('producto_stock', formData.stock);
 
-            producto_estado: parseInt(formData.estado),
+        fd.append('producto_estado', formData.estado);
 
-            producto_imagen: formData.imagen,
+        fd.append('subcategoria_id', formData.subcategoria_id);
 
-            subcategoria_id: parseInt(formData.subcategoria_id)
-
-        };
+        if (archivoImagen) fd.append('imagen', archivoImagen);
 
         try {
 
-            const res = await authFetch(
+            const token = localStorage.getItem("token");
+
+            const res = await fetch(
 
                 `${API_URL}/api/productos/createProducto`,
 
@@ -245,13 +177,9 @@ const AgregarProducto = () => {
 
                     method: "POST",
 
-                    headers: {
+                    headers: { "Authorization": `Bearer ${token}` },
 
-                        "Content-Type": "application/json"
-
-                    },
-
-                    body: JSON.stringify(producto)
+                    body: fd
 
                 }
 
@@ -284,7 +212,9 @@ const AgregarProducto = () => {
         }
 
     };
+
   return (
+
     <Container fluid className="agregar-producto-page">
 
         {/* HEADER */}
@@ -619,93 +549,63 @@ const AgregarProducto = () => {
 
                             </h5>
 
-                            {
-
-                                formData.categoria_id === ""
-
-                                ?
-
-                                <Alert variant="light">
-
-                                    Seleccione primero una categoría.
-
-                                </Alert>
-
-                                :
-
-                                <div className="galeria-imagenes">
-
-                                    {
-
-                                        imagenesFiltradas.map((img)=>(
-
-                                            <div
-
-                                                key={img}
-
-                                                className={`imagen-card ${formData.imagen===img ? "seleccionada" : ""}`}
-
-                                                onClick={()=>{
-
-                                                    setFormData({
-
-                                                        ...formData,
-
-                                                        imagen:img
-
-                                                    });
-
-                                                }}
-
-                                            >
-
-                                                <img
-
-                                                    src={img}
-
-                                                    alt="Producto"
-
-                                                />
-
-                                                {
-
-                                                    formData.imagen===img &&
-
-                                                    <div className="check-imagen">
-
-                                                        ✓
-
-                                                    </div>
-
-                                                }
-
-                                            </div>
-
-                                        ))
-
-                                    }
-
-                                </div>
-
-                            }
-
-                            <Form.Group className="mt-4">
+                            <Form.Group className="mb-3">
 
                                 <Form.Label>
 
-                                    Imagen seleccionada
+                                    Seleccionar imagen
 
                                 </Form.Label>
 
                                 <Form.Control
 
-                                    value={formData.imagen}
+                                    type="file"
 
-                                    readOnly
+                                    accept="image/*"
+
+                                    className="agregar-producto-input"
+
+                                    onChange={handleImagen}
 
                                 />
 
+                                <Form.Text className="text-muted">
+
+                                    JPG, PNG, WEBP o GIF — máx. 5 MB
+
+                                </Form.Text>
+
                             </Form.Group>
+
+                            <div className="text-center mt-2">
+
+                                <img
+
+                                    src={previewUrl || DEFAULT_IMAGE}
+
+                                    alt="Vista previa"
+
+                                    style={{
+
+                                        width: "100%",
+
+                                        maxHeight: "180px",
+
+                                        objectFit: "contain",
+
+                                        borderRadius: "8px",
+
+                                        border: "1px solid #dee2e6",
+
+                                        padding: "4px"
+
+                                    }}
+
+                                    onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_IMAGE; }}
+
+                                />
+
+                            </div>
 
                         </Col>
 

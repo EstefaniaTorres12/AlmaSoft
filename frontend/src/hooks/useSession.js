@@ -13,7 +13,7 @@ export function useSession(profilePhotoKey = null) {
     }
   });
 
-  const [profilePhoto, setProfilePhoto] = useState("/img/usuario.png");
+  const [profilePhoto, setProfilePhoto] = useState("/img/icons/usuario.png");
 
   useEffect(() => {
     const sync = () => {
@@ -24,11 +24,11 @@ export function useSession(profilePhotoKey = null) {
         if (profilePhotoKey) {
           const uid = u.usuario_id || localStorage.getItem("usuario_id");
           const key = `${profilePhotoKey}_${uid}`;
-          setProfilePhoto(localStorage.getItem(key) || "/img/usuario.png");
+          setProfilePhoto(localStorage.getItem(key) || "/img/icons/usuario.png");
         }
       } catch {
         setUsuario({});
-        setProfilePhoto("/img/usuario.png");
+        setProfilePhoto("/img/icons/usuario.png");
       }
     };
 

@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const productoController = require('../controllers/productoController');
 const { verifyToken, authorizeRoles } = require('../middlewares/authMiddleware');
+const upload = require('../middlewares/uploadMiddleware');
 
 //rutas protegidas
-router.post('/createProducto',verifyToken, authorizeRoles(['Administrador']), productoController.createProducto);
-router.put('/updateProducto/:id',verifyToken,authorizeRoles(['Administrador','Asesor']),productoController.getProductoUpdate);
+router.post('/createProducto', verifyToken, authorizeRoles(['Administrador']), upload.single('imagen'), productoController.createProducto);
+router.put('/updateProducto/:id', verifyToken, authorizeRoles(['Administrador','Asesor']), upload.single('imagen'), productoController.getProductoUpdate);
 router.delete('/deleteProducto/:id',verifyToken,authorizeRoles(['Administrador']),productoController.getProductoDelete);
 
 //rutas publicas

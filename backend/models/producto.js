@@ -74,7 +74,12 @@ Producto.findByName = (nombre, result) => {
 
 // 🔹 POR ID
 Producto.findById = (id, result) => {
-    const sql = `SELECT * FROM producto WHERE producto_id = ?`;
+    const sql = `
+        SELECT p.*, sc.categoria_id
+        FROM producto p
+        LEFT JOIN subcategoria sc ON p.subcategoria_id = sc.subcategoria_id
+        WHERE p.producto_id = ?
+    `;
 
     db.query(sql, [id], (err, data) => {
         if (err) return result(err, null);

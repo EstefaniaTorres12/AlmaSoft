@@ -11,48 +11,8 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 import { API_URL } from "../../config/api";
+import { DEFAULT_IMAGE } from "../../utils/imageUrl";
 import "./EditarProducto.css";
-
-const imagenes = {
-
-    Ataud: [
-        "/img/Ataud1.jpg",
-        "/img/Ataud2.jpg",
-        "/img/Ataud3.jpg",
-        "/img/Ataud4.jpg",
-        "/img/AtaudClasico.jpg",
-        "/img/AtaudPremium.jpg"
-    ],
-
-    Urna: [
-        "/img/Urna1.jpg",
-        "/img/Urna2.jpg",
-        "/img/Urna3.jpg",
-        "/img/Urna4.jpg"
-    ],
-
-    "Arreglo Floral": [
-        "/img/Arreglo1.jpg",
-        "/img/Arreglo2.jpg",
-        "/img/Arreglo3.jpg",
-        "/img/Arreglo4.jpg",
-        "/img/Arreglo5.jpg"
-    ],
-
-    Lapidas: [
-        "/img/Lapida1.jpeg",
-        "/img/Lapida2.png",
-        "/img/Lapida3.jpg",
-        "/img/Lapida4.jpg"
-    ],
-
-    Planes: [
-        "/img/plan1.png",
-        "/img/plan2.png",
-        "/img/plan3.png"
-    ]
-
-};
 
 const EditarProducto = () => {
 
@@ -84,9 +44,9 @@ const EditarProducto = () => {
 
     const [subcategorias, setSubcategorias] = useState([]);
 
-    const [subFiltradas, setSubFiltradas] = useState([]);
+    const [archivoImagen, setArchivoImagen] = useState(null);
 
-    const [imagenesFiltradas, setImagenesFiltradas] = useState([]);
+    const [previewUrl, setPreviewUrl] = useState("");
 
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
 
@@ -170,7 +130,17 @@ const EditarProducto = () => {
 
                 if (res.ok) {
 
-                    setData(data.data);
+                    setData({
+                        ...data.data,
+                        categoria_id:   data.data.categoria_id   != null ? String(data.data.categoria_id)   : "",
+                        subcategoria_id: data.data.subcategoria_id != null ? String(data.data.subcategoria_id) : "",
+                    });
+
+                    if (data.data.producto_imagen) {
+
+                        setPreviewUrl(data.data.producto_imagen);
+
+                    }
 
                 } else {
 
@@ -192,57 +162,39 @@ const EditarProducto = () => {
 
     }, [id]);
 
-    /* FILTRAR SUBCATEGORIAS */
+    /* SUBCATEGORIAS DERIVADAS — calculado en cada render, sin useEffect */
 
-    useEffect(() => {
-
-        const filtradas = subcategorias.filter(
-
-            sc => sc.categoria_id === Number(formData.categoria_id)
-
-        );
-
-        setSubFiltradas(filtradas);
-
-    }, [formData.categoria_id, subcategorias]);
-
-    /* FILTRAR IMAGENES */
-
-    useEffect(() => {
-
-        const categoria = categorias.find(
-
-            c => c.categoria_id === Number(formData.categoria_id)
-
-        );
-
-        if (!categoria) {
-
-            setImagenesFiltradas([]);
-
-            return;
-
-        }
-
-        setImagenesFiltradas(
-
-            imagenes[categoria.categoria_nombre] || []
-
-        );
-
-    }, [formData.categoria_id, categorias]);
+    const subFiltradas = subcategorias.filter(
+        sc => String(sc.categoria_id) === String(formData.categoria_id)
+    );
 
     /* HANDLE */
 
     const handleChange = (e) => {
 
+        const { name, value } = e.target;
+
         setData({
 
             ...formData,
 
-            [e.target.name]: e.target.value
+            [name]: value,
+
+            ...(name === 'categoria_id' ? { subcategoria_id: "" } : {})
 
         });
+
+    };
+
+    const handleImagen = (e) => {
+
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        setArchivoImagen(file);
+
+        setPreviewUrl(URL.createObjectURL(file));
 
     };
 
@@ -252,9 +204,37 @@ const EditarProducto = () => {
 
         e.preventDefault();
 
+        const fd = new FormData();
+
+        fd.append('producto_nombre', formData.producto_nombre);
+
+        fd.append('producto_descripcion', formData.producto_descripcion);
+
+        fd.append('producto_precio', formData.producto_precio);
+
+        fd.append('producto_stock', formData.producto_stock);
+
+        fd.append('producto_estado', formData.producto_estado);
+
+        fd.append('subcategoria_id', formData.subcategoria_id);
+
+        fd.append('producto_id', id);
+
+        if (archivoImagen) {
+
+            fd.append('imagen', archivoImagen);
+
+        } else if (formData.producto_imagen) {
+
+            fd.append('producto_imagen', formData.producto_imagen);
+
+        }
+
         try {
 
-            const res = await authFetch(
+            const token = localStorage.getItem("token");
+
+            const res = await fetch(
 
                 `${API_URL}/api/productos/updateProducto/${id}`,
 
@@ -262,19 +242,9 @@ const EditarProducto = () => {
 
                     method: "PUT",
 
-                    headers: {
+                    headers: { "Authorization": `Bearer ${token}` },
 
-                        "Content-Type": "application/json"
-
-                    },
-
-                    body: JSON.stringify({
-
-                        ...formData,
-
-                        producto_id: id
-
-                    })
+                    body: fd
 
                 }
 
@@ -307,6 +277,7 @@ const EditarProducto = () => {
         }
 
     };
+
     return (
         <Container fluid className="editar-producto-page">
 
@@ -521,7 +492,7 @@ const EditarProducto = () => {
 
                                                 <option
                                                     key={cat.categoria_id}
-                                                    value={cat.categoria_id}
+                                                    value={String(cat.categoria_id)}
                                                 >
 
                                                     {cat.categoria_nombre}
@@ -563,7 +534,7 @@ const EditarProducto = () => {
 
                                                 <option
                                                     key={sub.subcategoria_id}
-                                                    value={sub.subcategoria_id}
+                                                    value={String(sub.subcategoria_id)}
                                                 >
 
                                                     {sub.subcategoria_nombre}
@@ -584,77 +555,49 @@ const EditarProducto = () => {
 
                                 </h5>
 
-                                {
+                                <div className="text-center mb-3">
 
-                                    formData.categoria_id === ""
-
-                                        ?
-
-                                        <Alert variant="light">
-
-                                            Seleccione una categoría para visualizar las imágenes.
-
-                                        </Alert>
-
-                                        :
-
-                                        <div className="galeria-imagenes">
-
-                                            {
-
-                                                imagenesFiltradas.map(img => (
-
-                                                    <div
-
-                                                        key={img}
-
-                                                        className={`imagen-card ${formData.producto_imagen === img ? "seleccionada" : ""}`}
-
-                                                        onClick={() =>
-
-                                                            setData({
-
-                                                                ...formData,
-
-                                                                producto_imagen: img
-
-                                                            })
-
-                                                        }
-
-                                                    >
-
-                                                        <img
-
-                                                            src={img}
-
-                                                            alt="Producto"
-
-                                                        />
-                                                        {
-                                                            formData.producto_imagen === img && (
-                                                                <div className="check-imagen">
-                                                                    ✓
-                                                                </div>
-                                                            )
-                                                        }
-                                                    </div>
-                                                ))
-                                            }
-                                        </div>
-                                }
-                                <Form.Group className="mt-4">
-                                    <Form.Label>
-                                        Imagen seleccionada
-                                    </Form.Label>
-                                    <Form.Control
-                                        value={formData.producto_imagen}
-                                        readOnly
+                                    <img
+                                        src={previewUrl || DEFAULT_IMAGE}
+                                        alt="Imagen actual"
+                                        style={{
+                                            width: "100%",
+                                            maxHeight: "180px",
+                                            objectFit: "contain",
+                                            borderRadius: "8px",
+                                            border: "1px solid #dee2e6",
+                                            padding: "4px"
+                                        }}
+                                        onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_IMAGE; }}
                                     />
+
+                                </div>
+
+                                <Form.Group className="mb-3">
+
+                                    <Form.Label>Reemplazar imagen</Form.Label>
+
+                                    <Form.Control
+                                        type="file"
+                                        accept="image/*"
+                                        className="editar-producto-input"
+                                        onChange={handleImagen}
+                                    />
+
+                                    <Form.Text className="text-muted">
+
+                                        Deje vacío para conservar la imagen actual.
+
+                                    </Form.Text>
+
                                 </Form.Group>
+
                             </Col>
+
                         </Row>
+
                         <div className="d-flex justify-content-end gap-3 mt-5">
+
                             <Button
                                 variant="secondary"
                                 onClick={() =>
@@ -663,16 +606,22 @@ const EditarProducto = () => {
                             >
                                 Cancelar
                             </Button>
+
                             <Button
                                 type="submit"
                                 className="editar-producto-btn"
                             >
                                 Guardar Cambios
                             </Button>
+
                         </div>
+
                     </Form>
+
                 </Card.Body>
+
             </Card>
+
         </Container>
     );
 

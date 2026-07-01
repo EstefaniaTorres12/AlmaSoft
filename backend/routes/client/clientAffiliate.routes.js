@@ -12,5 +12,7 @@ router.put("/notifications/read", verifyToken, authorizeRoles(["Cliente", "Afili
 
 router.get("/review", verifyToken, authorizeRoles(["Administrador", "Asesor"]), controller.getAffiliateRequestsForReview);
 router.put("/review/:id", verifyToken, authorizeRoles(["Administrador", "Asesor"]), controller.reviewAffiliateRequest);
+router.post("/register-by-asesor", verifyToken, authorizeRoles(["Asesor"]), controller.registerAffiliateByAsesor);
+router.get("/all-for-asesor", verifyToken, authorizeRoles(["Asesor", "Administrador"]), controller.getAllAffiliatesForAsesor);
 
 module.exports = router;

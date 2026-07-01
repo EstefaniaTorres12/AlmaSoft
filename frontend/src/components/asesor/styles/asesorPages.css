@@ -1,0 +1,146 @@
+.asesor-page-shell {
+  padding: 30px;
+  border-radius: 28px;
+  background: rgba(252, 249, 255, 0.82);
+  border: 1px solid rgba(121, 91, 194, 0.12);
+  box-shadow: 0 24px 48px rgba(72, 45, 137, 0.08);
+}
+
+.asesor-page-header {
+  margin-bottom: 26px;
+}
+
+.asesor-page-header h1 {
+  margin: 0;
+  color: #301f57;
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+}
+
+.asesor-page-header p:last-child {
+  max-width: 60ch;
+  margin: 14px 0 0;
+  color: #6f6789;
+  line-height: 1.7;
+}
+
+.asesor-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.asesor-info-card {
+  padding: 22px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #fffeff 0%, #f3edff 100%);
+  border: 1px solid rgba(121, 91, 194, 0.14);
+  box-shadow: 0 16px 28px rgba(74, 47, 139, 0.06);
+}
+
+.asesor-info-card h3 {
+  margin: 0 0 12px;
+  color: #3b2a6a;
+}
+
+.asesor-info-card p {
+  margin: 0;
+  color: #6f6789;
+  line-height: 1.65;
+}
+
+/* Table styles for asesor pages */
+.asesor-table-container {
+  background: rgba(252, 249, 255, 0.82);
+  border-radius: 20px;
+  border: 1px solid rgba(121, 91, 194, 0.12);
+  box-shadow: 0 16px 32px rgba(72, 45, 137, 0.06);
+  overflow: hidden;
+}
+
+.asesor-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.asesor-table th,
+.asesor-table td {
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid rgba(121, 91, 194, 0.08);
+}
+
+.asesor-table th {
+  background: rgba(250, 247, 255, 0.9);
+  color: #301f57;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.asesor-table tbody tr:hover {
+  background: rgba(250, 247, 255, 0.5);
+}
+
+.asesor-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Form styles for asesor pages */
+.asesor-form-group {
+  margin-bottom: 20px;
+}
+
+.asesor-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #301f57;
+  font-weight: 600;
+}
+
+.asesor-form-control {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(121, 91, 194, 0.2);
+  border-radius: 12px;
+  background: #fff;
+  color: #301f57;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.asesor-form-control:focus {
+  outline: none;
+  border-color: #7a4cff;
+  box-shadow: 0 0 0 3px rgba(122, 76, 255, 0.1);
+}
+
+.asesor-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 14px;
+  border: 0;
+  background: linear-gradient(135deg, #7a4cff 0%, #4d2a99 100%);
+  color: #fffdf9;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.asesor-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(86, 52, 164, 0.3);
+}
+
+.asesor-btn-secondary {
+  background: rgba(250, 248, 255, 0.92);
+  color: #5636a5;
+  border: 1px solid #d8ccf4;
+}
+
+.asesor-btn-secondary:hover {
+  background: rgba(240, 238, 255, 0.95);
+}

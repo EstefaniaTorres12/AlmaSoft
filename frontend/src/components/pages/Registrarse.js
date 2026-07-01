@@ -85,7 +85,7 @@ const Registrarse = () => {
     return (
         <div style={{
             minHeight: "100vh",
-            backgroundImage: `url(/img/3302177.jpg)`,
+            backgroundImage: `url(/img/backgrounds/3302177.jpg)`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             display: "flex",
@@ -215,7 +215,7 @@ const Registrarse = () => {
                                 />
                             </Form.Group>
 
-                            <Button type="submit">
+                            <Button type="submit" className="w-100">
                                 Guardar
                             </Button>
 

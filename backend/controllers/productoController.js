@@ -5,6 +5,9 @@ module.exports = {
     // 🔹 CREAR
     createProducto(req, res) {
         const producto = req.body;
+        if (req.file) {
+            producto.producto_imagen = `/uploads/${req.file.filename}`;
+        }
 
         Producto.create(producto, (err, data) => {
             if (err) {
@@ -87,6 +90,9 @@ module.exports = {
     getProductoUpdate(req, res) {
         const producto = req.body;
         producto.producto_id = req.params.id;
+        if (req.file) {
+            producto.producto_imagen = `/uploads/${req.file.filename}`;
+        }
 
         Producto.update(producto, (err, data) => {
             if (err) {

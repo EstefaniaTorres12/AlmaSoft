@@ -39,7 +39,7 @@ export default function Perfil() {
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [originalData, setOriginalData] = useState(null);
-  const [profilePhoto, setProfilePhoto] = useState("/img/usuario.png");
+  const [profilePhoto, setProfilePhoto] = useState("/img/icons/usuario.png");
   const [formData, setFormData] = useState({
     usuario_primer_nombre: "",
     usuario_segundo_nombre: "",

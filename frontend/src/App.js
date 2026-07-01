@@ -40,6 +40,22 @@ import EditarProducto from './components/admin/EditarProducto';
 import PlanFront from './components/admin/PlanFront';
 import AgregarPlan from './components/admin/AgregarPlan';
 import EditarPlan from './components/admin/EditarPlan';
+import AfiliacionesAdmin from './components/admin/AfiliacionesAdmin';
+
+/* ASESOR */
+import AsesorLayout from './components/asesor/layout/AsesorLayout';
+import HomeAsesor from './components/asesor/pages/HomeAsesor';
+import ClientesFrontAsesor from './components/asesor/pages/ClientesFront';
+import AgregarClienteAsesor from './components/asesor/AgregarCliente';
+import EditarClienteAsesor from './components/asesor/EditarCliente';
+import DetallesClienteAsesor from './components/asesor/DetallesCliente';
+import PlanesFrontAsesor from './components/asesor/pages/PlanesFront';
+import EditarPlanAsesor from './components/asesor/EditarPlanAsesor';
+import ProductosFrontAsesor from './components/asesor/pages/ProductosFront';
+import AfiliacionesAsesor from './components/asesor/pages/AfiliacionesFront';
+import PerfilAsesor from './components/asesor/pages/PerfilAsesor';
+import RegistrarAfiliadoAsesor from './components/asesor/RegistrarAfiliado';
+import EditarAfiliadoAsesor from './components/asesor/EditarAfiliadoAsesor';
 
 /* CLIENTE */
 import HomeClient from './components/client/pages/HomeClient';
@@ -75,8 +91,9 @@ function App() {
     location.pathname.startsWith('/planes') ||
     location.pathname.startsWith('/admin');
 
+  const isAsesorPage = location.pathname.startsWith('/asesor');
   const isClientPage = location.pathname.startsWith('/client');
-  const hideHeader = isAuthPage || isAdminPage || isClientPage;
+  const hideHeader = isAuthPage || isAdminPage || isAsesorPage || isClientPage;
 
   return (
     <CartProvider>
@@ -200,6 +217,11 @@ function App() {
             <SideBar /><div className="admin-page"><EditarPlan /></div>
           </RutaProtegida>
         } />
+        <Route path='/admin/afiliaciones' element={
+          <RutaProtegida rolPermitido={['Administrador', 'Asesor']}>
+            <SideBar /><div className="admin-page"><AfiliacionesAdmin /></div>
+          </RutaProtegida>
+        } />
 
         {/* CLIENTE */}
         <Route path='/client' element={
@@ -232,6 +254,128 @@ function App() {
         <Route path='/client/tienda' element={
           <RutaProtegida rolPermitido='Cliente'><Tienda /></RutaProtegida>
         } />
+
+        {/* ASESOR */}
+        <Route
+          path='/asesor'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <HomeAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/clientes'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <ClientesFrontAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/clientes/agregar'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <AgregarClienteAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/clientes/editar/:id'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <EditarClienteAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/clientes/detalles/:id'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <DetallesClienteAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/planes'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <PlanesFrontAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/planes/editar/:id'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <EditarPlanAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/productos'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <ProductosFrontAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/afiliados'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <AfiliacionesAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/afiliados/registrar'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <RegistrarAfiliadoAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/afiliados/editar/:id'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <EditarAfiliadoAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path='/asesor/perfil'
+          element={
+            <RutaProtegida rolPermitido='Asesor'>
+              <AsesorLayout>
+                <PerfilAsesor />
+              </AsesorLayout>
+            </RutaProtegida>
+          }
+        />
 
         <Route path='*' element={<Navigate to='/' />} />
       </Routes>

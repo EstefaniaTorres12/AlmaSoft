@@ -383,7 +383,7 @@ const DetallesCliente = () => {
                         <Card.Body>
 
                             <img
-                                src="/img/usuario.png"
+                                src="/img/icons/usuario.png"
                                 alt="Cliente"
                                 className="detalle-cliente-img"
                             />

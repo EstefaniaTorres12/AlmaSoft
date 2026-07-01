@@ -19,6 +19,14 @@ router.get(
     clienteController.getClienteById
 );
 
+// Obtener clientes con sus planes (Estadísticas)
+router.get(
+    '/stats/planes',
+    verifyToken,
+    authorizeRoles(['Administrador', 'Asesor']),
+    clienteController.getClientesConPlanes
+);
+
 // Crear cliente
 router.post(
     '/',
